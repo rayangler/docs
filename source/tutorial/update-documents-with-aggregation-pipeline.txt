@@ -30,7 +30,7 @@ field values or updating one field using the value of another field(s).
 Example 1
 ----------
 
-.. only:: website
+.. cond:: html
 
    You can try out the example in the provided shell. Click inside the
    shell to connect. Once connected, you can run the examples in the
@@ -80,7 +80,7 @@ Example 1
 Example 2
 ----------
 
-.. only:: website
+.. cond:: html
 
    You can try out the examples in the provided shell. Click inside the
    shell to connect. Once connected, you can run the examples in the
@@ -147,7 +147,7 @@ Example 2
 Example 3
 ---------
 
-.. only:: website
+.. cond:: html
 
    You can try out the examples in the provided shell. Click inside the
    shell to connect. Once connected, you can run the examples in the
@@ -218,7 +218,7 @@ Example 3
 Example 4
 ---------
 
-.. only:: website
+.. cond:: html
 
    You can try out the examples in the provided shell. Click inside the
    shell to connect. Once connected, you can run the examples in the
@@ -265,7 +265,7 @@ Example 4
 Example 5
 ---------
 
-.. only:: website
+.. cond:: html
 
    You can try out the examples in the provided shell. Click inside the
    shell to connect. Once connected, you can run the examples in the
