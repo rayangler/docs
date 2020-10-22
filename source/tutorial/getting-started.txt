@@ -11,7 +11,7 @@ The following page provides various examples for querying in the
 MongoDB shell. For examples using MongoDB drivers, refer to the links
 in the :ref:`gs-additional-examples` section.
 
-.. only:: website
+.. cond:: html
 
    .. _mongo-web-shell:
    
