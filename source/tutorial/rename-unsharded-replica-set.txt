@@ -1,0 +1,16 @@
+====================
+Rename a Replica Set
+====================
+
+.. default-domain:: mongodb
+
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
+
+Before renaming a replica set, perform a full
+:doc:`backup of your MongoDB deployment </core/backups>`.
+
+.. include:: /includes/steps/rename-unsharded-replica-set.rst
