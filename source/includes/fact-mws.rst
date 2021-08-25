@@ -1,2 +1,2 @@
 .. mongo-web-shell:: 
-   :version: latest
+   :version: 5.0
