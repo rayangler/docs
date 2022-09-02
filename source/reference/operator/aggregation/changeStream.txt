@@ -16,7 +16,7 @@ Definition
    Returns a :ref:`Change Stream <changeStreams>` cursor on a collection, a database,
    or an entire cluster. Must be used as the first stage in an aggregation pipeline.
 
-   The :pipeline:`$changeStream` stage has the following syntax:
+   This stage has the following syntax:
    
    .. code-block:: text
    
