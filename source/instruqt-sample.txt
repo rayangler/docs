@@ -1,0 +1,37 @@
+:template: instruqt
+
+====================
+Instruqt Sample Page
+====================
+
+This is a sample page for Instruqt-related content. Note that
+this is similar to a regular docs content page, but is more experimental
+with its margins widths. We will figure out the best way to consolidate
+styles and exact usage in the future. (Alternatively, we can use page
+options instead of a template, but we shall see.)
+
+See the Instruqt lab below. An additional component was added to allow
+for fullscreening. It's a bit hacky, but it kinda works!
+
+The Instruqt Lab
+----------------
+
+See below for the Instruqt lab to use.
+
+.. instruqt:: /mongodb/tracks/docker-and-mongodb?token=em_E9xlvLYy4nIGlzIj
+
+
+How to Use
+----------
+
+.. code-block:: none
+   
+   :template: instruqt
+
+   =====
+   Title
+   =====
+
+   Content here.
+
+   .. instruqt:: /mongodb/tracks/docker-and-mongodb?token=em_E9xlvLYy4nIGlzIj

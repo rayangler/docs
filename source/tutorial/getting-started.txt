@@ -23,6 +23,8 @@ explore additional sample data or host your own data.
 
 .. include:: /includes/fact-mws.rst
 
+.. instruqt:: /mongodb/tracks/docker-and-mongodb?token=em_E9xlvLYy4nIGlzIj
+
 Click inside the shell to connect. Once connected, you can run the
 examples in the shell above.
 
