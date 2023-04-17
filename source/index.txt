@@ -9,7 +9,7 @@ What is MongoDB?
 .. introduction::
 
    MongoDB is a document database designed for ease of application
-   development and scaling.
+   development and scaling!
 
    Run MongoDB with `MongoDB Atlas
    <https://www.mongodb.com/cloud?tck=docs_server>`__ fully managed in
