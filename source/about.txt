@@ -15,7 +15,7 @@ About MongoDB Documentation
 The :manual:`MongoDB Manual </#>` contains
 comprehensive documentation on MongoDB. This page describes the
 manual's licensing, editions, and versions, and describes how to make a
-change request and how to contribute to the manual. It's pretty cool, I guess!
+change request and how to contribute to the manual. It's just okay!
 
 License
 -------
