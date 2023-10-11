@@ -9,7 +9,7 @@ What is MongoDB?
 .. introduction::
 
    MongoDB is a document database designed for ease of application
-   development and scaling. Change 1. Change 2.
+   development and scaling. Change 1. Change 2. Change 3.
 
    You can run MongoDB in the following environments:
 
