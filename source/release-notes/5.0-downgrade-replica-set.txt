@@ -22,6 +22,8 @@ Downgrade Path
 
 .. include:: /includes/downgrade-path.rst
 
+.. include:: /includes/downgrade/single-version-support.rst
+
 Create Backup
 -------------
 
@@ -113,7 +115,7 @@ First, verify the following:
 Next, to downgrade the ``featureCompatibilityVersion`` of your replica
 set:
 
-#. Connect a :binary:`~bin.mongo` shell to the |target|.
+#. Connect a ``mongo`` shell to the |target|.
 
 #. .. include:: /includes/5.0-downgrade-fcv.rst
 
@@ -134,6 +136,12 @@ set:
    If any member returns a ``featureCompatibilityVersion`` of |newfcv|,
    wait for the member to reflect version |oldfcv| before proceeding.
 
+.. note::
+
+  .. include:: /includes/arbiter-fcv.rst
+
+  .. include:: /includes/arbiter-fcv-version.rst
+
 For more information on the returned ``featureCompatibilityVersion``
 value, see :ref:`view-fcv`.
 
@@ -151,9 +159,33 @@ Time-series Collections
   <manual-timeseries-collection>`.
 
 Runtime Audit Filter Management
-  Disable runtime audit filter management by setting the 
-  ``auditLog.runtimeConfiguration`` configuration file setting to
-  ``false``.
+
+- Reset the defaults on the :term:`primary` server in the group with
+  ``db.admin.runCommand``. The primary should be the last
+  configuration server in the group to be updated.
+
+  .. code-block:: javascript
+
+     db.admin.runCommand(
+        {
+           setAuditConfig: 1, 
+           filter: {},
+           auditAuthorizationSuccess: false
+        }
+     )
+
+  The configuration document can also be removed after downgrade:
+
+  .. code-block:: javascript
+
+     config.settings.remove({_id: 'audit'});
+
+- Disable Runtime Audit Filter Management on each node by setting
+  ``auditLog.runtimeConfiguration`` to ``false`` in the node's
+  configuration file.
+
+- Update the audit filters for this instance in the local
+  configuration file.
 
 .. |binary| replace:: any replica set member
 
@@ -179,5 +211,3 @@ Procedure
    features for each node before downgrading.
 
 .. include:: /includes/steps/5.0-downgrade-replica-set.rst
-
-

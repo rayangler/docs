@@ -1,4 +1,3 @@
-build/*
 *.swp
 .#*
 \#*#
@@ -20,7 +19,6 @@ mongodb-domain.yaml
 composite-pages.yaml
 !bin/*/mongodb-domain.yaml
 meta.yaml
-build
 source/driver-examples/
 *~
 source/reference/*/*.rst
@@ -40,7 +38,6 @@ source/includes/toc/
 source/includes/table/
 source/includes/steps/
 source/includes/generated/includes-overview.rst
-source/includes/generated/
 source/includes/option/
 source/includes/changelogs/*.rst
 !source/includes/changelogs/releases/*.rst
@@ -88,3 +85,4 @@ primer/source/includes/table-linux-kernel-version-production.yaml
 venv
 .vscode
 changelogs/.mongodb-jira.yaml
+source/includes/qe-tutorials/csharp/obj/Debug/

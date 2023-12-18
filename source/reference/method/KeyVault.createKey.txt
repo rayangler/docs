@@ -1,3 +1,5 @@
+.. _keyvault-createkey-method:
+
 ====================
 KeyVault.createKey()
 ====================
@@ -15,9 +17,9 @@ KeyVault.createKey()
 .. method:: KeyVault.createKey(keyManagementService, customerMasterKey, ["keyAltName"])
 
    Adds a data encryption key to the key vault associated to the
-   database connection. :doc:`Client-side field level encryption
-   </core/security-client-side-encryption>` uses data encryption keys
-   for supporting encryption and decryption of field values.
+   database connection. :ref:`{+csfle+}
+   <manual-csfle-feature>` uses data encryption keys for supporting
+   encryption and decryption of field values.
 
    :method:`~KeyVault.createKey()` has the following syntax:
 
@@ -121,7 +123,7 @@ KeyVault.createKey()
           :method:`~KeyVault.createKey()` requests
           that the KMS encrypt the data encryption key material
           using the specified CMK. If the CMK does not exist *or* if the
-          :ref:`ClientSideFieldLevelEncryptionOptions` configuration
+          :ref:`{+auto-encrypt-options+}` configuration
           does not have sufficient privileges to use the CMK,
           :method:`~KeyVault.createKey()` returns an error.
 
@@ -146,6 +148,18 @@ KeyVault.createKey()
           <index-type-partial>` filter for only documents where
           ``keyAltNames`` exists.
 
+      * - ``options``
+        - document
+        - *Optional*
+        
+          A document that specifies options for the new key.
+          ``options`` has the following fields:
+
+          - ``masterKey``: the new master key to encrypt data.
+          - ``keyAltNames``: an array of alternate names, one per 
+            master key.
+          - ``keyMaterial``: bindata used to create the key.
+
    :returns:
   
      The ``UUID`` unique identifier of the created data encryption
@@ -166,9 +180,9 @@ The following example is intended for rapid evaluation of
 client-side field level encryption. For specific examples of using
 :method:`KeyVault.createKey()` with each supported
 :abbr:`KMS (Key Management Service)` provider, see
-:ref:`field-level-encryption-data-key-create`.
+:ref:`Create a Data Key <qe-field-level-encryption-data-key-create>`.
 
-.. include:: /includes/extracts/csfle-connection-boilerplate.rst
+.. include:: /includes/csfle-connection-boilerplate-example.rst
 
 Retrieve the :method:`keyVault <getKeyVault()>` object and
 use the :method:`KeyVault.createKey()` method to 

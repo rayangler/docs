@@ -22,6 +22,8 @@ Downgrade Path
 
 .. include:: /includes/downgrade-path.rst
 
+.. include:: /includes/downgrade/single-version-support.rst
+
 .. include:: /includes/extracts/4.4-changes-downgrade-floor.rst
 
 .. |downgrading| replace:: downgrading
@@ -54,7 +56,7 @@ that exceed the 120-byte :limit:`Namespace Length` limit for Feature
 Compatibility Version (fCV) 4.2.
 
 To determine if you have any collections or views with namespaces
-that exceed the 120-byte limit, connect :binary:`~bin.mongo` shell
+that exceed the 120-byte limit, connect ``mongo`` shell
 to a |target| and run:
 
 .. code-block:: javascript
@@ -106,7 +108,7 @@ downgrading the fCV:
 To downgrade the ``featureCompatibilityVersion`` of your sharded
 cluster:
 
-#. Connect a :binary:`~bin.mongo` shell to the |target|.
+#. Connect a ``mongo`` shell to the |target|.
 
 #. .. include:: /includes/4.4-downgrade-fcv.rst
 
@@ -141,10 +143,17 @@ cluster:
    If any member returns a ``featureCompatibilityVersion`` of |newfcv|,
    wait for the member to reflect version |oldfcv| before proceeding.
 
+.. note::
+
+  .. include:: /includes/arbiter-fcv.rst
+
+  .. include:: /includes/arbiter-fcv-version.rst
+
+
 For more information on the returned ``featureCompatibilityVersion``
 value, see :ref:`view-fcv`.
 
-3. Remove FCV |newversion| Persisted Features
+3. Remove fCV |newversion| Persisted Features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The following steps are necessary only if fCV has ever been set to
@@ -195,7 +204,7 @@ include but are not limited to:
   <db.collection.dropIndex()>` hidden indexes.
 
 
-.. |binary| replace:: any :binary:`~bin.mongod`/:binary:`~bin.mongos` instance
+.. |binary| replace:: any :binary:`mongod` / :binary:`mongos` instance
 
 5. Update Missing Shard Keys
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -257,5 +266,3 @@ Downgrade a Sharded Cluster
    features for each node before downgrading.
 
 .. include:: /includes/steps/4.4-downgrade-sharded-cluster.rst
-
-

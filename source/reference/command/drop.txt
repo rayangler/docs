@@ -10,43 +10,63 @@ drop
    :depth: 1
    :class: singlecol
 
+Definition
+----------
+
 .. dbcommand:: drop
 
    The :dbcommand:`drop` command removes an entire collection from a
-   database. The command has following syntax:
+   database. 
 
-   .. code-block:: javascript
+   .. |method| replace:: :method:`~db.collection.drop` helper method
+   .. include:: /includes/fact-dbcommand-tip
 
-      { drop: <collection_name>, writeConcern: <document>, comment: <any> }
+Syntax
+------
 
-   The command takes the following fields:
+The command has following syntax:
 
-   .. list-table::
-      :header-rows: 1
-      :widths: 20 80
+.. code-block:: javascript
 
-      * - Field
-        - Description
+   db.runCommand(
+      { 
+        drop: <collection_name>, 
+        writeConcern: <document>, 
+        comment: <any> 
+      }
+   )
 
-      * - ``drop``
-        - The name of the collection to drop.
+Command Fields
+--------------
 
-      * - ``writeConcern``
+The command takes the following fields:
 
-        - Optional. A document expressing the :doc:`write concern
-          </reference/write-concern>` of the :dbcommand:`drop` command.
-          Omit to use the default write concern.
-
-          .. include:: /includes/extracts/mongos-operations-wc-drop.rst
-
-      * - ``comment``
-
-        - .. include:: /includes/extracts/comment-content.rst
-       
-          .. versionadded:: 4.4
-
-   :binary:`~bin.mongosh` provides the equivalent helper method
-   :method:`db.collection.drop()`.
+.. list-table::
+   :header-rows: 1
+   :widths: 20 80
+ 
+   * - Field
+     - Description
+ 
+   * - ``drop``
+     - The name of the collection to drop.
+ 
+   * - ``writeConcern``
+ 
+     - Optional. A document expressing the :doc:`write concern
+       </reference/write-concern>` of the :dbcommand:`drop` command.
+       Omit to use the default write concern.
+ 
+       .. include:: /includes/extracts/mongos-operations-wc-drop.rst
+ 
+   * - ``comment``
+ 
+     - .. include:: /includes/extracts/comment-content.rst
+    
+       .. versionadded:: 4.4
+ 
+:binary:`~bin.mongosh` provides the equivalent helper method
+:method:`db.collection.drop()`.
 
 Behavior
 --------

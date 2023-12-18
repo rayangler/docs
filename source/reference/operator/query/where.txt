@@ -4,6 +4,10 @@ $where
 
 .. default-domain:: mongodb
 
+.. facet::
+   :name: programming_language
+   :values: javascript/typescript
+
 .. contents:: On this page
    :local:
    :backlinks: none
@@ -23,31 +27,40 @@ Definition
    collection. Reference the document in the JavaScript expression or
    function using either ``this`` or ``obj`` .
 
-   .. code-block:: javascript
+Compatibility
+-------------
 
-      { $where: <string|JavaScript Code> }
+.. |operator-method| replace:: ``$where``
+
+.. include:: /includes/fact-compatibility.rst
+
+Syntax
+------
+
+The :query:`$where` operator has the following form:
+
+.. code-block:: javascript
+
+   { $where: <string|JavaScript Code> }
 
 .. note::
 
    Starting in MongoDB 4.4, :query:`$where` no longer supports the
-   deprecated BSON type JavaScript code with scope (:doc:`BSON type 15
-   </reference/bson-types/>`). The :query:`$where` operator only
-   supports BSON type String (:doc:`BSON type 2
-   </reference/bson-types/>`) or BSON type JavaScript (:doc:`BSON
-   type 13 </reference/bson-types/>`). The use of BSON type JavaScript
-   with scope for :query:`$where` has been deprecated since MongoDB
-   4.2.1.
+   deprecated :ref:`BSON type <bson-types>` JavaScript code with scope 
+   (BSON Type 15). The :query:`$where` operator only supports BSON type 
+   String (BSON Type 2) or BSON type JavaScript (BSON Type 13). The use 
+   of BSON type JavaScript with scope for :query:`$where` has been 
+   deprecated since MongoDB 4.2.1.
 
 .. note:: Aggregation Alternatives Preferred
 
-
-   Starting in MongoDB 3.6, the :query:`$expr` operator allows the use
-   of :ref:`aggregation expressions <aggregation-framework>` within the
-   query language. And, starting in MongoDB 4.4, the
+   The :query:`$expr` operator allows the use of 
+   :ref:`aggregation expressions <aggregation-expressions>` within
+   the query language. And, starting in MongoDB 4.4, the
    :expression:`$function` and :group:`$accumulator` allows users to
    define custom aggregation expressions in JavaScript if the provided
-   :doc:`pipeline operators </reference/operator/aggregation>` cannot
-   fulfill your application's needs.
+   :ref:`pipeline operators <aggregation-pipeline-operator-reference>` 
+   cannot fulfill your application's needs.
    
    Given the available aggregation operators:
 
@@ -125,6 +138,13 @@ scripting:
     :binary:`~bin.mongos` instances.
 
 See also :ref:`security-checklist-javascript`.
+
+Unsupported Array and String Functions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/fact-6.0-js-engine-change.rst
+
+.. include:: /includes/fact-mozjs-list-lead-in.rst
 
 Example
 -------

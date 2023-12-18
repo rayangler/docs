@@ -1,3 +1,5 @@
+.. _release-notes-5.0:
+
 =============================
 Release Notes for MongoDB 5.0
 =============================
@@ -12,10 +14,485 @@ Release Notes for MongoDB 5.0
 
 .. note::
 
-   MongoDB 5.0 Released Jul 13, 2021
+   MongoDB 5.0 Released July 13, 2021
 
-Minor Releases
+Patch Releases
 --------------
+
+.. warning:: Past Release Limitations
+
+   .. include:: /includes/release-notes/critical-warning-text.rst
+
+   .. list-table::
+      :header-rows: 1
+
+      * - Issue
+        - Affected Versions
+
+      * - :issue:`WT-7984`
+        - 5.0.0 - 5.0.2
+
+      * - :issue:`WT-7995`
+        - 5.0.0 - 5.0.2
+
+      * - :issue:`WT-10461` 
+        - 5.0.0 - 5.0.14 (ARM64 or POWER system architectures)
+
+      * - :issue:`WT-10551` 
+        - 5.0.2 - 5.0.17 (Incremental backups on Ops Manager or Cloud
+          Manager clusters)
+
+      * - :issue:`SERVER-58936`
+        - 5.0.0 - 5.0.1
+
+      * - :issue:`SERVER-68511`
+        - 5.0.0 - 5.0.14
+
+      * - :issue:`SERVER-80203`
+        - 5.0.6 - 5.0.21 (Time Series collections sharded by metaField embedded 
+          objects) 
+
+.. _5.0.23-release-notes:
+
+5.0.23 - Nov 27, 2023
+~~~~~~~~~~~~~~~~~~~~~
+
+- :issue:`SERVER-78108` POS interface should expose its shutdown state
+- :issue:`SERVER-78115` Shard primaries must commit a majority write before 
+  using new routing information from the config server
+- :issue:`SERVER-83150` Document::shred() does not copy document metadata
+- :issue:`WT-11564` Fix RTS to read the newest transaction value only when it 
+  exists in the checkpoint
+- :issue:`WT-11602` Hide expected eviction failures from the application and 
+  don't rollback in case of errors
+- `All JIRA issues closed in 5.0.23 
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.23>`_
+- :ref:`5.0.23-changelog`
+
+.. _5.0.22-release-notes:
+
+5.0.22 - Oct 26, 2023
+~~~~~~~~~~~~~~~~~~~~~
+
+- :issue:`SERVER-68548` MongoDB Shell version 4.4.15 logging asio message despite 
+  --quiet flag
+- :issue:`SERVER-80021` Make $convert round-trip correctly between double and string
+- :issue:`SERVER-80703` Avoid traversing routing table in MigrationDestinationManager
+- :issue:`SERVER-81106`  Recipient shard doesn't wait for the collection version 
+  to be locally persisted before starting the cloning phase
+- :issue:`WT-11064` Skip globally visible tombstones as part of update obsolete check
+- `All JIRA issues closed in 5.0.22 
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.22>`_
+- :ref:`5.0.22-changelog`
+
+.. _5.0.21-release-notes:
+
+5.0.21 - Sep 12, 2023
+~~~~~~~~~~~~~~~~~~~~~
+
+- :issue:`SERVER-60466` Support drivers gossiping signed $clusterTimes to 
+  replica set --shardsvrs before addShard is run
+- :issue:`SERVER-71627` Refreshed cached collection route info will severely 
+  block all client request when a cluster with 1 million chunks
+- :issue:`SERVER-78813` Commit point propagation fails indefinitely with exhaust 
+  cursors with null lastCommitted optime
+- :issue:`WT-10759` Do not retry to force evict history store pages during 
+  reconciliation
+- :issue:`WT-11051` Fix newest start durable timestamp comparison in aggregate 
+  timestamp validation
+- `All JIRA issues closed in 5.0.21 
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.21>`_
+- :ref:`5.0.21-changelog`
+
+.. _5.0.20-release-notes:
+
+5.0.20 - Aug 14, 2023
+~~~~~~~~~~~~~~~~~~~~~
+
+- :issue:`SERVER-74954` Incorrect result when contained $or rewrites $elemMatch
+  extra condition
+- :issue:`SERVER-78813` Commit point propagation fails indefinitely with
+  exhaust cursors with null lastCommitted optime
+- :issue:`SERVER-79136` Incorrect query result of $match + $group on metaField
+  over time-series
+- :issue:`WT-10449` Do not save update chain when there are no updates to be
+  written to the history store
+- :issue:`WT-11031` Fix RTS to skip tables with no time window information in
+  the checkpoint
+- `All JIRA issues closed in 5.0.20
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.20>`_
+- :ref:`5.0.20-changelog`
+
+
+.. _5.0.19-release-notes:
+
+5.0.19 - Jul 13, 2023
+~~~~~~~~~~~~~~~~~~~~~
+
+- :issue:`SERVER-71985` Automatically retry time series insert on DuplicateKey 
+  error
+- :issue:`SERVER-74551` WriteConflictException unnecessarily logged as warning
+  during findAndModify after upgrade to mongo 5.0
+- :issue:`SERVER-77018` Deadlock between dbStats and 2 index builds
+- :issue:`SERVER-78126` For specific kinds of input, mongo::Value() always
+  hashes to the same result on big-endian platforms
+- :issue:`WT-10253` Run session dhandle sweep and session cursor sweep more
+  often
+- `All JIRA issues closed in 5.0.19
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.19>`_
+- :ref:`5.0.19-changelog`
+
+.. _5.0.18-release-notes:
+
+5.0.18 - May 18, 2023
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-48196` Upgrade the timelib to the latest to update the built-in timezone files to the latest
+- :issue:`SERVER-54150` Recovery from a stable checkpoint should fassert on oplog application failures
+- :issue:`SERVER-57056` Syslog severity set incorrectly for INFO messages
+- :issue:`SERVER-72686` Add support for $collStats agg stage on timeseries collection
+- :issue:`WT-10551` Incremental backup may omit modified blocks
+- `All JIRA issues closed in 5.0.18
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.18>`_
+- :ref:`5.0.18-changelog`
+
+
+.. _5.0.17-release-notes:
+
+5.0.17 - Apr 27, 2023
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-73229` Logical sessions cache refresh ignores write errors 
+  from updating session document, leading to cursors being killed early
+- :issue:`SERVER-74647` Resharding state machine creation should be retried 
+  after interruption
+- :issue:`SERVER-75261` "listCollections" command fails with 
+  BSONObjectTooLarge error
+- :issue:`SERVER-75431` Get rid or fix best effort check for primary db 
+  on rename path in sharded clusters
+- :issue:`SERVER-76098` Allow queries with $search and non-simple collations
+- `All JIRA issues closed in 5.0.17
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.17>`_
+- :ref:`5.0.17-changelog`
+
+
+.. _5.0.16-release-notes:
+
+5.0.16 - Apr 10, 2023
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-61909` Hang inserting or deleting document with large
+  number of index entries
+- :issue:`SERVER-73822` Time-series $group rewrite ignores certain
+  accumulators
+- :issue:`SERVER-74345` mongodb-org-server 4.4.19, 5.0.15, 6.0.5 not
+  starting after upgrading from older version (Debian, RPM Packages)
+- :issue:`SERVER-74501` Fix MigrationBatchFetcher/Inserter completion
+  reliance to not spawn an extra cleanup thread
+- :issue:`SERVER-75205` Deadlock between stepdown and restoring locks
+  after yielding when all read tickets exhausted
+
+- `All JIRA issues closed in 5.0.16
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.16>`_
+
+- :ref:`5.0.16-changelog`
+
+.. _5.0.15-release-notes:
+
+5.0.15 - Feb 27, 2023
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-54900` Blocking networking calls can delay sync-source resolution indefinitely
+- :issue:`SERVER-72416` The find and findAndModify projection code does not honor the collection level collation
+- :issue:`SERVER-71759` dataSize command doesn't yield
+- :issue:`SERVER-72222` MapReduce with single reduce optimization fails when merging results in sharded cluster
+- :issue:`WT-9268` Delay deletion of the history store record to reconciliation
+
+- `All JIRA issues closed in 5.0.15
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.15>`_
+
+- :ref:`5.0.15-changelog`
+
+.. _5.0.14-release-notes:
+
+5.0.14 - Nov 21, 2022
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-68477` Improve NaN-handling for expireAfterSeconds TTL
+  index parameter
+- :issue:`SERVER-66289` $out incorrectly throws BSONObj size error on
+  v5.0.8
+- :issue:`SERVER-61185` Use prefix_search for unique index lookup
+- :issue:`SERVER-68115` Bug fix for "elemMatchRootLength > 0" invariant
+  trigger
+- :issue:`SERVER-68139` Resharding command fails if the projection sort
+  is bigger than 100MB
+
+- `All JIRA issues closed in 5.0.14
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.14>`_
+
+- :ref:`5.0.14-changelog`
+
+.. _5.0.13-release-notes:
+
+5.0.13 - Sep 29, 2022
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-69611` Set the -ffp-contract=off compiler option by
+  default
+- :issue:`SERVER-69220` refineCollectionShardKey permits toggling
+  current shard key fields between range-based and hashed, leading to
+  data inconsistency
+- :issue:`SERVER-67650` Resharding recipient can return
+  remainingOperationTimeEstimatedSecs=0 when the oplog applier hasn't
+  caught up with the oplog fetcher
+- :issue:`SERVER-68094` Resharding with custom generated _id fails with
+  projection error
+- :issue:`WT-9870` Fix updating pinned timestamp whenever oldest
+  timestamp is updated during recovery
+
+- `All JIRA issues closed in 5.0.13
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.13>`_
+
+- :ref:`5.0.13-changelog`
+
+.. _5.0.12-release-notes:
+
+5.0.12 - Sep 05, 2022
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-68925` Reintroduce check table logging settings at
+  startup (revert :issue:`SERVER-43664`)
+- :issue:`SERVER-63852` getThreadName() should not crash
+- :issue:`SERVER-60958` Avoid server hang in chunk migration when
+  step-down event occurs
+- :issue:`SERVER-65382` AutoSplitVector should not use clientReadable to
+  reorder shard key fields
+- :issue:`SERVER-63843` Don't allow recursive doLog in synchronous
+  signal handlers
+
+- `All JIRA issues closed in 5.0.12
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.12>`_
+
+- :ref:`5.0.12-changelog`
+
+.. _5.0.11-release-notes:
+
+5.0.11 - Aug 19, 2022
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-68511` MovePrimary update of ``config.databases`` entry
+  must use dotted fields notation
+- :issue:`SERVER-61321` Improve handling of large/NaN values for text
+  index version
+- :issue:`SERVER-60607` Improve handling of large/NaN values for geo
+  index version
+- :issue:`SERVER-68628` Retrying a failed resharding operation after a
+  primary failover can lead to server crash or lost writes
+- :issue:`SERVER-68522` Prevent 5.0 binary from starting in fCV 4.4 with
+  misconfigured TTL index
+- :issue:`WT-9500` Fix RTS to use cell time window instead of key/value
+  timestamps of HS update
+
+- `All JIRA issues closed in 5.0.11
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.11>`_
+
+- :ref:`5.0.11-changelog`
+
+.. _5.0.10-release-notes:
+
+5.0.10 - Jul 29, 2022
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-66418` Bad projection created during dependency
+  analysis due to string order assumption
+- :issue:`SERVER-65821` Deadlock during setFCV when there are prepared
+  transactions that have not persisted commit/abort decision
+- :issue:`SERVER-65131` Disable opportunistic read targeting (except for
+  hedged reads)
+- :issue:`SERVER-63971` Change server parameter to default to
+  read-your-writes behavior after 2PC transaction
+- :issue:`SERVER-66433` Backport deadline waiting for overlapping range
+  deletion to finish to pre-v5.1 versions
+
+- `All JIRA issues closed in 5.0.10
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.10>`_
+
+- :ref:`5.0.10-changelog`
+
+.. _5.0.9-release-notes:
+
+5.0.9 - May 31, 2022
+~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-65636`  Remove limits on number of LDAP connections 
+  per host
+- :issue:`SERVER-65137` Detect namespace changes when refreshing 
+  Collection after yielding
+- :issue:`SERVER-64822`  Sharding an empty collection releases the 
+  critical section too early
+- :issue:`SERVER-62175`  Mongos fails to attach RetryableWrite Error 
+  Label For Command Interrupted In _parseCommand
+- :issue:`WT-9096` Fix search near returning wrong key/value sometimes 
+  when key doesn't exist
+
+- `All JIRA issues closed in 5.0.9
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.9>`_
+
+- :ref:`5.0.9-changelog`
+
+.. _5.0.8-release-notes:
+
+5.0.8 - Apr 25, 2022
+~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-63531` commitQuorum incorrectly includes 
+  buildIndexes:false nodes and error message incorrectly says that only 
+  voting nodes are eligible
+- :issue:`SERVER-63387` 1 StreamingCursor should return backup blocks in
+  the order they were retrieved from the WiredTiger backup cursor
+- :issue:`SERVER-62229` Fix invariant when applying index build entries 
+  while recoverFromOplogAsStandalone=true
+- :issue:`SERVER-61879` Refreshes to recover migrations must never join 
+  ongoing refreshes
+- :issue:`WT-8924` Don't check against on disk time window if there is 
+  an insert list when checking for conflicts in row-store
+
+- `All JIRA issues closed in 5.0.8
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.8>`_
+
+- :ref:`5.0.8-changelog`
+
+.. _5.0.7-release-notes:
+
+5.0.7 - Apr 11, 2022
+~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-64517` RecoverableCriticalSection is not properly 
+  recovered on startup
+- :issue:`SERVER-64403` Find queries with SORT_MERGE collation-encode 
+  the missing sort attribute
+- :issue:`SERVER-63742` Default topology time in shard can lead to 
+  infinite refresh in shard registry
+- :issue:`SERVER-60412` Host memory limit check does not honor cgroups 
+  v2
+- :issue:`WT-7922` Handle missing WiredTiger version file
+
+- `All JIRA issues closed in 5.0.7
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.7>`_
+
+- :ref:`5.0.7-changelog`
+
+.. _5.0.6-release-notes:
+
+5.0.6 - Jan 31, 2022
+~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`WT-8395` Inconsistent data after upgrade from 4.4.3 and 4.4.4 to 4.4.8+ and 5.0.2+
+- :issue:`SERVER-62245` MigrationRecovery must not assume that only one migration needs to be recovered
+- :issue:`SERVER-61427` Unique index builds can cause a loss of availability during commit due to checking many false duplicates
+- :issue:`SERVER-61194` Prevent time-series bucket OID reuse with coarse granularity
+- :issue:`SERVER-60310` OCSP response validation should not consider statuses of irrelevant certificates
+
+- `All JIRA issues closed in 5.0.6
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.6>`_
+
+- :ref:`5.0.6-changelog`
+
+.. _5.0.5-release-notes:
+
+5.0.5 - Dec 6, 2021
+~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-61483` Resharding coordinator fails to recover abort 
+  decision on step-up, attempts to commit operation as success, leading 
+  to data inconsistency
+- :issue:`SERVER-59858` Add observability for tasks scheduled on the 
+  reactor thread
+- :issue:`SERVER-51329` Unexpected non-retryable error when shutting 
+  down a mongos server
+- :issue:`WT-8163` Consider more eviction scenarios to give up 
+  checkpoint-cleanup
+- :issue:`WT-7912` Fix prefix search near optimisation to handle 
+  scenarios where the key range is split across pages.
+
+- `All JIRA issues closed in 5.0.5
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.5>`_
+
+- :ref:`5.0.5-changelog`
+
+.. _5.0.4-release-notes:
+
+5.0.4 - Nov 15, 2021
+~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-60326` Windows Server fails to start when X509 
+  certificate has empty subject name
+- :issue:`SERVER-59876` Large delays in returning from libcrypto.so
+  while establishing egress connections
+- :issue:`SERVER-59456` Start the LDAPReaper threadpool
+- :issue:`SERVER-59226` Deadlock when stepping down with a profile 
+  session marked as uninterruptible
+- :issue:`SERVER-59074` Do not acquire storage tickets just to set/wait
+  on oplog visibility
+
+- `All JIRA issues closed in 5.0.4
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%205.0.4>`_
+
+- :ref:`5.0.4-changelog`
+
+.. _5.0.3-release-notes:
+
+5.0.3 - Sep 21, 2021
+~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-57667`: Improve processing speed for resharding's
+  collection cloning pipeline
+- :issue:`SERVER-57630`: Enable SSL_OP_NO_RENEGOTIATION on Ubuntu 18.04
+  when running against OpenSSL 1.1.1
+- :issue:`WT-8005`: Fix a prepare commit bug that could leave the
+  history store entry unresolved
+- :issue:`WT-7995`: Fix the global visibility that it cannot go beyond
+  checkpoint visibility
+- :issue:`WT-7984`: Fix a bug that could cause a checkpoint to omit a
+  page of data
+
+- `All JIRA issues closed in 5.0.3
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%275.0.3%27>`_
+
+- :ref:`5.0.3-changelog`
 
 .. _5.0.2-release-notes:
 
@@ -45,14 +522,7 @@ Issues fixed:
 5.0.1 - Jul 22, 2021
 ~~~~~~~~~~~~~~~~~~~~
 
-.. warning::
-
-   MongoDB version 5.0.1 is not recommended for production use due to a
-   critical issue, :issue:`SERVER-58936`. The issue is fixed in version
-   5.0.2.
-
 Issues fixed:
-
 
 - :issue:`SERVER-58489`: Collection creation stuck in an infinite
   writeConflictRetry loop when having a duplicate name as a view
@@ -64,14 +534,10 @@ Issues fixed:
 
 - :ref:`5.0.1-changelog`
 
+.. _5.0.0-release-notes:
+ 
 5.0.0 - Jul 13, 2021
 ~~~~~~~~~~~~~~~~~~~~
-
-.. warning::
-
-   MongoDB version 5.0.0 is not recommended for production use due to a
-   critical issue, :issue:`SERVER-58936`. The issue is fixed in version
-   5.0.2.
 
 The rest of this page provides the 5.0.0 release notes:
 
@@ -85,16 +551,6 @@ MongoDB 5.0 introduces :ref:`time series collections
 measurements over a period of time. Compared to normal collections,
 storing time series data in time series collections improves query
 efficiency and reduces disk usage for your data and indexes.
-
-Deprecate Map Reduce Operation
-------------------------------
-
-Starting in version 5.0, MongoDB deprecates the
-:doc:`map-reduce</core/map-reduce>` operation.
-
-For examples of aggregation pipeline alternatives to map-reduce
-operations, see :doc:`/reference/map-reduce-to-aggregation-pipeline` and
-:doc:`/tutorial/map-reduce-examples`.
 
 Aggregation
 -----------
@@ -126,14 +582,14 @@ MongoDB 5.0 introduces the following aggregation operators:
           pipeline stage.
 
    * - :expression:`$dateAdd`
-     - Increments a :doc:`Date </reference/method/Date>` object by a
+     - Increments a :method:`Date()` object by a
        specified number of time units.
 
    * - :expression:`$dateDiff`
      - Returns the difference between two dates.
 
    * - :expression:`$dateSubtract`
-     - Decrements a :doc:`Date </reference/method/Date>` object by a
+     - Decrements a :method:`Date()` object by a
        specified number of time units.
 
    * - :expression:`$dateTrunc`
@@ -217,12 +673,24 @@ collections.
 
 See :ref:`lookup-uncorrelated-subquery`.
 
+``$sort`` Stage: Performance Improvements
+`````````````````````````````````````````
+
+Starting in MongoDB 5.0, the :term:`query optimizer` pushes down the results of 
+a :pipeline:`$project` stage into the :pipeline:`$sort` stage. As a result, 
+``$sort`` operations can require less RAM when used with the ``project`` stage 
+and avoid ``Sort exceeded memory limit`` errors. 
+
 .. _5.0-rel-notes-auditing:
 
 Auditing
 --------
 
-MongDB 5.0 adds the ability to configure auditing filters at runtime.
+Runtime Audit Filter Configuration
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+MongoDB 5.0 adds the ability to :ref:`configure auditing filters
+<configure-audit-filters-at-runtime>` at runtime.
 
 .. list-table::
    :header-rows: 1
@@ -241,6 +709,9 @@ MongDB 5.0 adds the ability to configure auditing filters at runtime.
    * - :dbcommand:`setAuditConfig`
      - Sets new audit configurations for :binary:`~bin.mongod` and
        :binary:`~bin.mongos` instances at runtime.
+
+General Auditing Updates
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 Starting in MongoDB 5.0:
 
@@ -264,6 +735,27 @@ Starting in MongoDB 5.0:
 - DDL operations auditing on :term:`secondaries <secondary>` has
   changes. See :ref:`auditing-audit-events-and-filter`.
 
+.. _5.0-rel-notes-capped-collections:
+
+Capped Collections
+------------------
+
+Capped Collection Deletes Are Replicated to Secondaries
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting in MongoDB 5.0, the :ref:`implicit delete operations
+<capped_collections_remove_documents>` for :ref:`replica set
+<replication>` :term:`capped collections <capped collection>` are
+processed by the primary and replicated to the :ref:`secondary members
+<replica-set-secondary-members-ref>`.
+
+Explicit Deletes Allowed on Capped Collections
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting in MongoDB 5.0.7, you can delete documents from :ref:`capped
+collections <manual-capped-collection>` using :ref:`delete methods
+<delete-additional-methods>`.
+
 .. _5.0-rel-notes-change-streams:
 
 Change Streams
@@ -280,6 +772,20 @@ truncations.
 
 Indexes
 -------
+
+Partial Indexes Behavior Change
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/fact-5.0-multiple-partial-index.rst
+
+Unique Sparse Index Behavior Change
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting in MongoDB 5.0, :ref:`unique sparse <sparse-unique-index>` 
+and :ref:`unique non-sparse <unique-index>` indexes with the same 
+:ref:`key pattern<key_patterns>` can exist on a single collection.
+
+See :ref:`unique sparse index creation <sparse-and-non-sparse_example>`
 
 Cannot Drop ``Ready`` Indexes During In-Progress Index Builds
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -326,7 +832,7 @@ Removed Commands
 ----------------
 
 Starting in MongoDB 5.0, these database commands and
-:binary:`~bin.mongo` shell helper methods are removed:
+``mongo`` shell helper methods are removed:
 
 .. list-table::
    :header-rows: 1
@@ -357,6 +863,11 @@ Starting in MongoDB 5.0, these database commands and
 
 Replica Sets
 ------------
+
+Non-transactional Reads on ``config.transactions``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/fact-5.0-non-transactional-config-reads.rst
 
 ``hello`` Command
 ~~~~~~~~~~~~~~~~~
@@ -393,9 +904,9 @@ Enhanced Thread Pool Timeout Control
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Starting in MongoDB 5.0, you can use the new
-:parameter:`replWriterMinThreadCount` server parameter to configure the
-timeout of idle threads in the thread pool for parallel execution of
-replication operations. When :parameter:`replWriterMinThreadCount` is
+:parameter:`replWriterMinThreadCount` server parameter to 
+allow idle threads above this minimum to be closed.
+When :parameter:`replWriterMinThreadCount` is
 configured with a value less than :parameter:`replWriterThreadCount`,
 idle threads above :parameter:`replWriterMinThreadCount` are timed out.
 
@@ -417,6 +928,15 @@ source changes can happen per hour before the node temporarily stops
 re-evaluating a sync source. This parameter will not prevent a node
 from starting to sync from another node if it doesn't have a sync
 source.
+
+``enableOverrideClusterChainingSetting`` Server Parameter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting in MongoDB 5.0.2 (and 4.2.16 and 4.4.8), you can set the new
+:parameter:`enableOverrideClusterChainingSetting` server parameter to
+``true`` to allow :term:`secondary` members to replicate data from other
+secondary members even if :rsconf:`settings.chainingAllowed` is
+``false``.
 
 .. _5.0-rel-notes-security:
 
@@ -453,6 +973,11 @@ MongoDB 5.0 introduces the :parameter:`opensslCipherSuiteConfig`
 parameter to enable configuration of the supported cipher suites OpenSSL
 should permit when using TLS 1.3 encryption.
 
+TLS Connection X509 Certificate Startup Warning
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/fact-5.0-x509-certificate-client-warning.rst
+
 .. _5.0-rel-notes-sharded-clusters:
 
 ApplyOps Privilege Action
@@ -486,6 +1011,13 @@ Starting in MongoDB 5.0, the :pipeline:`$currentOp` aggregation stage
 shell method) include additional information about the status of ongoing
 resharding operations for the resharding coordinator and the
 donor and recipient shards.
+
+``db.currentOp`` Method Now Uses Aggregation Stage in ``mongosh``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting in MongoDB 5.0, the :pipeline:`$currentOp` aggregation 
+stage is used when running the helper method :method:`db.currentOp()` 
+with :binary:`~bin.mongosh`.
 
 ``mongos`` / ``mongod`` Connection Pool
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -527,6 +1059,23 @@ merged.
 The ``owningShard`` field helps identify shards where split or merge
 operations frequently occur.
 
+``maxCatchUpPercentageBeforeBlockingWrites`` Server Parameter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting in MongoDB 5.0 (and 4.4.7, 4.2.15, 4.0.26), you can set the
+:parameter:`maxCatchUpPercentageBeforeBlockingWrites` to specify the
+maximum allowed percentage of data not yet migrated
+during a :dbcommand:`moveChunk` operation when compared to the
+total size (in MBs) of the chunk being transferred.
+
+This parameter can affect the behavior of:
+
+- :dbcommand:`moveChunk` commands that are run manually.
+
+- Load balancer functionality, which automatically runs multiple
+  :dbcommand:`moveChunk` commands to evenly distribute chunks across
+  shards. See :ref:`sharding-balancing`.
+
 .. _5.0-rel-notes-shell:
 
 Shell Changes
@@ -547,9 +1096,9 @@ Shell Support for GCP and Azure KMS Providers
 
 Starting in MongoDB 5.0 (and MongoDB 4.4.5), the Google Cloud Platform
 KMS and Azure Key Vault are supported in both :binary:`~bin.mongosh`
-and the legacy :binary:`~bin.mongo` shell as
+and the legacy ``mongo`` shell as
 :ref:`Key Management Service (KMS) <field-level-encryption-kms>`
-providers for :doc:`/core/security-client-side-encryption`.
+providers for :ref:`manual-csfle-feature`.
 
 Using a KMS, you can centrally and securely store Customer Master Keys
 (CMKs), which are used to encrypt and decrypt data encryption keys as
@@ -560,10 +1109,8 @@ In addition, a configured KMS allows for the use of
 :ref:`field-level-encryption-automatic-decryption` of data fields when
 used with MongoDB Enterprise.
 
-Instructions are available for both shells:
-
-- :mongosh:`Configure a KMS provider using mongosh </field-level-encryption/>`
-- :doc:`Configure a KMS provider using the legacy mongo shell </core/security-client-side-encryption-key-management>`
+To learn more, see :mongosh:`Configure a KMS provider using mongosh
+</field-level-encryption/>`.
 
 .. _5.0-snapshot-reads:
 
@@ -575,7 +1122,8 @@ Extended Support for Read Concern ``"snapshot"``
 
 Starting in MongoDB 5.0, read concern :readconcern:`"snapshot"` is
 supported for some read operations outside of multi-document
-transactions on primaries and secondaries.
+transactions on primaries and secondaries. See
+:ref:`tutorial-long-running-queries`.
 
 ``minSnapshotHistoryWindowInSeconds`` Server Parameter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -593,6 +1141,14 @@ Transactions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/return-commit-decision-parameter.rst
+
+
+Naming Changes
+--------------
+
+Starting in February 2022, the "Versioned API" terminology was 
+changed to "Stable API". All concepts and features remain the same 
+with this naming change.
 
 .. _5.0-rel-notes-general:
 
@@ -625,20 +1181,20 @@ Implicit Default Write Concern
 
 .. include:: /includes/5.0-default-wc.rst
 
-This default :doc:`write concern </reference/write-concern>` provides a 
-stronger durability guarantee in the event of an election, or if replica
-set members become unavailable.
+The :writeconcern:`{ w: "majority" } <"majority">` default
+:ref:`write concern <write-concern>` provides a stronger
+durability guarantee in the event of an election, or if replica set
+members become unavailable.
 
-The :writeconcern:`w: majority <"majority">` write concern may impact 
-peformance since writes will only be acknowledged once a 
-:ref:`calculated majority <calculating-majority-count>` of replica set 
-members have executed and persisted the write to disk.
-
-If your application relies on performance-sensitive writes, you can use 
-the :dbcommand:`setDefaultRWConcern` command to explicitly set the 
-default write concern for improved performance at the cost of data 
-durability guarantees. You can also set the write concern at the 
-individual operation level for performance-critical writes. See your 
+The :writeconcern:`{ w: "majority" } <"majority">` write concern may
+impact performance since writes will only be acknowledged once a
+:ref:`calculated majority <calculating-majority-count>` of replica set
+members have executed and persisted the write to disk. If your
+application relies on performance-sensitive writes, you can use the
+:dbcommand:`setDefaultRWConcern` command to explicitly set the default
+write concern for improved performance at the cost of data durability
+guarantees. You can also set the write concern at the individual
+operation level for performance-critical writes. See your
 :driver:`driver documentation </>` for details. 
 
 ``mongosShutdownTimeoutMillisForSignaledShutdown`` Parameter
@@ -658,7 +1214,6 @@ configuration file option which allows for configurable compression
 levels when
 :setting:`~storage.wiredTiger.collectionConfig.blockCompressor` is set
 to ``zstd``.
-
 
 Lock-Free Read Operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -683,6 +1238,15 @@ The :dbcommand:`validate` command and :method:`db.collection.validate()`
 helper method also return a new :data:`~validate.repaired` boolean value
 that is ``true`` if the collection was repaired.
 
+``validate`` Command Reports Document Schema Violations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting in MongoDB 5.0, :dbcommand:`validate` and
+:method:`db.collection.validate()` validates documents 
+in a collection. The commands report if any  
+:ref:`schema validation rules <schema-validation-document>` are 
+violated.
+
 Repair Option in ``mongod``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -703,9 +1267,9 @@ Starting in MongoDB 5.0, the :dbcommand:`validate` command and
 ``maxValidateMemoryUsageMB`` Server Parameter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting in MongoDB 5.0, the :dbcommand:`setParameter` command has a new
-:parameter:`maxValidateMemoryUsageMB` parameter, which sets the maximum
-memory usage for the :dbcommand:`validate` command.
+Starting in MongoDB 5.0 (and 4.4.7), the :dbcommand:`setParameter`
+command has a new :parameter:`maxValidateMemoryUsageMB` parameter, which
+sets the maximum memory usage for the :dbcommand:`validate` command.
 
 ``findChunksOnConfigTimeoutMS`` Server Parameter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -737,7 +1301,7 @@ Log Changes to Database Profiler Settings
 Independent Log Rotation for Server and Audit Logs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting in MongoDB 5.0, when :doc:`auditing </core/auditing>` is
+Starting in MongoDB 5.0, when :ref:`auditing <auditing>` is
 enabled, you may now rotate the server and audit logs
 independently using the :dbcommand:`logRotate` command.
 Previously, :dbcommand:`logRotate` would rotate the two logs together.
@@ -755,6 +1319,13 @@ Starting in MongoDB 5.0, :ref:`slow operation
 Starting in MongoDB 5.0, you can use the :ref:`remoteOpWaitMillis
 <log-messages-remoteOpWaitMillis>` log field to obtain the wait time for
 results from :term:`shards <shard>`.
+
+``resolvedViews`` Log Field for Slow Queries on Views
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting in MongoDB 5.0, :ref:`log messages for slow queries
+<log-message-slow-ops>` on :ref:`views <log-message-view-example>`
+include a ``resolvedViews`` field that contains the view details.
 
 Define Variables Using the ``let`` Option
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -818,6 +1389,9 @@ Aggregation Metrics
   - :serverstatus:`metrics.dotsAndDollarsFields`
   - :serverstatus:`metrics.operatorCounters`
 
+API Version Metrics
+  - :serverstatus:`metrics.apiVersions`
+
 Replication Metrics
   - :serverstatus:`metrics.repl.reconfig.numAutoReconfigsForRemovalOfNewlyAddedFields`
 
@@ -826,6 +1400,19 @@ Read Concern Counters
     :ref:`read concern level <read-concern-levels>` specified by query
     operations (:serverstatus:`readConcernCounters` replaces
     :serverstatus:`opReadConcernCounters`)
+  - :serverstatus:`readConcernCounters` now has the following new
+    fields:
+
+    - ``readConcernCounters.nonTransactionOps.noneInfo``
+    - ``readConcernCounters.transactionOps.noneInfo``
+
+Write Concern Counters
+  - :serverstatus:`opWriteConcernCounters` now has the following new
+    fields:
+
+    - ``opWriteConcernCounters.insert.noneInfo``
+    - ``opWriteConcernCounters.update.noneInfo``
+    - ``opWriteConcernCounters.delete.noneInfo``
 
 Number of Threaded Connections
   - :serverstatus:`connections.threaded`, which reports the number of
@@ -854,6 +1441,13 @@ Security Counter
     which reports the number of times a :dbcommand:`hello` request
     includes a valid :data:`hello.saslSupportedMechs` field.
 
+Repl
+  - :serverstatus:`repl` now includes a
+    :serverstatus:`~repl.primaryOnlyServices` document that
+    contains additional information about services that only run on 
+    replica set primaries.
+
+
 Plan Cache Debug Info Size Limit
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -872,10 +1466,17 @@ Closure of Inactive Cursors Opened Within a Session
 
 Starting in MongoDB 5.0 (and 4.4.8), cursors created within a 
 :doc:`client session </core/read-isolation-consistency-recency>` close 
-when the corresponding :doc:`server session </reference/server-sessions>` 
+when the corresponding :ref:`server session <server-sessions>` 
 ends with the :dbcommand:`killSessions` command, if the session times 
 out, or if the client has exhausted the cursor. 
 See :ref:`read-operations-cursors`.
+
+New ``validateDBMetadata`` Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+MongoDB 5.0 adds the :dbcommand:`validateDBMetadata` command. The 
+:dbcommand:`validateDBMetadata` command checks that the stored metadata 
+of a database or a collection is valid within a particular API version.
 
 .. _5.0-rel-notes-platforms:
 
@@ -922,10 +1523,6 @@ MongoDB 5.0 removes support for the following platforms:
 
 - **macOS 10.13**
 
-- **RHEL 7 / CentOS 7 / Oracle 7** on the
-  :ref:`PPC64LE <prod-notes-supported-platforms-PPC64LE>` and
-  :ref:`s390x <prod-notes-supported-platforms-s390x>` architectures
-
 - **SLES 12** on the :ref:`s390x <prod-notes-supported-platforms-s390x>`
   architecture
 
@@ -967,11 +1564,21 @@ your MongoDB deployment:
 
 - :doc:`/release-notes/5.0-upgrade-sharded-cluster`
 
-If you need guidance on upgrading to 5.0, `MongoDB offers major version
-upgrade services
-<https://www.mongodb.com/products/consulting?tck=docs_server>`_
-to help ensure a smooth transition without interruption to your MongoDB
-application.
+If you need guidance on upgrading to 5.0, `MongoDB professional services
+<https://www.mongodb.com/products/consulting?tck=docs_server>`_ offer
+major version upgrade support to help ensure a smooth transition
+without interruption to your MongoDB application.
+
+.. _5.0-downgrade-considerations:
+
+Downgrade Consideration
+-----------------------
+
+.. include:: /includes/5.0-upgrade-replacements.rst
+
+.. |downgrading| replace:: downgrading
+
+.. include:: includes/downgrade/single-version-support.rst
 
 .. _5.0-download:
 
@@ -1012,15 +1619,12 @@ Known Issues
      - :issue:`SERVER-58392`: An ongoing resharding operation may
        prevent a backup or restore operation from succeeding.
 
-     - Unresolved
+     - Fixed in 5.0.3
 
 Report an Issue
 ---------------
 
-To report an issue, see
-https://github.com/mongodb/mongo/wiki/Submit-Bug-Reports for
-instructions on how to file a JIRA ticket for the MongoDB server or one
-of the related projects.
+.. include:: /includes/report-an-issue.rst
 
 .. toctree::
    :titlesonly:

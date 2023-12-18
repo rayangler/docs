@@ -20,10 +20,18 @@ Definition
    The :dbcommand:`reshardCollection` command changes the shard key for
    a collection and changes the distribution of your data.
 
-   The command has the following syntax:
+   .. |method| replace:: :method:`sh.reshardCollection` 
+      helper method
+   .. include:: /includes/fact-dbcommand-tip
 
-   .. code-block:: javascript
+Syntax
+------
 
+The command has the following syntax:
+
+.. code-block:: javascript
+
+   db.adminCommand(
       {
         reshardCollection: "<database>.<collection>",
         key: <shardkey>,
@@ -37,109 +45,91 @@ Definition
                 zone: <string> | null
             },
             ...
-        ]
+        ],
+        forceDistribution: <bool>
       }
+   )
 
-   The command takes the following fields:
+Command Fields
+--------------
 
-   .. list-table::
-      :header-rows: 1
-      :widths: 25 20 75
+The command takes the following fields:
 
-      * - Field
+.. list-table::
+   :header-rows: 1
+   :widths: 25 20 75
+ 
+   * - Field
+     - Type
+     - Description
+ 
+   * - ``reshardCollection``
+     - string
+     - The :term:`namespace` of the collection to be resharded. Takes
+       the form ``<database>.<collection>``.
+ 
+   * - ``key``
+     - document
+     - The document that specifies the new field or fields to use as the
+       :ref:`shard key <sharding-shard-key>`.
+ 
+       ``{ <field1>: <1|"hashed">, ... }``
+ 
+       Set the field values to either:
+ 
+       - ``1`` for :doc:`ranged based sharding </core/ranged-sharding>`
+ 
+       - ``"hashed"`` to specify a
+         :ref:`hashed shard key <hashed-shard-keys>`.
+ 
+         See also :ref:`sharding-shard-key-indexes`
+ 
+   * - ``unique``
+     - boolean
+     - Optional. Specify whether there is a :doc:`uniqueness
+       </core/index-unique>` constraint on the shard key. Only
+       ``false`` is supported. Defaults to ``false``.
+ 
+   * - ``numInitialChunks``
+     - integer
+     - Optional. Specifies the initial number of chunks to create
+       across all shards in the cluster when resharding a collection.
+       The default is the number of chunks that exist for the
+       collection under the current shard key pattern. MongoDB will
+       then create and balance chunks across the cluster. The
+       ``numInitialChunks`` must result in less than ``8192`` per shard.
+ 
+   * - ``collation``
+     - document
+     - Optional. If the collection specified to ``reshardCollection``
+       has a default :ref:`collation <collation>`, you *must* include a 
+       collation document with ``{ locale : "simple" }``, or the 
+       ``reshardCollection`` command fails.
+ 
+   * - ``zones``
+     - array
+     - Optional. To maintain or add :ref:`zones <zone-sharding>`,
+       specify the zones for your collection in an array.
 
-        - Type
+   * - ``forceRedistribution``
+     - boolean
+     - Optional.  When set to ``true``, the operation executes even if the new
+       shard key is the same as the old shard key.  Use with the 
+       ``zones`` option to move data to specific zones.
 
-        - Description
+       .. versionadded:: 7.2
 
-      * - ``reshardCollection``
-
-        - string
-
-        - The :term:`namespace` of the collection to be resharded. Takes
-          the form ``<database>.<collection>``.
-
-      * - ``key``
-
-        - document
-
-        - The document that specifies the new field or fields to use as the
-          :doc:`shard key </core/sharding-shard-key/>`.
-
-          ``{ <field1>: <1|"hashed">, ... }``
-
-          Set the field values to either:
-
-          - ``1`` for :doc:`ranged based sharding </core/ranged-sharding>`
-
-          - ``"hashed"`` to specify a
-            :ref:`hashed shard key <hashed-shard-keys>`.
-
-            See also :ref:`sharding-shard-key-indexes`
-
-      * - ``unique``
-
-        - boolean
-
-        - Optional. Specify whether there is a :doc:`uniqueness
-          </core/index-unique>` constraint on the shard key. Only
-          ``false`` is supported. Defaults to ``false``.
-
-      * - ``numInitialChunks``
-
-        - integer
-
-        - Optional. Specifies the initial number of chunks to create
-          across all shards in the cluster when resharding a collection.
-          The default is the number of chunks that exist for the
-          collection under the current shard key pattern. MongoDB will
-          then create and balance chunks across the cluster. The
-          ``numInitialChunks`` must result in less than ``8192`` per shard.
-
-      * - ``collation``
-
-        - document
-
-        - Optional. If the collection specified to ``reshardCollection``
-          has a default :doc:`collation </reference/collation>`,
-          you *must* include a collation document with
-          ``{ locale : "simple" }``, or the ``reshardCollection``
-          command fails.
-
-      * - ``zones``
-
-        - array
-
-        - Optional. To maintain or add :ref:`zones <zone-sharding>`,
-          specify the zones for your collection in an array.
-
-   The :binary:`~bin.mongosh` provides a wrapper method
-   :method:`sh.reshardCollection()`.
 
 Resharding Process
 ------------------
 
-During the resharding process, there are two roles a shard may play:
-
-- **Donors** are shards which currently own chunks of the sharded
-  collection.
-- **Recipients** are shards which would own chunks of the sharded
-  collection according to the new shard key and zones.
-
-A shard may play both the role of a donor and a recipient concurrently.
-Unless zones are being used, the set of donor shards is the same as the
-set of recipient shards.
-
-The config server primary is always chosen as the resharding
-coordinator, responsible for initiating each phase of the process.
+.. include:: /includes/reshard-collection-introduction.rst
 
 Initialization Phase
 ~~~~~~~~~~~~~~~~~~~~
 
-During the initialization phase:
-
-- The balancer determines the new data distribution for the sharded
-  collection.
+During the initialization phase, the resharding coordinator determines
+the new data distribution for the sharded collection.
 
 Index Phase
 ~~~~~~~~~~~
@@ -234,3 +224,54 @@ MongoDB returns the following:
 .. seealso::
 
    :ref:`sharding-resharding`
+
+.. _reshardCollection-redistribute-data:
+
+Redistribute Data to New Shards
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting in MongoDB 7.2, you can reshard a collection on the same key,
+which can be used to redistribute data onto new shards.
+
+After adding a shard to the cluster, you use the ``reshardCollection`` command
+with the ``forceRedistribution`` option to redistribute data across the
+cluster:
+
+.. code-block:: javascript
+
+   db.adminCommand({
+       reshardCollection: "accounts.invoices",
+       key: { store_id: "hashed" },
+       forceRedistribution: true
+   })
+
+
+Redistribute Data to Different Zones
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting in MongoDB 7.2, you can use the ``reshardCollection`` command to
+move data into new zones without changing the shard key.
+
+The following command redistributes data for the ``accounts.sales`` collection
+using the same shard key, moving data from zones ``zone01`` and ``zone02`` to
+``zone03`` and ``zone04``:
+
+.. code-block:: javascript
+   
+   db.adminCommand({
+       reshardCollection: "accounts.sales",
+       key: { region_id: "hashed" },
+       forceRedistribution: true,
+       zones: [
+           {
+               zone: "zone04",
+               min: { region_id: MinKey() },
+               max: { region_id: 10 }
+           },
+           {
+               zone: "zone05",
+               min: { region_id: 10 },
+               max: { region_id: MaxKey() }
+           }
+       ]
+   })

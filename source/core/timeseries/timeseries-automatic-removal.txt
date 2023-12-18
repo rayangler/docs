@@ -1,4 +1,5 @@
 .. _manual-timeseries-automatic-removal:
+.. _set-up-automatic-removal:
 
 ==========================================================
 Set up Automatic Removal for Time Series Collections (TTL)
@@ -13,7 +14,6 @@ Set up Automatic Removal for Time Series Collections (TTL)
    :class: singlecol
 
 .. meta::
-   :description: Time series, IOT
    :keywords: Time series, IOT
 
 When you create a :ref:`time series collection
@@ -42,7 +42,7 @@ specified number of seconds. Consider the following document in the
 .. code-block::
 
    {
-      "metadata": [{"sensorId": 5578}, {"type": "temperature"}],
+      "metadata": {"sensorId": 5578, "type": "temperature"},
       "timestamp": ISODate("2021-05-18T10:00:00.000Z"),
       "temp": 12
    }
@@ -96,6 +96,7 @@ The result document contains a document for the time series collection
 which contains the ``options.expireAfterSeconds`` field.
 
 .. code-block:: javascript
+  :copyable: false
 
   {
       cursor: {

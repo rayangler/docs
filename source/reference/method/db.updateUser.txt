@@ -64,39 +64,18 @@ Definition
       :widths: 20 20 80
    
       * - Parameter
-   
         - Type
-   
         - Description
-   
       * - ``username``
-   
         - string
-   
         - The name of the user to update.
-          
-          
-   
       * - ``update``
-   
         - document
-   
         - A document containing the replacement data for the user. This
           data completely replaces the corresponding data for the user.
-          
-          
-   
       * - ``writeConcern``
-   
         - document
-   
-        - Optional. The level of :doc:`write concern </reference/write-concern>` for the
-          update operation. The ``writeConcern`` document takes the same
-          fields as the :dbcommand:`getLastError` command.
-          
-          
-   
-
+        - .. include:: /includes/fact-write-concern-spec-link.rst
 
    The ``update`` document specifies the fields to update and their
    new values. All  fields in the ``update`` document are optional,
@@ -158,8 +137,6 @@ Definition
           user is allowed to connect to the server or from which the server can
           accept users.
           
-          .. versionadded:: 3.6
-          
           
    
       * - ``mechanisms``
@@ -192,9 +169,6 @@ Definition
           
             - Requires passwordDigestor to be ``server``.
           
-          .. versionadded:: 4.0
-          
-          
    
       * - ``passwordDigestor``
    
@@ -212,14 +186,6 @@ Definition
                 The client digests the password and passes the digested
                 password to the server.
           
-          .. versionchanged:: 4.0
-          
-             The default value is ``"server"``. In earlier versions, the
-             default value is ``"client"``.
-          
-          
-   
-
 
 Roles
 ~~~~~
@@ -267,7 +233,7 @@ user info:
 
    {
       _id : "products.appClient01",
-      userId : UUID("c5d88855-3f1e-46cb-9c8b-269bef957986"), // Starting in MongoDB 4.0.9
+      userId : UUID("c5d88855-3f1e-46cb-9c8b-269bef957986"),
       user : "appClient01",
       db : "products",
       customData : { empID : "12345", badge : "9156" },
@@ -281,7 +247,7 @@ user info:
             db : "inventory"
           }
       ],
-      mechanisms : [         // Starting in MongoDB 4.0
+      mechanisms : [ 
          "SCRAM-SHA-1",
          "SCRAM-SHA-256"
       ],
@@ -312,7 +278,7 @@ user information:
 
    {
       _id : "products.appClient01",
-      userId : UUID("c5d88855-3f1e-46cb-9c8b-269bef957986"), // Starting in MongoDB 4.0.9
+      userId : UUID("c5d88855-3f1e-46cb-9c8b-269bef957986"),
       user : "appClient01",
       db : "products",
       customData : { employeeId : "0x3039" },
@@ -322,7 +288,7 @@ user information:
             db : "assets"
           }
       ],
-      mechanisms : [           // Starting in MongoDB 4.0
+      mechanisms : [
          "SCRAM-SHA-1",
          "SCRAM-SHA-256"
       ],

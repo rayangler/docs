@@ -20,6 +20,13 @@ Administration Commands
 
      - Description
 
+   * - :dbcommand:`bulkWrite`
+
+     - Performs many insert, update, and delete operations on multiple
+       collections in one request.
+
+       .. versionadded:: 7.2
+
    * - :dbcommand:`cloneCollectionAsCapped`
 
      - Copies a non-capped collection as a new :term:`capped collection`.
@@ -31,10 +38,6 @@ Administration Commands
    * - :dbcommand:`compact`
 
      - Defragments a collection and rebuilds the indexes.
-
-   * - :dbcommand:`connPoolSync`
-
-     - Internal command to flush connection pool.
 
    * - :dbcommand:`convertToCapped`
 
@@ -89,9 +92,17 @@ Administration Commands
 
    * - :dbcommand:`getAuditConfig`
 
-     - Retrieves details on audit configuration and filters.
+     - .. include:: /includes/deprecated-get-set-auditconfig.rst
+     
+       Retrieves details on audit configuration and filters.
 
        .. versionadded:: 5.0
+
+   * - :dbcommand:`getClusterParameter`
+
+     - Retrieves cluster parameter values from all nodes in a cluster.
+
+       .. versionadded:: 6.0
 
    * - :dbcommand:`getParameter`
 
@@ -145,6 +156,12 @@ Administration Commands
        <index-operations-replicated-build>` before the primary marks
        those indexes as ready.
 
+   * - :dbcommand:`setClusterParameter`
+
+     - Modifies configuration options for all nodes in a cluster.
+
+       .. versionadded:: 6.0
+
    * - :dbcommand:`setParameter`
 
      - Modifies configuration options.
@@ -165,10 +182,10 @@ Administration Commands
    :titlesonly:
    :hidden:
 
+   /reference/command/bulkWrite
    /reference/command/cloneCollectionAsCapped
    /reference/command/collMod
    /reference/command/compact
-   /reference/command/connPoolSync
    /reference/command/convertToCapped
    /reference/command/create
    /reference/command/createIndexes
@@ -181,6 +198,7 @@ Administration Commands
    /reference/command/fsync
    /reference/command/fsyncUnlock
    /reference/command/getAuditConfig
+   /reference/command/getClusterParameter
    /reference/command/getDefaultRWConcern
    /reference/command/getParameter
    /reference/command/killCursors
@@ -193,8 +211,10 @@ Administration Commands
    /reference/command/renameCollection
    /reference/command/rotateCertificates
    /reference/command/setAuditConfig
+   /reference/command/setClusterParameter
    /reference/command/setFeatureCompatibilityVersion
    /reference/command/setIndexCommitQuorum
    /reference/command/setParameter
    /reference/command/setDefaultRWConcern
+   /reference/command/setUserWriteBlockMode
    /reference/command/shutdown

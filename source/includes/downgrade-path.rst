@@ -1,1 +1,4 @@
-Once upgraded to |newversion|, if you need to downgrade, we recommend |downgrading| to the latest patch release of |downgradeversion|.
+.. include:: /includes/upgrade-downgrade-replica-set.rst
+
+If you need to downgrade from |newversion|, downgrade to the latest
+patch release of |downgradeversion|.

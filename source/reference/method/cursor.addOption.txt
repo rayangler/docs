@@ -15,39 +15,30 @@ Definition
 
 .. method:: cursor.addOption(flag)
 
-
    .. include:: /includes/fact-mongosh-shell-method.rst
 
+   .. note:: Deprecated since v3.2
 
-   .. include:: /includes/extracts/mongo-shell-deprecated-meta-operator-cursor-addOption.rst
+      Starting in v3.2, the ``cursor.addOption()`` operator is
+      deprecated in :binary:`~bin.mongo`. Use available :ref:`cursor
+      methods <doc-cursor-methods>` instead.
 
-   Adds ``OP_QUERY`` wire protocol flags, such as the ``tailable``
-   flag, to change the behavior of queries.
+   Used to change query behavior by setting the flags listed below.
 
-   The :method:`cursor.addOption()` method has the following parameter:
-
+   The ``cursor.addOption()`` method has the following parameter:
 
    .. list-table::
       :header-rows: 1
       :widths: 20 20 80
    
       * - Parameter
-   
         - Type
-   
         - Description
-   
       * - ``flag``
-   
         - flag
-   
-        - ``OP_QUERY`` wire protocol flag. For :binary:`~bin.mongosh`,
-          you can use the cursor flags listed below. For the driver-specific
-          list, see your :driver:`driver documentation </>`.
-          
-          
-   
-
+        - For :binary:`~bin.mongosh`, you can use the cursor flags
+          listed below. For the driver-specific list, see your
+          :driver:`driver documentation </>`.
 
 .. _cursor-flags:
 
@@ -63,28 +54,23 @@ modify the behavior of the cursor.
 
    * - Flag
      - Description
-
    * - .. data:: DBQuery.Option.tailable
      - Sets the cursor not to close once the last data is
        received, allowing the query to continue returning data added
        after the initial results were exhausted.
-
    * - .. data:: DBQuery.Option.slaveOk
-     - Allows querying of a replica slave.
-
+     - Allows querying of a replica secondary.
    * - .. data:: DBQuery.Option.noTimeout
      - Prevents the server from timing out idle cursors.
-
    * - .. data:: DBQuery.Option.awaitData
-     - For use with .. data:: DBQuery.Option.tailable; sets the cursor
-       to block and await data for a while rather than returning no
-       data. The cursor will return no data once the timeout has
-       expired.
-
+     - For use with :data:`DBQuery.Option.tailable`. 
+       Sets the cursor to block the query thread when no data is
+       available and await data for a set time instead of immediately
+       returning no data. The cursor returns no data only if the 
+       timeout expires.
    * - .. data:: DBQuery.Option.exhaust
      - Sets the cursor to return all data returned by the
        query at once rather than splitting the results into batches.
-
    * - .. data:: DBQuery.Option.partial
      - Sets the cursor to return partial data from a query against a
        sharded cluster in which some shards do not respond rather than
@@ -95,9 +81,10 @@ Example
 
 The following example adds the ``DBQuery.Option.tailable`` flag and the
 ``DBQuery.Option.awaitData`` flag to ensure that the query returns a
-:term:`tailable cursor`. The sequence creates a cursor that will wait for few
-seconds after returning the full result set so that it can capture and
-return additional data added during the query:
+:ref:`tailable cursor <tailable-cursors-landing-page>`. The sequence
+creates a cursor. After returning the full result set, it waits for the
+default interval of 1000 milliseconds so that it can capture
+and return additional data added during the query:
 
 .. code-block:: javascript
 

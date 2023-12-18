@@ -13,15 +13,13 @@ LDAP Authorization
    :depth: 1
    :class: singlecol
 
-.. versionadded:: 3.4
-
-   `MongoDB Enterprise
-   <http://www.mongodb.com/products/mongodb-enterprise-advanced?tck=docs_server>`_ supports
-   querying an LDAP server for the LDAP groups to which the authenticated user
-   belongs. MongoDB maps the distinguished names (DN) of each returned group
-   to :ref:`roles <roles>` on the ``admin`` database. MongoDB authorizes the
-   user based on the mapped roles and their associated privileges. See
-   :ref:`LDAP Authorization <security-ldap-external>` for more information.
+`MongoDB Enterprise
+<http://www.mongodb.com/products/mongodb-enterprise-advanced?tck=docs_server>`_ supports
+querying an LDAP server for the LDAP groups to which the authenticated user
+belongs. MongoDB maps the distinguished names (DN) of each returned group
+to :ref:`roles <roles>` on the ``admin`` database. MongoDB authorizes the
+user based on the mapped roles and their associated privileges. See
+:ref:`LDAP Authorization <security-ldap-external>` for more information.
 
 The LDAP Authorization process is summarized below:
 
@@ -85,12 +83,16 @@ configuration of LDAP authorization for your MongoDB deployment.
 Compatible Authentication Mechanism
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following authentication mechanisms are compatible with MongoDB LDAP
-authorization:
+MongoDB supports LDAP authorization with the following authentication methods:
 
 - :ref:`security-ldap`
 - :ref:`security-kerberos`
 - :ref:`security-auth-x509`
+
+With this configuration, MongoDB uses LDAP, X.509, or Kerberos 
+authorization to authenticate client connections.
+
+.. _ldap-connection-pool-behavior:
 
 Connection Pool
 ~~~~~~~~~~~~~~~
@@ -191,8 +193,8 @@ Replica Sets
 
 For :term:`replica sets <replica set>`, configure LDAP authorization on the
 :term:`secondary` and :term:`arbiter` members first before configuring the
-:term:`primary`. This also applies to :doc:`shard replica sets
-</core/sharded-cluster-shards>`, or :ref:`config server replica sets <csrs>`.
+:term:`primary`. This also applies to :ref:`shard replica sets
+<shards-concepts>`, or :ref:`config server replica sets <csrs>`.
 Configure one replica set member at a time to maintain a majority of members
 for write availability.
 
@@ -316,6 +318,10 @@ configuration file:
 
      - **NO**, unless client usernames require transformation into LDAP DNs.
 
+When you have configured LDAP authorization, restart :program:`mongod` or 
+:program:`mongos`. The server now uses LDAP authorization with 
+X.509, Kerberos, or LDAP to authenticate client connections.
+
 LDAP Query Template
 ~~~~~~~~~~~~~~~~~~~
 
@@ -433,7 +439,7 @@ with LDAP authentication and authorization:
 
    mongosh --username alice@dba.example.com --password  --authenticationDatabase '$external' --authenticationMechanism "PLAIN"  --host "mongodb.example.com" --port 27017
 
-If you do not specify the password to the :option:`-password <mongo
+If you do not specify the password to the :option:`--password <mongosh
 --password>` command-line option, :binary:`~bin.mongosh`
 prompts for the password.
 

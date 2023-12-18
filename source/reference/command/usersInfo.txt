@@ -17,90 +17,91 @@ Definition
 
    Returns information about one or more users. 
 
-   The :dbcommand:`usersInfo` command has the following form:
+Syntax
+------
 
-   .. code-block:: javascript
+The command has the following syntax:
 
+.. code-block:: javascript
+  
+   db.runCommand(
       {
         usersInfo: <various>,
         showCredentials: <Boolean>,
+        showCustomData: <Boolean>,
         showPrivileges: <Boolean>,
         showAuthenticationRestrictions: <Boolean>,
         filter: <document>,
         comment: <any>
       }
+   )
 
-   The command has the following fields:
+Command Fields
+--------------
 
+The command takes the following fields:
 
-   .. list-table::
-      :header-rows: 1
-      :widths: 20 20 80
-   
-      * - Field
-   
-        - Type
-   
-        - Description
-   
-      * - ``usersInfo``
-   
-        - various
-   
-        - The user(s) about whom to return information.
-          
-          The argument to ``usersInfo`` has multiple forms depending on the
-          requested information.  See :ref:`usersInfo-field-specification`.
-          
-          
-   
-      * - ``showCredentials``
-   
-        - boolean
-   
-        - Optional. Set the field to true to display the user's password hash. By default, this
-          field is ``false``.
-          
-          
-   
-      * - ``showPrivileges``
-   
-        - boolean
-   
-        - Optional. Set the field to true to show the user's full set of privileges, including
-          expanded information for the inherited roles. By default, this field
-          is ``false``. If viewing all users, you cannot specify this field.
-          
-          
-   
-      * - ``showAuthenticationRestrictions``
-   
-        - boolean
-   
-        - Optional. Set the field to true to show the user's authentication restrictions. By
-          default, this field is ``false``. If viewing all users, you cannot specify
-          this field.
-          
-          
-   
-      * - ``filter``
-   
-        - document
-   
-        - Optional. A document that specifies :pipeline:`$match` stage conditions to
-          return information for users that match the filter conditions.
-          
-          .. versionadded:: 4.0
-          
-          
-      * - ``comment``
-
-        - any
-
-        - .. include:: /includes/extracts/comment-content.rst
+.. list-table::
+   :header-rows: 1
+   :widths: 20 25 80
+ 
+   * - Field
+     - Type
+     - Description
+ 
+   * - ``usersInfo``
+     - various
+     - The user(s) about whom to return information.
+ 
+       The argument to ``usersInfo`` has multiple forms depending on the
+       requested information.  See :ref:`usersInfo-field-specification`.
+ 
+   * - ``showCredentials``
+     - boolean
+     - Optional. Set to ``true`` to display the user's password
+       hash.
        
-          .. versionadded:: 4.4
-
+       By default, this field is ``false``.
+ 
+   * - ``showCustomData``
+     - boolean
+     - Optional. Set to ``false`` to omit the user's ``customData``
+       from the output.
+       
+       By default, this field is ``true``.
+ 
+       .. versionadded:: 5.2
+ 
+   * - ``showPrivileges``
+     - boolean
+     - Optional. Set to ``true`` to show the user's full set
+       of privileges, including expanded information for the
+       inherited roles.
+       
+       By default, this field is ``false``.
+       
+       If viewing all users, you cannot specify this field.
+ 
+   * - ``showAuthenticationRestrictions``
+     - boolean
+     - Optional. Set to ``true`` to show the user's authentication
+       restrictions.
+       
+       By default, this field is ``false``.
+       
+       If viewing all users, you cannot specify this field.
+ 
+   * - ``filter``   
+     - document
+     - Optional. A document that specifies :pipeline:`$match` stage
+       conditions to return information for users that match the
+       filter conditions.
+       
+   * - ``comment``
+     - any
+     - .. include:: /includes/extracts/comment-content.rst
+    
+       .. versionadded:: 4.4
 
 .. _usersInfo-field-specification:
 
@@ -151,7 +152,6 @@ requested information:
    
      - Returns information about users in all databases.
    
-       .. versionadded:: 4.0
    
 Required Access
 ---------------
@@ -177,10 +177,10 @@ The following information can be returned by the
       "users" : [
          {
             "_id" : "<db>.<username>",
-            "userId" : <UUID>,        // Starting in MongoDB 4.0.9
+            "userId" : <UUID>,
             "user" : "<username>",
             "db" : "<db>",
-            "mechanisms" : [ ... ],   // Starting in MongoDB 4.0
+            "mechanisms" : [ ... ],
             "customData" : <document>,
             "roles" : [ ... ],
             "credentials": { ... }, // only if showCredentials: true
@@ -257,10 +257,8 @@ but not the ``showPrivileges`` or the
 View All Users for a Database that Match the Specified Filter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. versionadded:: 4.0
-
-   The :dbcommand:`usersInfo` command can accept a ``filter`` document
-   to return information for users that match the filter condition.
+The :dbcommand:`usersInfo` command can accept a ``filter`` document
+to return information for users that match the filter condition.
 
 To view all users in the current database who have the specified role,
 use a command document that resembles the following:
@@ -276,10 +274,8 @@ but not the ``showPrivileges`` or the
 View All Users with ``SCRAM-SHA-1`` Credentials
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. versionadded:: 4.0
-
-   The :dbcommand:`usersInfo` command can accept a ``filter`` document
-   to return information for users that match the filter condition.
+The :dbcommand:`usersInfo` command can accept a ``filter`` document
+to return information for users that match the filter condition.
 
 The following operation returns all users that have ``SCRAM-SHA-1``
 credentials. Specifically, the command returns all users across all
@@ -293,4 +289,45 @@ specified filter to the users.
 When viewing all users, you can specify the ``showCredentials`` option
 but not the ``showPrivileges`` or the
 ``showAuthenticationRestrictions`` options.
+
+Omit Custom Data from Output
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 5.2
+
+   To omit users' custom data from the :dbcommand:`usersInfo` output,
+   set the ``showCustomData`` option to ``false``.
+
+.. include:: /includes/fact-omit-custom-data-example-setup.rst
+
+To retrieve the user but omit the custom data from the output, run
+:dbcommand:`usersInfo` with ``showCustomData`` set to ``false``:
+
+.. code-block:: javascript
+   :emphasize-lines: 3
+
+   db.getSiblingDB("products").runCommand ( {
+      usersInfo: "accountAdmin01",
+      showCustomData: false 
+   } )
+
+Example output:
+
+.. code-block:: javascript
+   :copyable: false
+
+   {
+      users: [
+         {
+            _id: 'products.accountAdmin01',
+            userId: UUID("0955afc1-303c-4683-a029-8e17dd5501f4"),
+            user: 'accountAdmin01',
+            db: 'products',
+            roles: [ { role: 'readWrite', db: 'products' } ],
+            mechanisms: [ 'SCRAM-SHA-1', 'SCRAM-SHA-256' ]
+         }
+      ],
+      ok: 1
+   }
+
 

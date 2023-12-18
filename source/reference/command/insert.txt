@@ -19,96 +19,88 @@ Definition
    returns a document containing the status of all inserts. The insert
    methods provided by the MongoDB drivers use this command internally.
 
-   The command has the following syntax:
-
-   .. code-block:: javascript
-
-      {
-         insert: <collection>,
-         documents: [ <document>, <document>, <document>, ... ],
-         ordered: <boolean>,
-         writeConcern: { <write concern> },
-         bypassDocumentValidation: <boolean>,
-         comment: <any>
-      }
-
-   The :dbcommand:`insert` command takes the following fields:
-
-
-   .. list-table::
-      :header-rows: 1
-      :widths: 20 20 80
-   
-      * - Field
-   
-        - Type
-   
-        - Description
-   
-      * - ``insert``
-   
-        - string
-   
-        - The name of the target collection.
-          
-          
-   
-      * - ``documents``
-   
-        - array
-   
-        - An array of one or more documents to insert into the named collection.
-          
-          
-   
-      * - ``ordered``
-   
-        - boolean
-   
-        - Optional. If ``true``, then when an insert of a document fails, return without
-          inserting any remaining documents listed in the ``inserts`` array. If
-          ``false``, then when an insert of a document fails, continue to insert the
-          remaining documents. Defaults to ``true``.
-          
-          
-   
-      * - ``writeConcern``
-   
-        - document
-   
-        - Optional. A document that expresses the :doc:`write concern </reference/write-concern>`
-          of the :dbcommand:`insert` command. Omit to use the default write
-          concern.
-          
-          .. include:: /includes/extracts/transactions-operations-write-concern.rst
-          
-          
-   
-      * - ``bypassDocumentValidation``
-   
-        - boolean
-   
-        - Optional. Enables :dbcommand:`insert` to bypass document validation
-          during the operation. This lets you insert documents that do not
-          meet the validation requirements.
-          
-          .. versionadded:: 3.2
-          
-          
-      * - ``comment``
-
-        - any
-
-        - .. include:: /includes/extracts/comment-content.rst
-       
-          .. versionadded:: 4.4
-
+   .. |method| replace:: :method:`db.collection.insertOne()` and
+      :method:`db.collection.insertMany()` helper methods
+   .. include:: /includes/fact-dbcommand-tip
 
    :returns:
 
       A document that contains the status of the operation.
       See :ref:`insert-command-output` for details.
 
+Syntax
+------
+
+The command has the following syntax:
+
+.. code-block:: javascript
+
+   db.runCommand(
+      {
+         insert: <collection>,
+         documents: [ <document>, <document>, <document>, ... ],
+         ordered: <boolean>,
+         maxTimeMS: <integer>,
+         writeConcern: { <write concern> },
+         bypassDocumentValidation: <boolean>,
+         comment: <any>
+      }
+   )
+  
+Command Fields
+--------------
+
+The command takes the following fields:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 20 80
+ 
+   * - Field
+     - Type
+     - Description
+ 
+   * - ``insert``
+     - string
+     - The name of the target collection.
+ 
+   * - ``documents``
+     - array
+     - An array of one or more documents to insert into the named collection.
+ 
+   * - ``ordered``
+     - boolean
+     - Optional. If ``true``, then when an insert of a document fails, return without
+       inserting any remaining documents listed in the ``inserts`` array. If
+       ``false``, then when an insert of a document fails, continue to insert the
+       remaining documents. Defaults to ``true``.
+
+   * - ``maxTimeMS``
+     - non-negative integer
+     - Optional.
+
+       .. include:: /includes/maxTimeMS-description.rst
+       
+   * - ``writeConcern``
+     - document
+     - Optional. A document that expresses the :ref:`write concern <write-concern>`
+       of the :dbcommand:`insert` command. Omit to use the default write
+       concern.
+       
+       .. include:: /includes/extracts/transactions-operations-write-concern.rst
+       
+   * - ``bypassDocumentValidation``
+     - boolean
+     - Optional. Enables :dbcommand:`insert` to bypass document validation
+       during the operation. This lets you insert documents that do not
+       meet the validation requirements.
+       
+   * - ``comment``
+     - any
+     - .. include:: /includes/extracts/comment-content.rst
+    
+       .. versionadded:: 4.4
+ 
 Behavior
 --------
 
@@ -146,6 +138,14 @@ Write Concerns and Transactions
 .. include:: /includes/extracts/transactions-operations-write-concern.rst
 
 .. |operation| replace:: :dbcommand:`insert`
+
+Insert Inaccuracies
+~~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/fact-insert-inaccuracies.rst
+
+.. |writeResult| replace:: :data:`insert.n`
+
 
 Examples
 --------
@@ -197,6 +197,85 @@ three documents. See :ref:`insert-command-output` for details.
 .. code-block:: javascript
 
    { "ok" : 1, "n" : 3 }
+
+
+Using Insert with ``bypassDocumentValidation``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If :ref:`schema validation validationActions <schema-validation-overview>` 
+are set to ``error``, inserts to a collection return errors for 
+documents that violate the schema validation rules. To insert documents
+which would violate these rules set ``bypassDocumentValidation: true``.
+
+Create the ``user`` collection with a validation rule on the ``status``
+fields.
+
+The validation rule validates that the status must be "Unknown"
+or "Incomplete":
+
+.. code-block:: javascript
+
+   db.createCollection("users", { 
+      validator:
+         { 
+            status: {
+               $in: [ "Unknown", "Incomplete" ]
+            }
+         }
+   })
+
+Attempt to insert a document which violates the validation rule:
+
+.. code-block:: javascript
+
+   db.runCommand({
+         insert: "users",
+         documents: [ {user: "123", status: "Active" } ]
+   })
+
+The insert returns a write error message:
+
+.. code-block:: javascript
+   :copyable: false
+   :emphasize-lines: 8,12,16
+
+   {
+      n: 0,
+      writeErrors: [
+         {
+            index: 0,
+            code: 121,
+            errInfo: {
+               failingDocumentId: ObjectId('6197a7f2d84e85d1cc90d270'),
+               details: {
+                  operatorName: '$in',
+                  specifiedAs: { status: { '$in': [Array] } },
+                  reason: 'no matching value found in array',
+                  consideredValue: 'Active'
+               }
+            },
+            errmsg: 'Document failed validation'
+         }
+      ],
+      ok: 1
+   }
+
+
+Set ``bypassDocumentValidation : true`` and rerun the insert:
+
+.. code-block:: javascript
+
+   db.runCommand({
+      insert: "users",
+      documents: [ {user: "123", status: "Active" } ], 
+      bypassDocumentValidation: true
+   })
+
+
+The operation succeeds.
+
+To check for documents that violate schema validation rules, use the 
+:dbcommand:`validate` command.
 
 .. _insert-command-output:
 

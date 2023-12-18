@@ -6,7 +6,16 @@ Transactions
 
 .. default-domain:: mongodb
 
+.. facet::
+   :name: programming_language
+   :values: c, cpp, csharp, go, java, python, perl, php, ruby, rust, scala, javascript/typescript
 
+.. facet::
+   :name: genre
+   :values: reference
+
+.. meta:: 
+   :keywords: motor, java sync, code example, node.js
 
 .. contents:: On this page
    :local:
@@ -15,18 +24,18 @@ Transactions
    :class: twocols
 
 .. meta::
-   :description: For situations that require atomicity of reads and writes to multiple documents (in a single or multiple collections), MongoDB supports multi-document transactions.
+   :description: For situations that require atomicity of reads and writes to multiple documents (in a single or multiple collections), MongoDB supports multi-document transactions, also called distributed transactions.
    :keywords: MongoDB, transactions, distributed transactions, MongoDB multi-document transactions, MongoDB multi-statement transactions, java transaction examples, python transaction examples, node transaction examples, php transaction examples, scala transaction examples, csharp transaction examples, perl transaction examples, ruby transaction examples
 
 In MongoDB, an operation on a single document is atomic. Because you can
 use embedded documents and arrays to capture relationships between data
 in a single document structure instead of normalizing across multiple
 documents and collections, this single-document atomicity obviates the
-need for multi-document transactions for many practical use cases.
+need for distributed transactions for many practical use cases.
 
 For situations that require atomicity of reads and writes to multiple
 documents (in a single or multiple collections), MongoDB supports
-multi-document transactions. With distributed transactions,
+distributed transactions. With distributed transactions,
 transactions can be used across multiple operations, collections,
 databases, documents, and shards.
 
@@ -42,8 +51,6 @@ upper-right to set the language of the following example.
 
 ----------
 
-This example highlights the key components of the transactions API.
-
 .. tabs-selector:: drivers
 
 .. tabs-drivers::
@@ -51,12 +58,7 @@ This example highlights the key components of the transactions API.
    .. tab::
       :tabid: python
 
-      The example uses the new callback API for working with
-      transactions, which starts a transaction, executes the
-      specified operations, and commits (or aborts on error). The
-      new callback API also incorporates retry logic for
-      ``TransientTransactionError`` or
-      ``UnknownTransactionCommitResult`` commit errors.
+      .. include:: /includes/transactions/example-intro.rst
 
       .. include:: /includes/extracts/transactions-example-note.rst
 
@@ -69,12 +71,7 @@ This example highlights the key components of the transactions API.
    .. tab::
       :tabid: java-sync
 
-      The example uses the new callback API for working with
-      transactions, which starts a transaction, executes the
-      specified operations, and commits (or aborts on error). The
-      new callback API also incorporates retry logic for
-      ``TransientTransactionError`` or
-      ``UnknownTransactionCommitResult`` commit errors.
+      .. include:: /includes/transactions/example-intro.rst
 
       .. include:: /includes/extracts/transactions-example-note.rst
 
@@ -141,12 +138,7 @@ This example highlights the key components of the transactions API.
    .. tab::
       :tabid: nodejs
 
-      The example uses the new callback API for working with
-      transactions, which starts a transaction, executes the
-      specified operations, and commits (or aborts on error). The
-      new callback API also incorporates retry logic for
-      ``TransientTransactionError`` or
-      ``UnknownTransactionCommitResult`` commit errors.
+      .. include:: /includes/transactions/example-intro.rst
 
       .. include:: /includes/extracts/transactions-example-note.rst
 
@@ -159,12 +151,7 @@ This example highlights the key components of the transactions API.
    .. tab::
       :tabid: php
 
-      The example uses the new callback API for working with
-      transactions, which starts a transaction, executes the
-      specified operations, and commits (or aborts on error). The
-      new callback API also incorporates retry logic for
-      ``TransientTransactionError`` or
-      ``UnknownTransactionCommitResult`` commit errors.
+      .. include:: /includes/transactions/example-intro.rst
 
       .. include:: /includes/extracts/transactions-example-note.rst
 
@@ -177,12 +164,7 @@ This example highlights the key components of the transactions API.
    .. tab::
       :tabid: csharp
 
-      The example uses the new callback API for working with
-      transactions, which starts a transaction, executes the
-      specified operations, and commits (or aborts on error). The
-      new callback API also incorporates retry logic for
-      ``TransientTransactionError`` or
-      ``UnknownTransactionCommitResult`` commit errors.
+      .. include:: /includes/transactions/example-intro.rst
 
       .. include:: /includes/extracts/transactions-example-note.rst
 
@@ -195,12 +177,7 @@ This example highlights the key components of the transactions API.
    .. tab::
       :tabid: c
 
-      The example uses the new callback API for working with
-      transactions, which starts a transaction, executes the
-      specified operations, and commits (or aborts on error). The
-      new callback API also incorporates retry logic for
-      ``TransientTransactionError`` or
-      ``UnknownTransactionCommitResult`` commit errors.
+      .. include:: /includes/transactions/example-intro.rst
 
       .. include:: /includes/extracts/transactions-example-note.rst
 
@@ -212,12 +189,7 @@ This example highlights the key components of the transactions API.
    .. tab::
       :tabid: cpp
 
-      The example uses the new callback API for working with
-      transactions, which starts a transaction, executes the
-      specified operations, and commits (or aborts on error). The
-      new callback API also incorporates retry logic for
-      ``TransientTransactionError`` or
-      ``UnknownTransactionCommitResult`` commit errors.
+      .. include:: /includes/transactions/example-intro.rst
 
       .. include:: /includes/extracts/transactions-example-note.rst
 
@@ -230,12 +202,7 @@ This example highlights the key components of the transactions API.
    .. tab::
       :tabid: motor
        
-      The example uses the new callback API for working with
-      transactions, which starts a transaction, executes the
-      specified operations, and commits (or aborts on error). The
-      new callback API incorporates retry logic for
-      :ref:`transient-transaction-error` or
-      :ref:`unknown-transaction-commit-result` commit errors.
+      .. include:: /includes/transactions/example-intro.rst
 
       .. include:: /includes/extracts/transactions-example-note.rst
 
@@ -248,12 +215,7 @@ This example highlights the key components of the transactions API.
    .. tab::
       :tabid: ruby
 
-      The example uses the new callback API for working with
-      transactions, which starts a transaction, executes the
-      specified operations, and commits (or aborts on error). The
-      new callback API incorporates retry logic for
-      :ref:`transient-transaction-error` or
-      :ref:`unknown-transaction-commit-result` commit errors.
+      .. include:: /includes/transactions/example-intro.rst
 
       .. include:: /includes/extracts/transactions-example-note.rst
 
@@ -263,16 +225,23 @@ This example highlights the key components of the transactions API.
          :start-after: Start Transactions withTxn API Example 1
          :end-before: End Transactions withTxn API Example 1
 
+   .. tab::
+      :tabid: rust
+
+      .. include:: /includes/transactions/example-intro.rst
+
+      .. include:: /includes/extracts/transactions-example-note.rst
+
+      .. literalinclude:: /driver-examples/mod.rs
+         :language: rust
+         :dedent: 4
+         :start-after: Start Transactions withTxn API Example 1
+         :end-before: End Transactions withTxn API Example 1
 
    .. tab::
       :tabid: go
 
-      The example uses the new callback API for working with
-      transactions, which starts a transaction, executes the
-      specified operations, and commits (or aborts on error). The
-      new callback API incorporates retry logic for
-      :ref:`transient-transaction-error` or
-      :ref:`unknown-transaction-commit-result` commit errors.
+      .. include:: /includes/transactions/example-intro.rst
 
       .. include:: /includes/extracts/transactions-example-note.rst
 
@@ -284,12 +253,7 @@ This example highlights the key components of the transactions API.
    .. tab::
       :tabid: perl
  
-      This example uses the :ref:`core API <txn-core-api>`. Because the
-      core API does not incorporate retry logic for
-      :ref:`transient-transaction-error` or
-      :ref:`unknown-transaction-commit-result` commit errors, the
-      example includes explicit logic to retry the transaction for these
-      errors:
+      .. include:: /includes/transactions/example-intro.rst
 
       .. include:: /includes/extracts/transactions-example-note.rst
 
@@ -302,7 +266,7 @@ This example highlights the key components of the transactions API.
       :tabid: scala
 
       This example uses the :ref:`core API <txn-core-api>`. Because the
-      core API does not incorporate retry logic for
+      core API does not incorporate retry logic for the
       :ref:`transient-transaction-error` or
       :ref:`unknown-transaction-commit-result` commit errors, the
       example includes explicit logic to retry the transaction for
@@ -312,7 +276,6 @@ This example highlights the key components of the transactions API.
 
       .. literalinclude:: /driver-examples/DocumentationTransactionsExampleSpec.scala
          :language: scala
-         :lines: 50-
 
 
 .. seealso::
@@ -325,32 +288,10 @@ This example highlights the key components of the transactions API.
 Transactions and Atomicity
 --------------------------
 
-.. note:: Distributed Transactions and Multi-Document Transactions
+.. include:: /includes/transactions/distributed-transaction-repl-shard-support.rst
 
-   Starting in MongoDB 4.2, the two terms are synonymous. Distributed
-   transactions refer to multi-document transactions on sharded
-   clusters and replica sets. Multi-document transactions (whether on
-   sharded clusters or replica sets) are also known as distributed
-   transactions starting in MongoDB 4.2.
-
-For situations that require atomicity of reads and writes to multiple
-documents (in a single or multiple collections), MongoDB supports
-multi-document transactions:
-
-- **In version 4.0**, MongoDB supports multi-document transactions on
-  replica sets.
-
-- **In version 4.2**, MongoDB introduces distributed transactions,
-  which adds support for multi-document transactions on sharded
-  clusters and incorporates the existing support for
-  multi-document transactions on replica sets.
-
-  To use transactions on MongoDB 4.2 deployments (replica sets and
-  sharded clusters), clients :red:`must` use MongoDB drivers updated for
-  MongoDB 4.2.
-
-Multi-document transactions are atomic (i.e. provide an
-"all-or-nothing" proposition):
+Distributed transactions are atomic. They provide an "all-or-nothing" 
+proposition:
 
 - When a transaction commits, all data changes made in the transaction
   are saved and visible outside the transaction. That is, a transaction
@@ -376,7 +317,7 @@ Transactions and Operations
 ---------------------------
 
 Distributed transactions can be used across multiple operations,
-collections, databases, documents, and, starting in MongoDB 4.2, shards.
+collections, databases, documents, and shards.
 
 For transactions:
 
@@ -389,25 +330,21 @@ For a list of operations not supported in transactions, see
 
 .. seealso::
 
-   :doc:`Transactions and Operations Reference </core/transactions-operations>`
+   :ref:`Transactions and Operations Reference <transactions-operations-ref>`
 
 .. _transactions-create-collections-indexes:
 
 Create Collections and Indexes In a Transaction
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting in MongoDB 4.4, you can perform the following operations inside
-of a :doc:`multi-document transaction </core/transactions>` as long as
-the transaction is not a cross-shard write transaction:
+You can perform the following operations inside of a :ref:`distributed
+transaction <transactions>` as long as the transaction is not a
+cross-shard write transaction:
 
 - Create collections.
 
 - Create indexes on new empty collections created earlier in the same
   transaction.
-
-In MongoDB 4.2 and earlier, operations that affect the database catalog,
-such as creating or dropping a collection or an index, are
-:red:`disallowed` in transactions.
 
 When creating a collection inside a transaction:
 
@@ -445,6 +382,8 @@ Restrictions
 ````````````
 
 - .. include:: /includes/extracts/transactions-cross-shard-collection-restriction.rst
+
+- .. include:: /includes/graphLookup-sharded-coll-transaction-note.rst
 
 - For explicit creation of a collection or an index inside a
   transaction, the transaction read concern level must be
@@ -500,13 +439,12 @@ Restricted Operations
 
    - :ref:`txn-prod-considerations-ddl`
 
-   - :doc:`Transactions and Operations Reference </core/transactions-operations>`
+   - :ref:`Transactions and Operations Reference <transactions-operations-ref>`
 
 Transactions and Sessions
 -------------------------
 
-- Transactions are associated with a session; i.e. you start a
-  transaction for a session.
+- Transactions are associated with a session
 
 - At any given time, you can have at most one open transaction for a
   session.
@@ -584,20 +522,17 @@ Transactions support the following read concern levels:
 ``"majority"``
 ``````````````
 
-- Read concern :readconcern:`"majority"` returns data that has been
-  acknowledged by a majority of the replica set members (i.e. data
-  cannot be rolled back) **if** the transaction commits with
-  :ref:`write concern "majority" <transactions-write-concern>`.
+- If the transaction commits with :ref:`write concern "majority"
+  <transactions-write-concern>`, read concern :readconcern:`"majority"`
+  returns data that has been acknowledged by a majority of the replica
+  set members and can't be rolled back. Otherwise, read concern
+  :readconcern:`"majority"` provides no guarantees that read operations
+  read majority-committed data.
 
-- If the transaction does not use :ref:`write concern "majority"
-  <transactions-write-concern>` for the commit, the
-  :readconcern:`"majority"` read concern provides **no** guarantees that
-  read operations read majority-committed data.
-
-- For transactions on sharded cluster, :readconcern:`"majority"` read
-  concern cannot guarantee that the data is from the same snapshot
-  view across the shards. If snapshot isolation is required, use
-  :ref:`transactions-read-concern-snapshot` read concern.
+- For transactions on sharded cluster, read concern
+  :readconcern:`"majority"` can't guarantee that the data is from the 
+  same snapshot view across the shards. If snapshot isolation is
+  required, use read concern :ref:`transactions-read-concern-snapshot`.
 
 .. _transactions-read-concern-snapshot:
 
@@ -643,11 +578,19 @@ You can set the transaction-level :doc:`write concern
   concern for the commit.
 
 - If the transaction-level write concern and the session-level write
-  concern are unset, transaction-level write concern defaults to the
-  client-level write concern. By default, client-level write concern is
-  :writeconcern:`w: 1 <\<number\>>`. See also
-  :doc:`/reference/mongodb-defaults`.
-  
+  concern are unset, the transaction-level write concern defaults to the
+  client-level write concern of:
+
+  - :writeconcern:`w: "majority" <"majority">` in MongoDB 5.0 and later,
+    with differences for deployments containing :ref:`arbiters
+    <replica-set-arbiter-configuration>`. See
+    :ref:`wc-default-behavior`.
+
+  - :writeconcern:`w: 1 <\<number\>>`
+
+.. seealso::
+
+   :doc:`/reference/mongodb-defaults`
 
 Transactions support all write concern :ref:`w <wc-w>`
 values, including:
@@ -679,7 +622,7 @@ values, including:
 
 - Write concern :writeconcern:`w: "majority" <"majority">` returns
   acknowledgement after the commit has been applied to a majority
-  (M) of voting members; i.e. the commit has been applied to the
+  (M) of voting members, meaning the commit has been applied to the
   primary and (M-1) voting secondaries.
 
 - When you commit with :writeconcern:`w: "majority" <"majority">`
@@ -690,7 +633,7 @@ values, including:
 
 - When you commit with :writeconcern:`w: "majority" <"majority">`
   write concern, transaction-level :readconcern:`"snapshot"` read
-  concern guarantees that operations have from a synchronized
+  concern guarantees that operations have read from a synchronized
   snapshot of majority-committed data.
 
 .. note::
@@ -699,6 +642,13 @@ values, including:
 
    .. include:: /includes/return-commit-decision-parameter.rst
 
+   .. include:: /includes/write-concern-majority-and-transactions.rst
+
+   Regardless of the :ref:`write concern specified for the
+   transaction <transactions-write-concern>`, the driver applies
+   :writeconcern:`w: "majority" <"majority">` as the write concern when
+   retrying :dbcommand:`commitTransaction`.
+
 General Information
 -------------------
 
@@ -706,8 +656,8 @@ Production Considerations
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For various production considerations with using transactions, see
-:doc:`/core/transactions-production-consideration`. In addition, or sharded
-clusters, see also :doc:`/core/transactions-sharded-clusters`.
+:ref:`production-considerations`. In addition, for sharded
+clusters, see also :ref:`production-considerations-sharded`.
 
 Arbiters
 ~~~~~~~~
@@ -769,13 +719,13 @@ MongoDB provides various transactions metrics:
 
    * - :binary:`~bin.mongod` and :binary:`~bin.mongos` log messages
 
-     - Includes information on slow transactions (i.e. transactions
+     - Includes information on slow transactions, which are transactions
        that exceed the :setting:`operationProfiling.slowOpThresholdMs`
        threshold) under the :data:`TXN` log component.
 
 ..  _transactions-fcv:
 
-Feature Compatibility Version (FCV)
+Feature Compatibility Version (fCV)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To use transactions, the :ref:`featureCompatibilityVersion <view-fcv>`
@@ -809,6 +759,21 @@ Storage Engines
 ~~~~~~~~~~~~~~~
 
 .. include:: /includes/extracts/transactions-inmemory-txn-page.rst
+
+Limit Critical Section Wait Time
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting in MongoDB 5.2 (and 5.0.4):
+
+- When a query accesses a shard, a :ref:`chunk migration
+  <migrate-chunks-sharded-cluster>` or :ref:`DDL operation
+  <transactions-operations-ddl>` may hold the critical section for the
+  collection.
+
+- To limit the time a shard waits for a critical section within a
+  transaction, use the
+  :parameter:`metadataRefreshInTransactionMaxWaitBehindCritSecMS`
+  parameter.
 
 Additional Transactions Topics
 ------------------------------

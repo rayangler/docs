@@ -17,6 +17,13 @@ and :binary:`~bin.mongos` command-line options.
    * - Configuration File Setting
      - ``mongod`` and ``mongos`` Command-Line Options
 
+   * - :setting:`auditLog.auditEncryptionKeyIdentifier`
+     - | :option:`mongod --auditEncryptionKeyUID`
+       | :option:`mongos --auditEncryptionKeyUID`
+
+   * - :setting:`auditLog.compressionMode`
+     - | :option:`mongod --auditCompressionMode`
+       | :option:`mongos --auditCompressionMode`
 
    * - :setting:`auditLog.destination`
      - | :option:`mongod --auditDestination`
@@ -30,15 +37,13 @@ and :binary:`~bin.mongos` command-line options.
      - | :option:`mongod --auditFormat`
        | :option:`mongos --auditFormat`
 
+   * - :setting:`auditLog.localAuditKeyFile`
+     - | :option:`mongod --auditLocalKeyFile`
+       | :option:`mongos --auditLocalKeyFile`
+
    * - :setting:`auditLog.path`
      - | :option:`mongod --auditPath`
        | :option:`mongos --auditPath`
-
-   * - :setting:`cloud.monitoring.free.state`
-     - | :option:`mongod --enableFreeMonitoring`
-
-   * - :setting:`cloud.monitoring.free.tags`
-     - | :option:`mongod --freeMonitoringTag`
 
    * - :setting:`net.bindIp`
      - | :option:`mongod --bind_ip`
@@ -253,6 +258,12 @@ and :binary:`~bin.mongos` command-line options.
    * - :setting:`security.kmip.serverName`
      - | :option:`mongod --kmipServerName`
 
+   * - :setting:`security.kmip.activateKeys`
+     - | :option:`mongod --kmipActivateKeys`
+
+   * - :setting:`security.kmip.keyStatePollingSeconds` 
+     - | :option:`mongod --kmipKeyStatePollingSeconds`
+
    * - :setting:`security.ldap.authz.queryTemplate`
      - | :option:`mongod --ldapAuthzQueryTemplate`
 
@@ -275,6 +286,10 @@ and :binary:`~bin.mongos` command-line options.
    * - :setting:`security.ldap.bind.useOSDefaults`
      - | :option:`mongod --ldapBindWithOSDefaults`
        | :option:`mongos --ldapBindWithOSDefaults`
+
+   * - :setting:`security.ldap.retryCount`
+     - | :option:`mongod --ldapRetryCount`
+       | :option:`mongos --ldapRetryCount`
 
    * - :setting:`security.ldap.servers`
      - | :option:`mongod --ldapServers`
@@ -316,10 +331,6 @@ and :binary:`~bin.mongos` command-line options.
      - | :option:`mongod --setParameter`
        | :option:`mongos --setParameter`
 
-   * - :setting:`sharding.archiveMovedChunks`
-     - | :option:`mongod --moveParanoia`
-       | :option:`mongod --noMoveParanoia`
-
    * - :setting:`sharding.clusterRole`
      - | :option:`mongod --shardsvr`
        | :option:`mongod --configsvr`
@@ -327,15 +338,6 @@ and :binary:`~bin.mongos` command-line options.
    * - :setting:`sharding.configDB`
      -
        | :option:`mongos --configdb`
-
-   * - :setting:`snmp.disabled`
-     - | :option:`mongod --snmp-disabled`
-
-   * - :setting:`snmp.master`
-     - | :option:`mongod --snmp-master`
-
-   * - :setting:`snmp.subagent`
-     - | :option:`mongod --snmp-subagent`
 
    * - :setting:`storage.dbPath`
      - | :option:`mongod --dbpath`
@@ -351,11 +353,6 @@ and :binary:`~bin.mongos` command-line options.
 
    * - :setting:`storage.journal.commitIntervalMs`
      - | :option:`mongod --journalCommitInterval`
-
-   * - :setting:`storage.journal.enabled`
-     - | :option:`mongod --journal`
-       | :option:`mongod --nojournal`
-
 
    * - :setting:`storage.syncPeriodSecs`
      - | :option:`mongod --syncdelay`
@@ -480,6 +477,9 @@ and :binary:`~bin.mongos` command-line options.
 
 ChangeLog
 ---------
+Starting in version 6.1:
+  .. include:: /includes/journal-always-enabled-change.rst
+  
 Starting in version 5.0:
   MongoDB removes the ``--serviceExecutor`` command-line option and the
   corresponding ``net.serviceExecutor`` configuration option.
@@ -497,6 +497,6 @@ Starting in version 4.2:
    For earlier versions of MongoDB, refer to the corresponding version of
    the manual. For example:
 
-   - :v4.0:`https://docs.mongodb.com/v4.0 </reference/configuration-options>`
-   - :v3.6:`https://docs.mongodb.com/v3.6 </reference/configuration-options>`
-   - :v3.4:`https://docs.mongodb.com/v3.4 </reference/configuration-options>`
+   - :v4.0:`https://www.mongodb.com/docs/v4.0 </reference/configuration-options>`
+   - :v3.6:`https://www.mongodb.com/docs/v3.6 </reference/configuration-options>`
+   - :v3.4:`https://www.mongodb.com/docs/v3.4 </reference/configuration-options>`

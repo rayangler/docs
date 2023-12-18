@@ -10,13 +10,13 @@ with the :update:`$each` modifier to add multiple elements to the
 
 .. code-block:: javascript
 
-   db.inventory.update(
+   db.inventory.updateOne(
       { _id: 2 },
       { $addToSet: { tags: { $each: [ "camera", "electronics", "accessories" ] } } }
     )
 
-The operation adds only ``"camera"`` and ``"accessories"`` to the
-``tags`` array since ``"electronics"`` already exists in the array:
+The operation only adds ``"camera"`` and ``"accessories"`` to the
+``tags`` array. ``"electronics"`` was already in the array:
 
 .. code-block:: javascript
 
@@ -25,3 +25,4 @@ The operation adds only ``"camera"`` and ``"accessories"`` to the
      item: "cable",
      tags: [ "electronics", "supplies", "camera", "accessories" ]
    }
+

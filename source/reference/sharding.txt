@@ -1,3 +1,5 @@
+.. _sharding-reference:
+
 ==================
 Sharding Reference
 ==================
@@ -61,25 +63,37 @@ Sharding Methods in ``mongosh``
 
      - Disable balancing on a single collection in a sharded database. Does not affect balancing of other collections in a sharded cluster.
 
+   * - :method:`sh.enableAutoMerger()`
+
+     - .. include:: /includes/enableAutoMerger.rst
+   
+       .. versionadded:: 7.0
+       
    * - :method:`sh.enableBalancing()`
 
      - Activates the sharded collection balancer process if previously disabled using :method:`sh.disableBalancing()`.
+
+   * - :method:`sh.disableAutoMerger()`
+
+     - .. include:: /includes/disableAutoMerger.rst
+   
+       .. versionadded:: 7.0
 
    * - :method:`sh.disableAutoSplit()`
 
      - Disables auto-splitting for the sharded cluster.
 
+       .. include:: /includes/autosplit-no-operation.rst
+
    * - :method:`sh.enableAutoSplit()`
 
      - Enables auto-splitting for the sharded cluster.
 
+       .. include:: /includes/autosplit-no-operation.rst
+
    * - :method:`sh.enableSharding()`
 
-     - Enables sharding on a specific database.
-
-   * - :method:`sh.getBalancerHost()`
-
-     - *Deprecated since MongoDB 3.4*
+     - Creates a database.
 
    * - :method:`sh.getBalancerState()`
 
@@ -99,7 +113,7 @@ Sharding Methods in ``mongosh``
 
    * - :method:`sh.isBalancerRunning()`
 
-     - Returns a boolean to report if the balancer process is currently migrating chunks.
+     - Returns a document describing the status of the balancer.
 
    * - :method:`sh.moveChunk()`
 
@@ -136,6 +150,12 @@ Sharding Methods in ``mongosh``
 
      - Divides an existing :term:`chunk` that contains a document matching a query into two approximately equal chunks.
 
+   * - :method:`sh.startAutoMerger()`
+
+     - .. include:: /includes/startAutoMerger.rst
+
+       .. versionadded:: 7.0
+
    * - :method:`sh.startBalancer()`
 
      - Enables the :term:`balancer` and waits for balancing to start.
@@ -143,6 +163,12 @@ Sharding Methods in ``mongosh``
    * - :method:`sh.status()`
 
      - Reports on the status of a :term:`sharded cluster`, as :method:`db.printShardingStatus()`.
+
+   * - :method:`sh.stopAutoMerger()`
+
+     - .. include:: /includes/stopAutoMerger.rst
+
+       .. versionadded:: 7.0
 
    * - :method:`sh.stopBalancer()`
 
@@ -247,7 +273,7 @@ The following database commands support :term:`sharded clusters
 
    * - :dbcommand:`flushRouterConfig`
 
-     - Forces a :binary:`~bin.mongod`/:binary:`~bin.mongos` instance to update its cached routing metadata.
+     - Forces a :binary:`mongod` / :binary:`mongos` instance to update its cached routing metadata.
 
    * - :dbcommand:`getShardMap`
 
@@ -276,6 +302,10 @@ The following database commands support :term:`sharded clusters
    * - :dbcommand:`movePrimary`
 
      - Reassigns the :term:`primary shard` when removing a shard from a sharded cluster.
+   
+   * - :dbcommand:`moveRange`
+
+     - Command that migrates ranges between shards.
 
    * - :dbcommand:`mergeChunks`
 
@@ -312,10 +342,6 @@ The following database commands support :term:`sharded clusters
 
      - Creates a new :term:`chunk`.
 
-   * - :dbcommand:`splitChunk`
-
-     - Internal command to split chunk. Instead use the methods :method:`sh.splitFind()` and :method:`sh.splitAt()`.
-
    * - :dbcommand:`splitVector`
 
      - Internal command that determines split points.
@@ -333,13 +359,13 @@ The following database commands support :term:`sharded clusters
 Reference Documentation
 -----------------------
 
-:doc:`Operational Restrictions </core/sharded-cluster-requirements>`
+:ref:`Operational Restrictions <sharding-fundamentals>`
    Requirement for deploying a sharded cluster
 
-:doc:`/tutorial/troubleshoot-sharded-clusters`
+:ref:`sharding-high-availability`
    Common strategies for troubleshooting sharded cluster deployments.
 
-:doc:`/reference/config-database`
+:ref:`config-database`
    Complete documentation of the content of the ``local`` database
    that MongoDB uses to store sharded cluster metadata.
 
@@ -348,6 +374,8 @@ Reference Documentation
    :titlesonly: 
    :hidden: 
 
+   /reference/config-database
+   /core/defragment-sharded-collections
+   /reference/inconsistency-type
    Operational Restrictions </core/sharded-cluster-requirements>
    /tutorial/troubleshoot-sharded-clusters
-   /reference/config-database

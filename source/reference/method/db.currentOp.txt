@@ -23,9 +23,11 @@ Definition
    operations for the database instance. The :method:`db.currentOp()`
    method wraps the database command :dbcommand:`currentOp`. 
 
+   .. include:: /includes/fact-currentOp-aggregation-stage.rst
+
    .. note::
 
-      .. include:: /includes/fact-currentop.rst
+      .. include:: /includes/5.0-fact-currentop.rst
 
 Syntax
 ~~~~~~
@@ -46,15 +48,11 @@ argument:
    :widths: 20 20 80
 
    * - Parameter
-
      - Type
-
      - Description
 
    * - :ref:`operations <method-currentop-operations>`
-
      - boolean or document
-
      - .. _method-currentop-operations:
      
        Optional. Specifies the operations to report on. Can pass either
@@ -62,11 +60,9 @@ argument:
        
        - Specify ``true`` to include operations on idle connections and
          system operations.
-       
        - Specify a document with query conditions to report only on
          those operations that match the conditions. See
          :ref:`currentOp-behavior` for details.
-
 
 
 .. _currentOp-behavior:
@@ -89,18 +85,14 @@ filter. The filter document can contain:
      - Description
 
    * - ``"$ownOps"``
-
      - Boolean. If set to ``true``, returns information on the current user's
        operations only.
 
        On :binary:`~bin.mongod` instances, users can always run
        ``db.currentOp( { "$ownOps": true } )`` to view their own
        operations.
-       
-       .. versionadded:: 3.2.9
 
    * - ``"$all"``
-
      - Boolean. If set to ``true``, returns information on all operations,
        including operations on idle connections and system operations.
 
@@ -109,7 +101,6 @@ filter. The filter document can contain:
        ``"$all":true`` applies.
 
    * - <filter>
-
      - Specify filter conditions on the :ref:`db.currentOp-output-fields`.
        See :ref:`currentOp-method-examples`.
        
@@ -140,7 +131,7 @@ On systems running with :setting:`~security.authorization`, the user
 must have access that includes the :authaction:`inprog` privilege
 action. 
 
-Starting in 3.2.9, users can run ``db.currentOp( { "$ownOps": true }
+Users can run ``db.currentOp( { "$ownOps": true }
 )`` on :binary:`~bin.mongod` instances to view their own operations
 even without the :authaction:`inprog` privilege action.
 
@@ -162,8 +153,6 @@ various query documents to filter the output.
 
 Write Operations Waiting for a Lock
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. versionchanged:: 3.6
 
 The following example returns information on all write operations that
 are waiting for a lock:
@@ -217,8 +206,6 @@ database ``db1`` that have been running longer than 3 seconds:
 Active Indexing Operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. versionchanged:: 3.6
-
 The following example returns information on index creation operations:
 
 .. code-block:: javascript
@@ -240,6 +227,15 @@ Output Example
 The following is a prototype of :method:`db.currentOp()` output.
 
 .. include:: /includes/currentOp-output-example.rst
+
+.. _db.currentOp-specific-output-examples:
+
+Specific Output Examples
+------------------------
+
+.. include:: /includes/metrics/txt-section-intro.rst
+.. include:: /includes/metrics/ex-resharding.rst
+.. include:: /includes/metrics/ex-global-index.rst
 
 .. _db.currentOp-output-fields:
 

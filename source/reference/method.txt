@@ -27,13 +27,26 @@ Collection
 
      - Description
 
+   * - :method:`db.collection.analyzeShardKey()`
+
+     - Calculates metrics for evaluating a shard key.
+
    * - :method:`db.collection.aggregate()`
 
-     - Provides access to the :doc:`aggregation pipeline </core/aggregation-pipeline>`.
+     - Provides access to the :ref:`aggregation pipeline <aggregation-pipeline>`.
 
    * - :method:`db.collection.bulkWrite()`
 
      - Provides bulk write operation functionality.
+
+   * - :method:`db.collection.compactStructuredEncryptionData()`
+
+     - Wraps :dbcommand:`compactStructuredEncryptionData` to return
+       a success or failure object.
+   
+   * - :method:`db.collection.configureQueryAnalyzer()`
+
+     - Configures query sampling for a collection.
 
    * - :method:`db.collection.count()`
 
@@ -133,17 +146,13 @@ Collection
 
      - Hides an index from the query planner.
 
-   * - :method:`db.collection.insert()`
-
-     - Creates a new document in a collection.
-
    * - :method:`db.collection.insertOne()`
 
-     - Inserts a new document in a collection.
+     - Inserts a new document into a collection.
 
    * - :method:`db.collection.insertMany()`
 
-     - Inserts several new document in a collection.
+     - Inserts several new documents into a collection.
 
    * - :method:`db.collection.isCapped()`
 
@@ -192,10 +201,6 @@ Collection
    * - :method:`db.collection.unhideIndex()`
 
      - Unhides an index from the query planner.
-
-   * - :method:`db.collection.update()`
-
-     - Modifies a document in a collection.
 
    * - :method:`db.collection.updateOne()`
 
@@ -393,17 +398,9 @@ Database
 
      - Runs admin/diagnostic pipeline which does not require an underlying collection.
 
-   * - :method:`db.cloneDatabase()`
-
-     - *Deprecated*. Copies a database from a remote host to the current host when run against MongoDB 4.0 or earlier. Unsupported when run against MongoDB 4.2 or later.
-
    * - :method:`db.commandHelp()`
 
      - Returns help information for a :term:`database command`.
-
-   * - :method:`db.copyDatabase()`
-
-     - *Deprecated*. Copies a database to another database on the current host when run against MongoDB 4.0 or earlier. Unsupported when run against MongoDB 4.2 or later.
 
    * - :method:`db.createCollection()`
 
@@ -440,14 +437,6 @@ Database
    * - :method:`db.getCollectionNames()`
 
      - Lists all collections and views in the current database.
-
-   * - :method:`db.getLastError()`
-
-     - Checks and returns the status of the last operation. Wraps :dbcommand:`getLastError`.
-
-   * - :method:`db.getLastErrorObj()`
-
-     - Returns the status document for the last operation.  Wraps :dbcommand:`getLastError`.
 
    * - :method:`db.getLogComponents()`
 
@@ -664,17 +653,21 @@ Bulk Write Operation
 
      - Specifies the :ref:`collation <collation>` for the query condition.
 
+   * - :method:`Bulk.find.delete()`
+     - Adds a multiple document delete operation to a list of operations.
+
+   * - :method:`Bulk.find.deleteOne()`
+     - Adds a single document delete operation to a list of operations.
+
    * - :method:`Bulk.find.hint()`
 
      - Specifies the index to use for the update/replace operation.
 
    * - :method:`Bulk.find.remove()`
-
-     - Adds a multiple document remove operation to a list of operations.
+     - An alias for ``Bulk.find.delete()``.
 
    * - :method:`Bulk.find.removeOne()`
-
-     - Adds a single document remove operation to a list of operations.
+     - An alias for ``Bulk.find.deleteOne()``.
 
    * - :method:`Bulk.find.replaceOne()`
 
@@ -700,13 +693,11 @@ Bulk Write Operation
 
      - Adds an insert operation to a list of operations.
 
-   * - :method:`Bulk.tojson()`
-
+   * - :method:`Bulk.toJSON()`
      - Returns a JSON document that contains the number of operations and batches in the :method:`Bulk()` operations object.
 
    * - :method:`Bulk.toString()`
-
-     - Returns the :method:`Bulk.tojson()` results as a string.
+     - Returns the :method:`Bulk.toJSON()` results as a string.
 
 
 .. toctree::
@@ -980,21 +971,33 @@ Sharding
 
      - Activates the sharded collection balancer process if previously disabled using :method:`sh.disableBalancing()`.
 
+   * - :method:`sh.disableAutoMerger()`
+
+     - .. include:: /includes/disableAutoMerger.rst
+   
+       .. versionadded:: 7.0
+
    * - :method:`sh.disableAutoSplit()`
 
      - Disables auto-splitting for the sharded cluster.
+
+       .. include:: /includes/autosplit-no-operation.rst
+
+   * - :method:`sh.enableAutoMerger()`
+
+     - .. include:: /includes/enableAutoMerger.rst
+   
+       .. versionadded:: 7.0
 
    * - :method:`sh.enableAutoSplit()`
 
      - Enables auto-splitting for the sharded cluster.
 
+       .. include:: /includes/autosplit-no-operation.rst
+
    * - :method:`sh.enableSharding()`
 
-     - Enables sharding on a specific database.
-
-   * - :method:`sh.getBalancerHost()`
-
-     - *Deprecated since MongoDB 3.4*
+     - Creates a database.
 
    * - :method:`sh.getBalancerState()`
 
@@ -1014,7 +1017,7 @@ Sharding
 
    * - :method:`sh.isBalancerRunning()`
 
-     - Returns a boolean to report if the balancer process is currently migrating chunks.
+     - Returns a document describing the status of the balancer.
 
    * - :method:`sh.moveChunk()`
 
@@ -1051,6 +1054,12 @@ Sharding
 
      - Divides an existing :term:`chunk` that contains a document matching a query into two approximately equal chunks.
 
+   * - :method:`sh.startAutoMerger()`
+
+     - .. include:: /includes/startAutoMerger.rst
+
+       .. versionadded:: 7.0
+
    * - :method:`sh.startBalancer()`
 
      - Enables the :term:`balancer` and waits for balancing to start.
@@ -1058,6 +1067,12 @@ Sharding
    * - :method:`sh.status()`
 
      - Reports on the status of a :term:`sharded cluster`, as :method:`db.printShardingStatus()`.
+
+   * - :method:`sh.stopAutoMerger()`
+
+     - .. include:: /includes/stopAutoMerger.rst
+
+       .. versionadded:: 7.0
 
    * - :method:`sh.stopBalancer()`
 
@@ -1090,34 +1105,6 @@ Sharding
 
    /reference/method/js-sharding
 
-Free Monitoring
----------------
-
-.. list-table::
-   :header-rows: 1
-
-   * - Name
-
-     - Description
-
-   * - :method:`db.enableFreeMonitoring()`
-
-     - Enables free monitoring during runtime.
-
-   * - :method:`db.disableFreeMonitoring()`
-
-     - Disables free monitoring during runtime.
-
-   * - :method:`db.getFreeMonitoringStatus()`
-
-     - Returns the free monitoring status.
-
-.. toctree::
-   :titlesonly:
-   :hidden:
-
-   /reference/method/js-free-monitoring
-
 Constructors
 ------------
 
@@ -1128,6 +1115,18 @@ Constructors
    * - Name
 
      - Description
+
+   * - :method:`Binary.createFromBase64()`
+
+     - Creates a binary object from a base64 value.
+
+   * - :method:`Binary.createFromHexString()`
+
+     - Creates a binary object from a hexadecimal value.
+
+   * - :method:`BinData()`
+
+     - Returns a :ref:`binary data object <document-bson-type-binary-data>`.
 
    * - :method:`BulkWriteResult()`
 
@@ -1140,6 +1139,14 @@ Constructors
    * - :method:`ObjectId()`
 
      - Returns an :term:`ObjectId`.
+
+   * - :method:`ObjectId.createFromBase64()`
+
+     - Creates an :term:`ObjectId` from a base64 value.
+
+   * - :method:`ObjectId.createFromHexString()`
+
+     - Creates an :term:`ObjectId` from a hexadecimal value.
 
    * - :method:`ObjectId.getTimestamp()`
 
@@ -1234,115 +1241,12 @@ Connection
 
      - The options object for the session.
 
-
 .. toctree::
    :titlesonly:
    :hidden:
 
    /reference/method/js-connection
 
-Native
-------
-
-.. list-table::
-   :widths: 30,70
-   :header-rows: 1
-
-   * - Name
-
-     - Description
-
-   * - :doc:`/reference/method/cat`
-
-     - Returns the contents of the specified file.
-
-   * - :doc:`/reference/method/cd`
-
-     - Changes the current working directory to the specified path.
-
-   * - :method:`copyDbpath()`
-
-     - Copies a local :setting:`~storage.dbPath`. For internal use.
-
-   * - :method:`getHostName()`
-
-     - Returns the hostname of the system running :binary:`~bin.mongosh`.
-
-   * - :method:`getMemInfo()`
-
-     - Returns a document that reports the amount of memory used by the shell.
-
-   * - :doc:`/reference/method/hostname`
-
-     - Returns the hostname of the system running the shell.
-
-   * - :doc:`/reference/method/isInteractive`
-
-     - Returns a boolean indicating whether :binary:`~bin.mongosh` is
-       running in interactive or script mode.
-
-   * - :method:`listFiles()`
-
-     - Returns an array of documents that give the name and size of each object in the directory.
-
-   * - :doc:`/reference/method/load`
-
-     - Loads and runs a JavaScript file in the shell.
-
-   * - :doc:`/reference/method/ls`
-
-     - Returns a list of the files in the current directory.
-
-   * - :method:`md5sumFile()`
-
-     - The :term:`md5` hash of the specified file.
-
-   * - :doc:`/reference/method/mkdir`
-
-     - Creates a directory at the specified path.
-
-   * - :doc:`/reference/method/pwd`
-
-     - Returns the current directory.
-
-   * - :doc:`/reference/method/quit`
-
-     - Exits the current shell session.
-
-   * - :method:`removeFile()`
-
-     - Removes the specified file from the local file system.
-
-   * - :method:`resetDbpath()`
-
-     - Removes a local :setting:`~storage.dbPath`. For internal use.
-
-   * - :doc:`/reference/method/sleep`
-
-     - Suspends :binary:`~bin.mongosh` for a given period of time.
-
-   * - :method:`setVerboseShell()`
-
-     - Configures :binary:`~bin.mongosh` to report operation timing.
-
-   * - :doc:`/reference/method/version`
-
-     - Returns the current version of :binary:`~bin.mongosh` instance.
-
-   * - :method:`_isWindows()`
-
-     - Returns ``true`` if the shell runs on a Windows system; ``false`` if a Unix or Linux system.
-
-   * - :method:`_rand()`
-
-     - Returns a random number between ``0`` and ``1``.
-
-
-.. toctree::
-   :titlesonly:
-   :hidden:
-
-   /reference/method/js-native
 
 Client-Side Field Level Encryption
 ----------------------------------
@@ -1363,6 +1267,10 @@ Client-Side Field Level Encryption
 
      - Returns the key vault object for the current MongoDB connection.
 
+   * - :method:`KeyVault.createDataKey()`
+
+     - An alias for :method:`KeyVault.createKey()`. 
+
    * - :method:`KeyVault.createKey()`
 
      - Creates a data encryption key for use with client-side field level encryption.
@@ -1373,7 +1281,7 @@ Client-Side Field Level Encryption
 
    * - :method:`KeyVault.getKey()`
 
-     - Retreives the specified data encryption key from the key vault.
+     - Retrieves the specified data encryption key from the key vault.
 
    * - :method:`KeyVault.getKeys()`
 
@@ -1381,19 +1289,35 @@ Client-Side Field Level Encryption
 
    * - :method:`KeyVault.addKeyAlternateName()`
 
-     - Associates a key alternative name to the specified data encryption key.
+     - Associates a key's alternative name to the specified data encryption key.
+
+   * - :method:`KeyVault.addKeyAltName()`
+
+     - An alias for :method:`KeyVault.addKeyAlternateName()`. 
 
    * - :method:`KeyVault.removeKeyAlternateName()`
 
-     - Removes a key alternative name from the specified data encryption key.
+     - Removes a key's alternative name from the specified data encryption key.
+
+   * - :method:`KeyVault.removeKeyAltName()`
+
+     - An alias for :method:`KeyVault.removeKeyAlternateName()`. 
 
    * - :method:`KeyVault.getKeyByAltName()`
 
      - Retrieves keys with the specified key alternative name.
+   
+   * - :method:`KeyVault.rewrapManyDataKey()`
+
+     - Decrypts multiple data keys and re-encrypts them. 
 
    * - :method:`getClientEncryption()`
 
      - Returns the client encryption object for supporting explicit encryption/decryption of fields.
+
+   * - :method:`ClientEncryption.createEncryptedCollection()`
+
+     - Creates a collection with encrypted fields.
 
    * - :method:`ClientEncryption.encrypt()`
 
@@ -1402,10 +1326,26 @@ Client-Side Field Level Encryption
    * - :method:`ClientEncryption.decrypt()`
 
      - Decrypts a field using the associated data encryption key and encryption algorithm.
-
-
+   
 .. toctree::
    :titlesonly:
    :hidden:
 
    /reference/method/js-client-side-field-level-encryption
+
+Atlas Search Index Methods
+--------------------------
+
+.. include:: /includes/atlas-search-commands/mongosh-method-intro.rst
+
+.. |fts-index| replace:: {+fts+} index
+
+.. |fts-indexes| replace:: {+fts+} indexes
+
+.. include:: /includes/atlas-search-commands/mongosh-method-table.rst
+
+.. toctree::
+   :titlesonly:
+   :hidden:
+
+   /reference/method/js-atlas-search

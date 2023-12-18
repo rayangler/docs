@@ -13,10 +13,17 @@ validate
 Definition
 ----------
 
+.. versionchanged:: 6.2
+
 .. dbcommand:: validate
 
    The :dbcommand:`validate` command checks a collection's data and
    indexes for correctness and returns the results.
+
+   .. |method| replace:: :method:`~db.collection.validate` helper method
+   .. include:: /includes/fact-dbcommand-tip
+
+   .. versionchanged:: 5.0
 
    Starting in version 5.0, the :dbcommand:`validate` command can also
    find inconsistencies in the collection and fix them if possible.
@@ -28,32 +35,36 @@ Definition
       The :dbcommand:`validate` command does not support :doc:`views
       </core/views>` and raises an error when run against a view.
 
+   The :method:`db.collection.validate()` method in
+   :binary:`~bin.mongosh` provides a wrapper around
+   :dbcommand:`validate`.
+
 Syntax
 ------
-
-.. versionchanged:: 5.0
 
 The command has the following syntax:
 
 .. code-block:: javascript
 
-   db.runCommand( { 
-      validate: <string>,          // Collection name
-      full: <boolean>,             // Optional
-      repair: <boolean>            // Optional, added in MongoDB 5.0
-   } )
+   db.runCommand( 
+      { 
+        validate: <string>,  // Collection name
+        full: <boolean>,  // Optional
+        repair: <boolean>,  // Optional, added in MongoDB 5.0
+        metadata: <boolean>,  // Optional, added in MongoDB 5.0.4
+        checkBSONConformance: <boolean>  // Optional, added in MongoDB 6.2
+      } 
+   )
 
-:binary:`~bin.mongosh` also provides a wrapper
-:method:`db.collection.validate()`.
 
 Command Fields
-~~~~~~~~~~~~~~
+--------------
 
 The command takes the following fields:
 
 .. list-table::
    :header-rows: 1
-   :widths: 10 10 50
+   :widths: 15 15 70
 
    * - Field
      - Type
@@ -65,10 +76,9 @@ The command takes the following fields:
      
    * - :ref:`full <cmd-validate-full>`
      - boolean
-
      - .. _cmd-validate-full:
      
-       *Optional*. A flag that determines whether the command
+       Optional. A flag that determines whether the command
        performs a slower but more thorough check or a faster but less thorough check.
 
        - If ``true``, performs a more thorough check with the following
@@ -87,14 +97,27 @@ The command takes the following fields:
 
    * - :ref:`repair <cmd-validate-repair>`
      - boolean
-
      - .. _cmd-validate-repair:
 
        .. include:: /includes/fact-validate-repair-option.rst
 
+   * - :ref:`metadata <cmd-validate-metadata>`
+     - boolean
+     - .. _cmd-validate-metadata:
+
+       .. include:: /includes/fact-validate-metadata.rst
+
+   * - :ref:`checkBSONConformance <cmd-validate-checkBSONConformance>`
+     - boolean
+     - .. _cmd-validate-checkBSONConformance:
+
+       .. include:: /includes/fact-validate-conformance.rst
 
 Behavior
 --------
+
+Performance
+~~~~~~~~~~~
 
 The :dbcommand:`validate` command can be slow, particularly on
 larger data sets.
@@ -105,7 +128,23 @@ until the operation finishes. When run on a secondary, the
 :dbcommand:`validate` operation can block all other operations on that
 secondary until it finishes.
 
+.. warning::
+
+   Due to the performance impact of validation, consider running
+   :dbcommand:`validate` only on :term:`secondary` replica set nodes.
+   You can use :method:`rs.stepDown()` to instruct the current
+   :term:`primary` node to become a secondary to avoid impacting a live
+   primary node.
+
+Data Throughput Metrics
+~~~~~~~~~~~~~~~~~~~~~~~
+
 .. include:: /includes/extracts/4.4-validate-data-throughput.rst
+
+Collection Validation Improvements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/validate-improvements-introduction.rst
 
 Restrictions
 ~~~~~~~~~~~~~
@@ -113,9 +152,17 @@ Restrictions
 MongoDB drivers automatically set :ref:`afterClusterTime
 <afterClusterTime>` for operations associated with :ref:`causally
 consistent sessions <causal-consistency>`. Starting in MongoDB 4.2, the
-:dbcommand:`validate` command no longer support :ref:`afterClusterTime
-<afterClusterTime>`. As such, :dbcommand:`validate` cannot be associatd
-with :ref:`causally consistent sessions <causal-consistency>`.
+:dbcommand:`validate` command no longer supports :ref:`afterClusterTime
+<afterClusterTime>`. As such, :dbcommand:`validate` cannot be
+associated with :ref:`causally consistent sessions
+<causal-consistency>`.
+
+Index Key Format
+~~~~~~~~~~~~~~~~
+
+Starting in MongoDB 6.0, the ``validate`` command returns a message if a
+:ref:`unique index <index-type-unique>` has a key format that is
+incompatible. The message indicates an old format is used.
 
 Examples
 --------
@@ -141,6 +188,21 @@ Examples
 
     db.runCommand( { validate: "myCollection", repair: true } )
 
+- To validate the metadata in the ``myCollection`` collection, 
+  specify :ref:`metadata: true <cmd-validate-metadata>`:
+
+  .. code-block:: javascript
+
+    db.runCommand( { validate: "myCollection", metadata: true } )
+
+- To perform additional BSON conformance checks in ``myCollection``,
+  specify :ref:`checkBSONConformance: true
+  <cmd-validate-checkBSONConformance>`:
+
+  .. code-block:: javascript
+
+    db.runCommand( { validate: "myCollection", checkBSONConformance: true } )
+
 .. _validate-output:
 
 Validate Output
@@ -150,9 +212,28 @@ Validate Output
 
 Specify :ref:`full: true <cmd-validate-full>` for more detailed output.
 
+.. data:: validate.uuid
+
+   The universally unique identifier (UUID) for the collection.
+
+   .. versionadded:: 6.2
+
 .. data:: validate.nInvalidDocuments
 
-   The number of invalid documents in the collection.
+   The number of invalid documents in the collection. Invalid documents
+   are those that are not readable, which means the :term:`BSON`
+   document is corrupt and has an error or a size mismatch.
+
+.. data:: validate.nNonCompliantDocuments
+
+   The number of documents not conforming to the collection's schema.
+   Non-compliant documents are not counted as invalid in
+   :data:`~validate.nInvalidDocuments`.
+
+   Starting in MongoDB 6.2, ``nNonCompliantDocuments`` also includes the
+   number of documents that do not conform to the :term:`BSON`
+   or :ref:`time series collection <manual-timeseries-collection>`
+   requirements.
 
 .. data:: validate.nrecords
 
@@ -160,7 +241,7 @@ Specify :ref:`full: true <cmd-validate-full>` for more detailed output.
 
 .. data:: validate.nIndexes
 
-   The number of indexes on the collection.
+   The number of indexes on the collection that were validated.
 
 .. data:: validate.keysPerIndex
 

@@ -15,8 +15,6 @@ Definition
 
 .. expression:: $zip
 
-   .. versionadded:: 3.4
-
    Transposes an array of input arrays so that the first element of
    the output array would be an array containing, the first element of
    the first input array, the first element of the second input array,
@@ -196,7 +194,7 @@ A collection called ``pages`` contains the following document:
 
 .. code-block:: javascript
 
-   db.pages.save( {
+   db.pages.insertOne( {
      "category": "unix",
      "pages": [
        { "title": "awk for beginners", reviews: 5 },

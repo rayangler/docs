@@ -21,14 +21,6 @@ Definition
    abort the operation with the :dbcommand:`abortReshardCollection`
    command.
 
-   The command has the following syntax:
-
-   .. code-block:: javascript
-
-      {
-        abortReshardCollection: "<database>.<collection>"
-      }
-
    You can abort a :ref:`resharding operation <sharding-resharding>` at
    any point until the :ref:`commit phase
    <resharding-commit-phase-command>`. If the :ref:`resharding operation
@@ -37,8 +29,24 @@ Definition
    :dbcommand:`abortReshardCollection` command, the command returns an
    error.
 
-   The :binary:`~bin.mongosh` provides a wrapper method
-   :method:`sh.abortReshardCollection()`.
+
+   .. |method| replace:: :method:`sh.abortReshardCollection` 
+      helper method
+   .. include:: /includes/fact-dbcommand-tip
+
+   
+Syntax
+------
+
+The command has the following syntax:
+
+.. code-block:: javascript
+
+   db.adminCommand(
+      {
+        abortReshardCollection: "<database>.<collection>"
+      } 
+   )
 
 Example
 -------

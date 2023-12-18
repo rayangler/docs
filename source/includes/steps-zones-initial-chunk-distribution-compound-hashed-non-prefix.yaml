@@ -72,22 +72,6 @@ content: |
      ``_id``.
 
 ---
-title: "Enable Sharding for the Database"
-level: 4
-optional: true
-ref: initial-chunk-distribution-create-zones-enable-sharding
-content: |
-
-   Skip this step if you already enabled sharding on the database.
-
-   Use :method:`sh.enableSharding()` to enable sharding for the
-   database:
-
-   .. code-block:: javascript
-
-      sh.enableSharding("examples")
-
----
 title: "Shard the Collection"
 level: 4
 ref: initial-chunk-distribution-create-zones-shard-collection
@@ -136,8 +120,8 @@ content: |
      --- Sharding Status --- 
 
        databases:
-         {  "_id" : "config",  "primary" : "config",  "partitioned" : true }
-         {  "_id" : "examples",  "primary" : "shardA",  "partitioned" : true,  "version" : {  "uuid" : UUID("6c351bcf-acd2-4fd9-82d8-9f6bd7321558"),  "lastMod" : 1 } }
+         { "_id" : "config", "primary" : "config" }
+         { "_id" : "examples", "primary" : "shardA", "version" : { "uuid" : UUID("6c351bcf-acd2-4fd9-82d8-9f6bd7321558"), "lastMod" : 1 } }
            examples.metrics
              shard key: { "facility" : 1, "_id" : "hashed" }
              unique: false

@@ -4,10 +4,14 @@ collMod
 
 .. default-domain:: mongodb
 
+.. facet::
+   :name: genre
+   :values: reference
+
 .. contents:: On this page
    :local:
    :backlinks: none
-   :depth: 1
+   :depth: 2
    :class: singlecol
 
 Definition
@@ -15,44 +19,48 @@ Definition
 
 .. dbcommand:: collMod
 
-   :dbcommand:`collMod` makes it possible to add options to a collection
-   or to modify view definitions.
+   :dbcommand:`collMod` makes it possible to add options to a 
+   collection or to modify view definitions.
+
+   .. |method| replace:: :method:`~db.collection.hideIndex` and
+      :method:`~db.collection.unhideIndex` helper methods
+   .. include:: /includes/fact-dbcommand-tip
 
    .. note::
 
-      The view modified by this command does not refer to materialized
+      The view modified by ``collMod`` does not refer to materialized
       views. For discussion of on-demand materialized views, see
       :pipeline:`$merge` instead.
 
-   The command
-   takes the following prototype form:
+Syntax
+------
 
-   .. note:: Starting in MongoDB 4.2
+The command has the following syntax:
 
+.. code-block:: javascript
+   :copyable: false
 
-      - MongoDB removes the MMAPv1 storage engine and the MMAPv1
-        specific options ``noPadding`` and ``usePowerOf2Sizes`` for
-        :dbcommand:`collMod`.
+   db.runCommand( 
+      { 
+        collMod: <collection or view>, 
+        <option1>: <value1>, 
+        <option2>: <value2>,
+        ... 
+      } 
+   )
 
-      - .. include:: /includes/extracts/views-restriction-output-to-disk.rst
-
-   .. code-block:: javascript
-
-      db.runCommand( { collMod: <collection or view>, <option1>: <value1>, <option2>: <value2> ... } )
-
-   For the ``<collection or view>``, specify the name of a collection
-   or view in the current database.
+For the ``<collection or view>``, specify the name of a collection
+or view in the current database.
 
 Options
 -------
 
-Index Options
-~~~~~~~~~~~~~
-
+Change Index Properties
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. collflag:: index
 
-   The :collflag:`index` option can change the following properties of
+   The ``index`` option can change the following properties of
    an **existing** index:
 
    .. list-table::
@@ -63,27 +71,27 @@ Index Options
         - Description
 
       * - ``expireAfterSeconds``
-
         - The number of seconds that determines the expiration
-          threshold of a :doc:`TTL Collection </tutorial/expire-data>`.
+          threshold of a :ref:`TTL Collection <ttl-collections>`.
 
-          If successful, the command returns a document that contains
-          both the old and new values for the changed property:
-          ``expireAfterSeconds_old`` and ``expireAfterSeconds_new``.
+          If successful, the command returns a document that contains:
 
-          You can only modify an existing TTL index; i.e. an index with
-          an existing ``expireAfterSeconds`` property. If the index
-          does not have an existing ``expireAfterSeconds`` property,
-          the operation errors with ``no expireAfterSeconds field to
-          update``.
+          - ``expireAfterSeconds_new``, the new value for
+            ``expireAfterSeconds``
+          - ``expireAfterSeconds_old``, the old value for
+            ``expireAfterSeconds``, if the index had a value for
+            ``expireAfterSeconds`` before.
 
           Modifying the index option ``expireAfterSeconds`` resets the
           :pipeline:`$indexStats` for the index.
 
-      * - ``hidden``
+          .. include:: /includes/indexes/expireAfterSeconds-warning.rst
 
-        - A boolean that determines whether the index is :doc:`hidden
-          </core/index-hidden>` or not from the query planner.
+          .. include:: includes/expireAfterSeconds-range.rst
+
+      * - ``hidden``
+        - A boolean that determines whether the index is :ref:`hidden
+          <index-type-hidden>` or not from the query planner.
 
           If the ``hidden`` value changes, the command returns a
           document that contains both the old and new values for the
@@ -101,48 +109,76 @@ Index Options
           Modifying the index option ``hidden`` resets the
           :pipeline:`$indexStats` for the index if the value changes.
 
-          .. seealso::
-
-             - :method:`db.collection.hideIndex()`
-             - :method:`db.collection.unhideIndex()`
-
           .. versionadded:: 4.4
+
+      * - ``prepareUnique``
+        - A boolean that determines whether the index will accept
+          new duplicate entries.
+
+          New duplicate entries fail with DuplicateKey errors when
+          ``prepareUnique`` is ``true``. The resulting index can be
+          converted to a unique index. To convert the index, use
+          ``collMod`` with the ``unique`` option.
+
+          If an existing index is updated so that ``prepareUnique`` is
+          ``true``, the index is not checked for pre-existing,
+          duplicate index entries.
+
+          .. versionadded:: 6.0
+
+      * - ``unique``
+        - A boolean that determines whether or not the index is unique.
+          
+          .. note::
+
+             Must be set to ``true``. ``false`` is not supported.
+
+          When ``unique`` is ``true``, ``collMod`` scans the
+          ``keyPattern`` index for duplicates and then converts it to
+          a unique index if there are no duplicate index entries.
+          
+          If duplicates are detected during the initial scan,
+          ``collMod`` returns ``CannotConvertIndexToUnique`` and a list
+          of conflicting documents. To convert an index with duplicate
+          entries to a unique index, correct any reported conflicts and
+          rerun ``collMod``.
+          
+          To end a conversion, set ``prepareUnique`` to ``false``.
+
+          .. versionadded:: 6.0
 
    To change index options, specify either the key pattern or name of
    the existing index and the index option or options you wish to
    change:
 
    .. code-block:: javascript
+      :copyable: false
 
       db.runCommand( {
          collMod: <collection>,
          index: {
-            keyPattern: <index_spec> || name: <index_name>,
-            expireAfterSeconds: <number>,  // If changing the TTL expiration threshold
-            hidden: <boolean>              // If changing the visibility of the index from the query planner
+            keyPattern: <index_spec> | name: <index_name>,
+            expireAfterSeconds: <number>,  // Set the TTL expiration threshold
+            hidden: <boolean>,             // Change index visibility in the query planner
+            prepareUnique: <boolean>,      // Reject new duplicate index entries 
+            unique: <boolean>              // Convert an index to a unique index
          }
       } )
-
 
    If the index does not exist, the command errors with the message
    ``"cannot find index <name|keyPattern> for ns <db.collection>"``.
 
    .. seealso::
 
-      - :doc:`/core/index-hidden`
-      - :method:`db.collection.hideIndex()`
-      - :method:`db.collection.unhideIndex()`
+      - :ref:`index-type-hidden`
 
-Document Validation
-~~~~~~~~~~~~~~~~~~~
+Validate Documents
+~~~~~~~~~~~~~~~~~~
 
 .. collflag:: validator
 
-   .. versionadded:: 3.2
-
-   :collflag:`validator` allows users to specify :doc:`validation rules
-   or expressions </core/schema-validation>` for a collection.
-   For more information, see :doc:`/core/schema-validation`.
+   ``validator`` allows users to specify :ref:`validation rules
+   or expressions <schema-validation-overview>` for a collection.
 
    The ``validator`` option takes a document that specifies the
    validation rules or expressions. You can specify the expressions
@@ -162,18 +198,17 @@ Document Validation
 
 .. collflag:: validationLevel
 
-   .. versionadded:: 3.2
-
-   The :collflag:`validationLevel` determines how strictly MongoDB applies the
+   The ``validationLevel`` determines how strictly MongoDB applies the
    validation rules to existing documents during an update.
 
    .. include:: /includes/extracts/table-validationLevel-values.rst
 
+   To see an example that uses ``validationLevel``, see
+   :ref:`schema-specify-validation-level`.
+
 .. collflag:: validationAction
 
-   .. versionadded:: 3.2
-
-   The :collflag:`validationAction` option determines whether to ``error`` on
+   The ``validationAction`` option determines whether to ``error`` on
    invalid documents or just ``warn`` about the violations but allow
    invalid documents.
 
@@ -182,13 +217,11 @@ Document Validation
       Validation of documents only applies to those documents as
       determined by the ``validationLevel``.
 
-   .. include:: /includes/extracts/table-validationAction-values.rst
+   To see an example that uses ``validationAction``, see
+   :ref:`schema-validation-handle-invalid-docs`.
 
-To view the validation specifications for a collection, use the
-:method:`db.getCollectionInfos()` method.
-
-Views
-~~~~~
+Modify Views
+~~~~~~~~~~~~
 
 .. note::
 
@@ -198,9 +231,9 @@ Views
 
 .. collflag:: viewOn
 
-   The underlying source collection or view for the :doc:`view
-   </core/views>`. The view definition is determined by applying the
-   specified :collflag:`pipeline` to this source.
+   The underlying source collection or :ref:`view
+   <views-landing-page>`. The view definition is determined by applying
+   the specified :collflag:`pipeline` to this source.
 
    Required if modifying a view on a MongoDB deployment that is running
    with access control.
@@ -208,7 +241,7 @@ Views
 .. collflag:: pipeline
 
    The :ref:`aggregation pipeline <aggregation-pipeline>` that defines
-   the :doc:`view </core/views>`.
+   the :ref:`view <views-landing-page>`.
 
    .. note::
 
@@ -229,39 +262,196 @@ Views
         { $project: { user: 1, date: 1, description: 1} } ]
    } )
 
-Time Series Collections
-~~~~~~~~~~~~~~~~~~~~~~~
+Modify Time Series Collections
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To enable automatic removal of documents or change the
-``expireAfterSeconds`` parameter value for an existing :ref:`time
-series collection <manual-timeseries-collection>`, issue the following
-:dbcommand:`collMod` command:
+.. collflag:: expireAfterSeconds
 
-.. code-block:: javascript
+   .. note::
 
-   db.runCommand({
-      collMod: <collection>,
-      expireAfterSeconds: <Number> || "off"
-   })
+      This is distinct from using the :collflag:`index` option with the
+      ``expireAfterSeconds`` property to change the expiration time
+      for a :ref:`TTL Collection <ttl-collections>`.
 
-The ``expireAfterSeconds`` field must be either:
+   To enable automatic document removal or modify the current 
+   expiration interval for a :ref:`time series collection
+   <manual-timeseries-collection>`, change the ``expireAfterSeconds``
+   value:
 
-- A non-negative decimal number (``>=0``)
-- The string ``"off"``.
+   .. code-block:: javascript
+      :copyable: false
 
-A number specifies the number of seconds after which documents expire.
-The string ``"off"`` removes the ``expireAfterSeconds`` parameter and
-disables automatic removal.
+      db.runCommand( {
+         collMod: <collection>,
+         expireAfterSeconds: <number> | "off"
+      } )
+
+   Set ``expireAfterSeconds`` to ``"off"`` to disable automatic removal,
+   or a non-negative decimal number (``>=0``) to specify the number of
+   seconds after which documents expire.
 
 .. seealso::
 
    :ref:`manual-timeseries-automatic-removal`
 
+.. collflag:: granularity
+   
+   To modify the :ref:`granularity <timeseries-granularity>` of a time 
+   series collection, you can increase ``timeseries.granularity`` from a shorter unit of time to a longer one:
+
+   .. code-block:: javascript
+      :copyable: false
+
+      db.runCommand( {
+         collMod: "weather24h",
+         timeseries: { granularity: "seconds" | "minutes" | "hours" }
+      } )
+
+   To update the custom bucketing fields ``bucketRoundingSeconds``
+   and ``bucketMaxSpanSeconds`` instead of ``granularity``, include both
+   custom fields in the ``collMod`` command and set them to the 
+   same value:
+   
+   .. code-block:: javascript
+
+      db.runCommand( {
+         collMod: "weather24h",
+         timeseries: { 
+            bucketRoundingSeconds: 86400,
+            bucketMaxSpanSeconds: 86400 
+         }
+      } )
+
+   You cannot decrease the granularity interval or the custom bucketing
+   values.
+
+   .. important::
+     
+       You cannot downgrade below MongoDB 6.3 if any time series 
+       collections explicitly specify the custom bucketing fields 
+       ``bucketMaxSpanSeconds`` and ``bucketRoundingSeconds``. If 
+       possible, convert to the corresponding ``granularity``. If you 
+       cannot, you must drop the collection before downgrading.
+   
+   To convert a collection from custom bucketing to a ``granularity``,
+   value, both ``bucketMaxSpanSeconds`` and ``bucketRoundingSeconds``
+   must be less than or equal to the ``granularity`` equivalent:
+
+   .. include:: /includes/table-timeseries-granularity-maxspan-rounding-limits.rst
+
+   .. seealso::
+
+     :ref:`timeseries-granularity`
+
+.. _resize-capped-collection:
+
+Resize a Capped Collection
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 6.0
+
+Starting in MongoDB 6.0, you can resize a capped collection. To change a
+:ref:`capped collection's <manual-capped-collection>` maximum size in
+bytes, use the ``cappedSize`` option. To change the maximum number of
+documents in an existing capped collection, use the ``cappedMax`` option.
+
+.. note:: 
+
+   You can't use these commands to resize the oplog. Use 
+   :dbcommand:`replSetResizeOplog` instead. 
+
+.. collflag:: cappedSize
+
+   Specifies a new maximum size, in bytes, for a capped collection. ``cappedSize``
+   must be greater than ``0`` and less than ``1e+15`` (1 PB). 
+
+.. collflag:: cappedMax
+
+   Specifies a new maximum number of documents in a capped collection. Setting
+   ``cappedMax`` less than or equal to ``0`` implies no limit.
+
+For example, the following command sets the maximum size of a capped collection 
+to 100000 bytes and sets the maximum number of documents in the collection to 500:
+
+.. code-block:: javascript
+   :copyable: false
+
+   db.runCommand( {
+      collMod: <collection>,
+      cappedSize: 100000,
+      cappedMax: 500
+   } )
+
+.. _collMod-change-stream-pre-and-post-images:
+
+Change Streams with Document Pre- and Post-Images
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 6.0
+
+.. collflag:: changeStreamPreAndPostImages
+
+.. include:: /includes/change-stream-pre-and-post-images-introduction.rst
+
+To use ``collMod`` to enable change stream pre- and post-images
+for a collection, use the ``changeStreamPreAndPostImages`` field:
+
+.. code-block:: javascript
+   :copyable: false
+
+   db.runCommand( {
+      collMod: <collection>,
+      changeStreamPreAndPostImages: { enabled: <boolean> }
+   } )
+
+To enable change stream pre- and post-images for a collection, set
+``changeStreamPreAndPostImages`` to ``true``. For example:
+
+.. code-block:: javascript
+
+   db.runCommand( {
+      collMod: "orders",
+      changeStreamPreAndPostImages: { enabled: true }
+   } )
+
+To disable change stream pre- and post-images for a collection, set
+``changeStreamPreAndPostImages`` to ``false``. For example:
+
+.. code-block:: javascript
+
+   db.runCommand( {
+      collMod: "orders",
+      changeStreamPreAndPostImages: { enabled: false }
+   } )
+
+.. include:: /includes/change-stream-pre-and-post-images-additional-information.rst
+
+Attach Comment 
+~~~~~~~~~~~~~~
+
+.. versionadded:: 4.4
+
+.. collflag:: comment
+
+Optional. You can attach a comment to this command. The comment must be
+a top-level field and can be any valid :ref:`BSON type <bson-types>`. 
+The comment that you specify appears alongside records of this command
+in the following locations:  
+  
+- :ref:`mongod log messages <log-messages-ref>`, in the
+  ``attr.command.cursor.comment`` field. 
+- :ref:`Database profiler <profiler>` output, in the
+  :data:`command.comment <system.profile.command>` field.
+- :dbcommand:`currentOp` output, in the :data:`command.comment
+  <currentOp.command>` field.
+
 Write Concern
 ~~~~~~~~~~~~~
 
-Optional. A document expressing the :doc:`write concern
-</reference/write-concern>` of the :dbcommand:`drop` command.
+.. collflag:: w
+
+Optional. A document expressing the :ref:`write concern
+<write-concern>` of the ``collMod`` command.
 
 Omit to use the default write concern.
 
@@ -269,25 +459,21 @@ Access Control
 --------------
 
 If the deployment enforces authentication/authorization, you must have
-the following privilege to run the :dbcommand:`collMod` command:
+the following privilege to run the ``collMod`` command:
 
 .. list-table::
    :header-rows: 1
 
    * - Task
-
      - Required Privileges
 
    * - Modify a non-capped collection
-
      - :authaction:`collMod` in the database
 
    * - Modify a view
-
      - :authaction:`collMod` in the database and either:
 
        - no :authaction:`find` on the view to modify, **or**
-
        - both :authaction:`find` on the view to modify and
          :authaction:`find` on the source collection/view.
 
@@ -303,6 +489,8 @@ Resource Locking
 
 Examples
 --------
+
+.. _ex-change-exp-value:
 
 Change Expiration Value for Indexes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -337,23 +525,23 @@ Hide an Index from the Query Planner
 
    To hide an index, you must have :ref:`featureCompatibilityVersion
    <view-fcv>` set to ``4.4`` or greater. However, once hidden, the
-   index remains hidden even with :ref:`featureCompatibilityVersion
-   <view-fcv>` set to ``4.2`` on MongoDB 4.4 binaries.
+   index remains hidden even with ``featureCompatibilityVersion``
+   set to ``4.2`` on MongoDB 4.4 binaries.
 
-The following example :doc:`hides </core/index-hidden>` an existing
+The following example :ref:`hides <index-type-hidden>` an existing
 index on the ``orders`` collection. Specifically, the operation hides
 the index with the specification ``{ shippedDate: 1 }`` from the query
 planner.
 
 .. code-block:: javascript
 
-   db.runCommand({
+   db.runCommand( {
       collMod: "orders",
       index: {
          keyPattern: { shippedDate: 1 },
          hidden: true
       }
-   })
+   } )
 
 If successful, the operation returns a document that includes both the
 old and new value for the changed property:
@@ -365,7 +553,7 @@ old and new value for the changed property:
 .. note::
 
    If the operation is successful but the ``hidden`` value has not
-   changed (i.e. hiding an already hidden index or unhiding an already
+   changed (specifically, hiding an already hidden index or unhiding an already
    unhidden index), the command omits the ``hidden_old`` and
    ``hidden_new`` fields from the output.
 
@@ -374,68 +562,100 @@ To hide a text index, you must specify the index by ``name`` and not by
 
 .. seealso::
 
-   - :doc:`/core/index-hidden`
+   - :ref:`index-type-hidden`
    - :method:`db.collection.hideIndex()`
    - :method:`db.collection.unhideIndex()`
-      
-Add Document Validation to an Existing Collection
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following example adds a validator to an existing collection named
-``contacts``.
+Convert an Existing Index to a Unique Index
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. note::
+Create the ``apples`` collection:
 
-   MongoDB 3.6 adds the :query:`$jsonSchema` operator to support JSON
-   Schema validation.
+.. code-block:: javscript
 
-.. code-block:: javascript
+   db.apples.insertMany( [
+      { type: "Delicious", quantity: 12 },
+      { type: "Macintosh", quantity: 13 },
+      { type: "Delicious", quantity: 13 },
+      { type: "Fuji", quantity: 15 },
+      { type: "Washington", quantity: 10 },
+   ] )
 
-   db.runCommand( { collMod: "contacts",
-      validator: { $jsonSchema: {
-         bsonType: "object",
-         required: [ "phone" ],
-         properties: {
-            phone: {
-               bsonType: "string",
-               description: "must be a string and is required"
-            },
-            email: {
-               bsonType : "string",
-               pattern : "@mongodb\.com$",
-               description: "must be a string and match the regular expression pattern"
-            },
-            status: {
-               enum: [ "Unknown", "Incomplete" ],
-               description: "can only be one of the enum values"
-            }
-         }
-      } },
-      validationLevel: "moderate",
-      validationAction: "warn"
+Add a single field index on ``type``:
+
+.. code-block:: javscript
+
+   db.apples.createIndex( { type: 1 } )
+
+Prepare the index on the ``type`` field for conversion:
+
+.. code-block:: javscript
+
+   db.runCommand( {
+       collMod: "apples",
+       index: {
+          keyPattern: { type: 1 },
+          prepareUnique: true
+       }
+    } )
+
+The existing index may contain duplicate entries, but it will not
+accept new documents that duplicate an index entry when
+``prepareUnique`` is ``true``. 
+
+Try to insert a document with a duplicate index value:
+
+.. code-block:: javscript
+
+   db.apples.insertOne( { type: "Delicious", quantity: 200 } )
+
+The operation returns an error. The index will not accept new
+duplicate entries. 
+
+Use the ``unique``option to convert the index to a unique index.
+``collMod`` checks the collection for duplicate index entries before
+converting the index:
+
+.. code-block:: javscript
+
+   db.runCommand( {
+       collMod: "apples",
+       index: {
+          keyPattern: { type: 1 },
+          unique: true
+       }
    } )
 
-With the ``moderate`` :collflag:`validationLevel`, MongoDB applies
-validation rules to insert operations and to update operationss to
-existing documents that already fulfill the validation criteria.
-Updates to existing documents that do not fulfill the validation
-criteria are not checked for validity.
- 
-With the ``warn`` :collflag:`validationAction`, MongoDB logs any
-violations but allows the insertion or update to proceed.
+The response to this operation varies by driver. You will always
+receive an error message about the duplicate entries.
 
-For example, the following insert operation violates the validation rule.
+.. code-block:: shell
+   :copyable: false
+   
+   "errmsg" : "Cannot convert the index to unique. Please resolve
+               conflicting documents before running collMod again."
+   
+Some drivers also return a list of ``ObjectIds`` for the duplicate
+entries:
 
-.. code-block:: javascript
+.. code-block:: shell
+   :copyable: false
 
-   db.contacts.insert( { name: "Amanda", status: "Updated" } )
+   {
+        "ok" : 0,
+        "errmsg" : "Cannot convert the index to unique. Please resolve \
+                    conflicting documents before running collMod again.",
+        "code" : 359,
+        "codeName" : "CannotConvertIndexToUnique",
+        "violations" : [
+                {
+                        "ids" : [
+                                ObjectId("62a2015777e2d47c4da33146"),
+                                ObjectId("62a2015777e2d47c4da33148")
+                        ]
+                }
+        ]
+   }
 
-However, since the ``validationAction`` is ``warn`` only, MongoDB only
-logs the validation violation message and allows the operation to
-proceed:
-
-.. code-block:: bash
-
-   2017-12-01T12:31:23.738-05:00 W STORAGE  [conn1] Document would fail validation collection: example.contacts doc: { _id: ObjectId('5a2191ebacbbfc2bdc4dcffc'), name: "Amanda", status: "Updated" }
-
-For more information, see :doc:`/core/schema-validation`.
+To complete the conversion, modify the duplicate entries to remove any
+conflicts and re-run ``collMod()`` with the ``unique`` option.

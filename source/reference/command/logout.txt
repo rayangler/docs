@@ -10,6 +10,9 @@ logout
    :depth: 1
    :class: singlecol
 
+Definition
+----------
+
 .. dbcommand:: logout
 
    .. deprecated:: 5.0
@@ -19,25 +22,41 @@ logout
    
    This command will be removed in a future release.   
 
-   The :dbcommand:`logout` command terminates the current
-   authenticated session:
+   .. note::
 
-   .. code-block:: javascript
+      This command was used when you could log in as multiple users on a single physical connection.
+      Because this is no longer possible, running ``logout`` may cause connections to fail.
+      Going forward, you can achieve the same results by closing your connection.
 
-      { logout: 1 }
+Syntax
+------
 
-   .. |operation-name| replace:: :dbcommand:`logout`
-   .. include:: /includes/note-logout-namespace.rst
+The command has the following syntax:
 
-   .. example::
+.. code-block:: javascript
 
-      .. include:: /includes/fact-change-database-context.rst
+   db.runCommand(
+      { 
+        logout: 1 
+      }
+   )
 
-      When you have set the database context and ``db`` object, you
-      can use the |operation-name| to log out of database as in the
-      following operation:
 
-      .. code-block:: javascript
+Example
+-------
 
-         db.runCommand( { logout: 1 } )
+.. |operation-name| replace:: :dbcommand:`logout`
+.. include:: /includes/note-logout-namespace.rst
+
+.. example::
+
+  .. include:: /includes/fact-change-database-context.rst
+
+  When you have set the database context and ``db`` object, you
+  can use the |operation-name| to log out of database as in the
+  following operation:
+
+  .. code-block:: javascript
+
+     db.runCommand( { logout: 1 } )
 

@@ -33,9 +33,11 @@ disk use. See :ref:`Database Profiler Overhead<database-profiling-overhead>` for
 This document outlines a number of key administration options for the
 database profiler. For additional related information, see:
 
-- :doc:`/reference/database-profiler`
-- :doc:`Profile Command </reference/command/profile>`
+- :ref:`profiler`
+- :ref:`Profile Command <profile-command>`
 - :method:`db.currentOp()`
+
+.. include:: /includes/database-profiler-note.rst
 
 .. _database-profiling-levels:
 .. _database-profiling-level:
@@ -158,8 +160,6 @@ operation threshold for logging slow operations:
    
 Profile a Random Sample of Slow Operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. versionadded:: 3.6
 
 To profile only a randomly sampled subset of all *slow* operations ,
 specify the desired sample rate in one of the following ways:
@@ -353,7 +353,7 @@ output data, see :doc:`/reference/database-profiler`.
 Starting in MongoDB 4.4, it is no longer possible to perform any
 operation, including reads, on the :data:`system.profile
 <<database>.system.profile>` collection from within a
-:doc:`transaction </core/transactions>`.
+:ref:`transaction <transactions>`.
 
 .. tip::
 

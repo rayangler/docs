@@ -1,15 +1,16 @@
 Architecture
 ~~~~~~~~~~~~
 
-In production, deploy each member of the replica set to its own machine
-and if possible bind to the standard MongoDB port of ``27017``. 
+In production, deploy each member of the replica set to its own machine.
+If possible, ensure that MongoDB listens on the default port of 
+``27017``.
 
-See :doc:`/core/replica-set-architectures` for more information.
+For more information, see :doc:`/core/replica-set-architectures`.
 
 Hostnames
 ~~~~~~~~~
 
-.. include:: /includes/tip-hostnames.rst
+.. include:: /includes/important-hostnames.rst
 
 IP Binding
 ~~~~~~~~~~

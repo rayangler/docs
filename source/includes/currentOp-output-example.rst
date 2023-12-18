@@ -41,6 +41,7 @@
                          "op" : <string>,
                          "ns" : <string>,
                          "command" : <document>,
+                         "queryFramework" : <string>,
                          "planSummary": <string>,
                          "cursor" : {                              // only for getMore operations
                             "cursorId" : <NumberLong()>,
@@ -64,10 +65,6 @@
                          "numYields" : <number>,
                          "dataThroughputLastSecond" : <number>, // Starting in MongoDB 4.4 for validate operations
                          "dataThroughputAverage" : <number>,    // Starting in MongoDB 4.4 for validate operations
-                         "waitingForLatch" : {                   // Starting in MongoDB 4.2.2
-                             "timestamp" : <ISODate()>,
-                             "captureName" : <string>
-                         },
                          "locks" : {
                              "ParallelBatchWriterMode" : <string>,
                              "ReplicationStateTransition" : <string>,
@@ -178,6 +175,7 @@
                         "ns" : <string>,
                         "command" : <document>,
                         "originatingCommand" : <document>,
+                        "queryFramework" : <string>,
                         "planSummary": <string>,
                         "prepareReadConflicts" : <NumberLong()>,
                         "writeConflicts" : <NumberLong()>,
@@ -203,10 +201,6 @@
                         "numYields" : <number>,
                         "dataThroughputLastSecond" : <number>, // Starting in MongoDB 4.4 for validate operations
                         "dataThroughputAverage" : <number>,    // Starting in MongoDB 4.4 for validate operations
-                        "waitingForLatch" : {                   // Starting in MongoDB 4.2.2
-                             "timestamp" : <ISODate()>,
-                             "captureName" : <string>
-                         },
                         "locks" : {
                             "ParallelBatchWriterMode" : <string>,
                             "ReplicationStateTransition" : <string>,
@@ -344,6 +338,7 @@
                          "command" : <document>,
                          "configTime" : <Timestamp>,           // Starting in 5.0
                          "topologyTime" : <Timestamp>,           // Starting in 5.0
+                         "queryFramework" : <string>,            // Starting in 6.2       
                          "planSummary": <string>,
                          "prepareReadConflicts" : <NumberLong()>,
                          "writeConflicts" : <NumberLong()>,
@@ -369,10 +364,6 @@
                          "numYields" : <number>,
                          "dataThroughputLastSecond" : <number>, // Starting in MongoDB 4.4 for validate operations
                          "dataThroughputAverage" : <number>,    // Starting in MongoDB 4.4 for validate operations
-                         "waitingForLatch" : {                   // Starting in MongoDB 4.2.2
-                             "timestamp" : <ISODate()>,
-                             "captureName" : <string>
-                         },
                          "locks" : {
                              "ParallelBatchWriterMode" : <string>,
                              "ReplicationStateTransition" : <string>,
@@ -380,6 +371,8 @@
                              "Database" : <string>,
                              "Collection" : <string>,
                              "Metadata" : <string>,
+                             "DDLDatabase" : <string>,
+                             "DDLCollection" : <string>, 
                              "oplog" : <string>
                          },
                          "waitingForLock" : <boolean>,

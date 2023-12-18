@@ -1,6 +1,3 @@
-
-
-
 .. _replica-set-configuration-tag-sets:
 
 ==============================
@@ -241,4 +238,8 @@ Given a five member replica set with members in two data centers:
 
    .. code-block:: javascript
 
-      db.collection.insert( { id: "xyz", status: "A" }, { writeConcern: { w: "MultipleDC" } } )
+      db.collection.insertOne(
+         { id: "xyz", status: "A" },
+         { writeConcern: { w: "MultipleDC" } }
+      )
+

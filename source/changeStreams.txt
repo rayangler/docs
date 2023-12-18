@@ -7,6 +7,17 @@ Change Streams
 
 .. default-domain:: mongodb
 
+.. meta:: 
+   :description: Change streams allow applications to access real-time data changes without the complexity and risk of tailing the oplog.
+
+.. facet::
+   :name: genre
+   :values: reference
+
+.. facet:: 
+   :name: programming_language
+   :values: c, csharp, go, java, javascript/typescript, php, python, ruby, swift
+
 .. contents:: On this page
    :local:
    :backlinks: none
@@ -14,10 +25,8 @@ Change Streams
    :class: twocols
 
 .. meta::
-   :description: MongoDB triggers, change streams, database triggers, real time
-   :keywords: MongoDB triggers, change streams, database triggers, real time
-
-.. versionadded:: 3.6
+   :description: Change streams code examples for how to access real-time data changes in MongoDB
+   :keywords: database triggers, real time, code example, node.js, java sync, motor, swift sync, swift async
 
 Change streams allow applications to access real-time data changes
 without the complexity and risk of tailing the :term:`oplog`.
@@ -27,11 +36,15 @@ immediately react to them. Because change streams use the aggregation
 framework, applications can also filter for specific changes or
 transform the notifications at will.
 
+.. |change-streams| replace:: change streams
+
+.. include:: /includes/change-streams-optimization.rst
+
 Availability
 ------------
 
-Change streams are available for :doc:`replica sets <replication>` and
-:doc:`sharded clusters </sharding>`:
+Change streams are available for :ref:`replica sets <replication>` and
+:ref:`sharded clusters <sharding-background>`:
 
 - **Storage Engine.** 
 
@@ -49,8 +62,25 @@ Change streams are available for :doc:`replica sets <replication>` and
 
   .. include:: /includes/extracts/changestream-rc-majority-4.2.rst
 
-Watch Collection/Database/Deployment
-------------------------------------
+Connect
+--------
+
+Connections for a change stream can either use DNS seed lists
+with the ``+srv`` connection option or by listing the servers individually
+in the connection string.
+
+If the driver loses the connection to a change stream or the connection goes
+down, it attempts to reestablish a connection to the change stream through
+another node in the cluster that has a matching 
+:ref:`read preference <connections-read-preference>`. If the driver cannot find
+a node with the correct read preference, it throws an exception.
+
+For more information, see :ref:`Connection String URI Format <mongodb-uri>`.
+
+.. _changeStreams-watch-deployment:
+
+Watch a Collection, Database, or Deployment
+-------------------------------------------
 
 You can open change streams against:
 
@@ -101,6 +131,17 @@ You can open change streams against:
    to open a change stream cursor for a collection and work with the
    change stream cursor.
 
+Change Stream Performance Considerations
+----------------------------------------
+
+If the amount of active change streams opened against a database exceeds the 
+:ref:`connection pool size <connection-pool-overview>`, you may 
+experience notification latency. Each change stream uses a connection 
+and a :ref:`getMore <manual-reference-commands-getMore>` 
+operation on the change stream for the period of time that it waits for the next event. 
+To avoid any latency issues, you should ensure that the pool size is greater than the 
+number of opened change streams. For details see the :ref:`maxPoolSize<maxpoolsize-cp-setting>` setting.
+
 .. _open-change-stream:
 
 Open A Change Stream
@@ -134,8 +175,8 @@ upper-right to set the language of the examples on this page.
    .. tab::
       :tabid: python
          
-      The Python examples below assume that you have :api:`connected to a MongoDB replica set and have accessed a database
-      <pymongo>` that contains an ``inventory`` collection.
+      The Python examples below assume that you have :driver:`connected to a MongoDB replica set and have accessed a database
+      </pymongo>` that contains an ``inventory`` collection.
 
       .. literalinclude:: /driver-examples/test_examples.py
          :language: python
@@ -218,11 +259,14 @@ upper-right to set the language of the examples on this page.
          :start-after: Start Changestream Example 1 Alternative
          :end-before: End Changestream Example 1 Alternative
 
+      ChangeStream extends `EventEmitter 
+      <https://mongodb.github.io/node-mongodb-native/5.7/classes/TypedEventEmitter.html>`__.
+
    .. tab::
       :tabid: php
 
       The examples below assume that you have `connected to a MongoDB replica  set and have accessed a database
-      <https://docs.mongodb.com/php-library/current/reference/method/MongoDBClient__construct/>`__
+      <https://www.mongodb.com/docs/php-library/current/reference/method/MongoDBClient__construct/>`__
       that contains an ``inventory`` collection.
 
       .. literalinclude:: /driver-examples/DocumentationExamplesTest.php
@@ -235,7 +279,7 @@ upper-right to set the language of the examples on this page.
       :tabid: ruby
 
       The examples below assume that you have `connected to a MongoDB replica set and have accessed a database
-      <https://docs.mongodb.com/ruby-driver/master/tutorials/ruby-driver-create-client/>`__
+      <https://www.mongodb.com/docs/ruby-driver/master/tutorials/ruby-driver-create-client/>`__
       that contains an ``inventory`` collection.
 
 
@@ -264,7 +308,7 @@ upper-right to set the language of the examples on this page.
       The Swift (Sync) examples below assume that you have
       `connected to a MongoDB replica set and have accessed a
       database 
-      <https://mongodb.github.io/mongo-swift-driver/MongoSwiftSync/Classes/MongoClient.html>`__ 
+      <https://mongodb.github.io/mongo-swift-driver/docs/current/MongoSwiftSync/Classes/MongoClient.html>`__ 
       that contains an ``inventory`` collection.
 
       .. literalinclude:: /driver-examples/swiftSync.swift
@@ -279,7 +323,7 @@ upper-right to set the language of the examples on this page.
       The Swift (Async) examples below assume that you have
       `connected to a MongoDB replica set and have accessed a
       database 
-      <https://mongodb.github.io/mongo-swift-driver/MongoSwift/Classes/MongoClient.html>`__ 
+      <https://mongodb.github.io/mongo-swift-driver/docs/current/MongoSwift/Classes/MongoClient.html>`__ 
       that contains an ``inventory`` collection.
 
       .. literalinclude:: /driver-examples/swiftAsync.swift
@@ -292,14 +336,7 @@ To retrieve the :ref:`data change event <change-stream-output>` from
 the cursor, iterate the change stream cursor. For information on the
 change stream event, see :ref:`change-stream-output`.
 
-While the connection to the MongoDB deployment remains
-open, the cursor remains open until one of the following occurs:
-
-- The cursor is explicitly closed.
-
-- An :ref:`invalidate event <change-event-invalidate>` occurs.
-
-- .. include:: /includes/extracts/changestream-remove-shard.rst
+.. include:: /includes/extracts/changestream-cursor-open.rst
 
 .. note::
 
@@ -356,7 +393,7 @@ upper-right to set the language of the examples on this page.
 
       .. code-block:: java
 
-         MongoClient mongoClient = new MongoClient( new MongoClientURI("mongodb://host1:port1,host2:port2..."));
+         MongoClient mongoClient = MongoClients.create("mongodb://<username>:<password>@<host>:<port>");
 
          // Select the MongoDB database and collection to open the change stream against
 
@@ -489,6 +526,7 @@ upper-right to set the language of the examples on this page.
    See :ref:`change-stream-output` for more information on the change stream
    response document format.
 
+.. _change-streams-updateLookup:
 
 Lookup Full Document for Update Operations
 ------------------------------------------
@@ -725,15 +763,15 @@ Change streams are resumable by specifying a resume token to either
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 You can resume a change stream after a specific event by passing a resume token
-to ``resumeAfter`` when opening the cursor. For the resume token, use the
-``_id`` value of the :ref:`change stream event document <change-stream-output>`.
+to ``resumeAfter`` when opening the cursor. 
+
 See :ref:`change-stream-resume-token` for more information on the resume token.
 
 .. important::
 
    - The oplog must have enough history to locate the operation
-      associated with the token or the timestamp, if the timestamp is in
-      the past.
+     associated with the token or the timestamp, if the timestamp is in
+     the past.
 
    - .. include:: /includes/extracts/changestream-invalid-events.rst
 
@@ -923,9 +961,9 @@ You can start a new change stream after a specific event by passing a resume
 token to ``startAfter`` when opening the cursor. Unlike
 :ref:`resumeAfter <change-stream-resume-after>`, ``startAfter`` can
 resume notifications after an :ref:`invalidate event <change-event-invalidate>`
-by creating a new change stream. For the resume token, use the ``_id`` value of
-the :ref:`change stream event document <change-stream-output>`. See
-:ref:`change-stream-resume-token` for more information on the resume token.
+by creating a new change stream. 
+
+See :ref:`change-stream-resume-token` for more information on the resume token.
 
 .. important::
 
@@ -938,22 +976,138 @@ the :ref:`change stream event document <change-stream-output>`. See
 Resume Tokens
 ~~~~~~~~~~~~~
 
-The ``_id`` value of a :ref:`change stream event document
-<change-stream-output>` acts as the resume token:
+The resume token is available from multiple sources:
 
-.. code-block:: none
+.. list-table::
+   :header-rows: 1
+   :stub-columns: 1
+   :widths: 20 80
 
-   {
-      "_data" : <BinData|hex string>
-   }
+   * - Source
+     - Description
 
-.. include:: /includes/extracts/changestream-resume-token-versions-4.2-greater.rst
+   * - :ref:`Change Events <change-event-resume-token>`
+     - Each change event notification includes a resume token
+       on the ``_id`` field.
 
-.. include:: /includes/extracts/changestream-resume-token-hex-change.rst
+   * - :ref:`Aggregation <aggregate-resume-token>`
+     - The :pipeline:`$changeStream` aggregation stage includes 
+       a resume token on the ``cursor.postBatchResumeToken`` field.
+
+       This field only appears when using the :dbcommand:`aggregate`
+       command.
+
+   * - :ref:`Get More <getMore-resume-token>`
+     - The :dbcommand:`getMore` command includes a resume token on the
+       ``cursor.postBatchResumeToken`` field.
+
+.. versionchanged:: 4.2
+
+   .. include:: /includes/extracts/4.2-changes-change-stream-modification-error.rst
 
 .. tip::
 
-   .. include:: /includes/extracts/4.2-changes-change-stream-modification-error.rst
+   .. include:: /includes/note-decode-resume-tokens.rst
+
+.. _change-event-resume-token:
+
+Resume Tokens from Change Events
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Change event notifications include a resume token on the ``_id`` field:
+
+.. code-block:: json
+   :copyable: false
+   :emphasize-lines: 2-4
+
+
+   {
+      "_id": {
+         "_data": "82635019A0000000012B042C0100296E5A1004AB1154ACACD849A48C61756D70D3B21F463C6F7065726174696F6E54797065003C696E736572740046646F63756D656E744B65790046645F69640064635019A078BE67426D7CF4D2000004"
+       },
+       "operationType": "insert",
+       "clusterTime": Timestamp({ "t": 1666193824, "i": 1 }),
+       "collectionUUID": new UUID("ab1154ac-acd8-49a4-8c61-756d70d3b21f"),
+       "wallTime": ISODate("2022-10-19T15:37:04.604Z"),
+       "fullDocument": {
+          "_id": ObjectId("635019a078be67426d7cf4d2"'),
+          "name": "Giovanni Verga"
+       },
+       "ns": { 
+          "db": "test", 
+          "coll": "names" 
+       },
+       "documentKey": { 
+          "_id": ObjectId("635019a078be67426d7cf4d2") 
+       }
+   }
+
+
+.. _aggregate-resume-token:
+
+Resume Tokens from ``aggregate``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When using the :dbcommand:`aggregate` command, the :pipeline:`$changeStream`
+aggregation stage includes a resume token on the  
+``cursor.postBatchResumeToken`` field:
+
+.. code-block:: json
+   :copyable: false
+   :emphasize-lines: 4-6
+
+   {
+      "cursor": {
+         "firstBatch": [],
+         "postBatchResumeToken": { 
+            "_data": "8263515EAC000000022B0429296E1404" 
+         },
+         "id": Long("4309380460777152828"),
+         "ns": "test.names"
+      },
+      "ok": 1,
+      "$clusterTime": {
+         "clusterTime": Timestamp({ "t": 1666277036, "i": 1 }),
+         "signature": {
+            "hash": Binary(Buffer.from("0000000000000000000000000000000000000000", "hex"), 0),
+            "keyId": Long("0")
+         }
+      },
+      "operationTime": Timestamp({ "t": 1666277036, "i": 1 })
+   }
+
+.. _getMore-resume-token:
+
+Resume Tokens from ``getMore``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The :dbcommand:`getMore` command also includes a resume token on the 
+``cursor.postBatchResumeToken`` field:
+
+.. code-block:: json
+   :copyable: false
+   :emphasize-lines: 4-6
+
+   {
+      "cursor": {
+         "nextBatch": [],
+         "postBatchResumeToken": { 
+            "_data": "8263515979000000022B0429296E1404"
+         },
+         "id": Long("7049907285270685005"),
+         "ns": "test.names"
+      }, 
+      "ok": 1,
+      "$clusterTime": {
+         "clusterTime": Timestamp( { "t": 1666275705, "i": 1 } ),
+         "signature": {
+            "hash": Binary(Buffer.from("0000000000000000000000000000000000000000", "hex"), 0),
+            "keyId": Long("0")
+         }
+      },
+      "operationTime": Timestamp({ "t": 1666275705, "i": 1 })
+   }
+
 
 Use Cases
 ---------
@@ -963,6 +1117,8 @@ informing downstream systems once data changes are durable. For example,
 change streams can save time for developers when implementing Extract,
 Transform, and Load (ETL) services, cross-platform synchronization,
 collaboration functionality, and notification services.
+
+.. _change-streams-access:
 
 Access Control
 --------------
@@ -978,9 +1134,9 @@ For deployments enforcing :ref:`authentication` and :ref:`authorization
 
      { resource: { db: <dbname>, collection: <collection> }, actions: [ "find", "changeStream" ] }
 
-- To open a change stream on a single databases, applications must have
+- To open a change stream on a single database, applications must have
   privileges that grant :authaction:`changeStream` and
-  :authaction:`find` actions on all non-``system`` collections in a
+  :authaction:`find` actions on all non-``system`` collections in the
   database.
 
   .. code-block:: javascript
@@ -995,6 +1151,8 @@ For deployments enforcing :ref:`authentication` and :ref:`authorization
   .. code-block:: javascript
 
      { resource: { db: "", collection: "" }, actions: [ "find", "changeStream" ] }
+
+.. _change-streams-event-notification:
 
 Event Notification
 ------------------
@@ -1021,6 +1179,24 @@ comparisons unless an explicit collation is provided. In earlier
 versions, change streams opened on a single collection
 (:method:`db.collection.watch()`) would inherit that collection's
 default collation.
+
+Change Streams and Orphan Documents
+-----------------------------------
+
+.. include:: /includes/change-streams-and-orphans.rst
+
+.. _change-stream-pre-post-images:
+
+Change Streams with Document Pre- and Post-Images
+-------------------------------------------------
+
+.. include:: /includes/change-stream-pre-and-post-images-introduction.rst
+
+.. include:: /includes/change-stream-pre-and-post-images-additional-information.rst
+
+For complete examples with the change stream output, see
+:ref:`db.collection.watch-change-streams-pre-and-post-images-example`.
+
 
 .. toctree::
    :titlesonly:

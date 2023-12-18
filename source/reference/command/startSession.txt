@@ -15,33 +15,47 @@ Definition
 
 .. dbcommand:: startSession
 
-   .. versionadded:: 3.6
-
    The :dbcommand:`startSession` command starts a new logical
    :ref:`session <sessions>` for a sequence of operations.
 
-   :dbcommand:`startSession` has the following syntax:
 
-   .. code-block:: javascript
+   .. |method| replace:: :method:`Mongo.startSession`
+      helper method
+   .. include:: /includes/fact-dbcommand-tip
 
-      { startSession: 1 }
+Syntax
+------
 
-   .. include:: /includes/fact-dbcommand.rst
+The command has the following syntax:
 
-   .. |command| replace:: :dbcommand:`startSession`
+.. code-block:: javascript
 
-   .. code-block:: javascript
+   db.runCommand(
+      { 
+        startSession: 1
+      }
+   )
 
-      db.runCommand( { startSession: 1 } )
+.. include:: /includes/fact-dbcommand.rst
 
-   .. important::
+.. |command| replace:: :dbcommand:`startSession`
 
-      ``featureCompatibilityVersion`` must be 3.6 or greater to use the
-      :dbcommand:`startSession` command.
+.. code-block:: javascript
 
-   .. seealso::
+   db.runCommand( 
+      { 
+        startSession: 1 
+      } 
+   )
 
-      :method:`Mongo.startSession()`
+.. important::
+
+  ``featureCompatibilityVersion`` must be 3.6 or greater to use the
+  :dbcommand:`startSession` command.
+
+.. seealso::
+
+  :method:`Mongo.startSession()`
 
 Behavior
 --------

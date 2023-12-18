@@ -4,6 +4,10 @@ $unset
 
 .. default-domain:: mongodb
 
+.. facet::
+   :name: programming_language
+   :values: shell
+
 .. contents:: On this page
    :local:
    :backlinks: none
@@ -21,20 +25,33 @@ Definition
 
 .. update:: $unset
 
-   The :update:`$unset` operator deletes a particular field. Consider
-   the following syntax:
+   The :update:`$unset` operator deletes a particular field. 
+   
+Compatibility
+-------------
 
-   .. code-block:: javascript
+.. |operator-method| replace:: ``$unset``
 
-     { $unset: { <field1>: "", ... } }
+.. include:: /includes/fact-compatibility.rst
 
-   The specified value in the :update:`$unset` expression (i.e. ``""``)
-   does not impact the operation.
+Syntax
+------
 
-   .. include:: /includes/use-dot-notation.rst
+Consider the following syntax:
+
+.. code-block:: javascript
+
+   { $unset: { <field1>: "", ... } }
+
+The specified value in the :update:`$unset` expression (i.e. ``""``)
+does not impact the operation.
+
+.. include:: /includes/use-dot-notation.rst
 
 Behavior
 --------
+
+.. include:: /includes/fact-update-operator-processing-order.rst
 
 If the field does not exist, then :update:`$unset` does nothing (i.e.
 no operation).
@@ -49,19 +66,53 @@ array size and element positions.
 Example
 -------
 
-The following :method:`~db.collection.update()` operation uses the
-:update:`$unset` operator to remove the fields ``quantity`` and
-``instock`` from the *first* document in the ``products`` collection
-where the field ``sku`` has a value of ``unknown``.
+Create the ``products`` collection:
 
 .. code-block:: javascript
 
-   db.products.update(
+   db.products.insertMany( [
+      { "item": "chisel", "sku": "C001", "quantity": 4, "instock": true },
+      { "item": "hammer", "sku": "unknown", "quantity": 3, "instock": true },
+      { "item": "nails", "sku": "unknown", "quantity": 100, "instock": true }
+   ] )
+
+Update the *first* document in the ``products`` collection where the
+value of ``sku`` is ``unknown``:
+
+.. code-block:: javascript
+
+   db.products.updateOne(
       { sku: "unknown" },
       { $unset: { quantity: "", instock: "" } }
    )
 
+:method:`~db.collection.updateOne()` uses the :update:`$unset` operator to:
+
+- remove the ``quantity`` field
+- remove the ``instock`` field
+
+.. code-block:: javascript
+   :copyable: false
+
+   {
+     item: 'chisel',
+     sku: 'C001',
+     quantity: 4,
+     instock: true
+   },
+   {
+     item: 'hammer',
+     sku: 'unknown'
+   },
+   {
+     item: 'nails',
+     sku: 'unknown',
+     quantity: 100,
+     instock: true
+   }
+
 .. seealso::
 
-   :method:`db.collection.update()`
+   :method:`db.collection.updateMany()`
    :method:`db.collection.findAndModify()`
+

@@ -16,8 +16,7 @@ getKeyVault()
 
    Returns the ``KeyVault`` object for the current database connection.
    The ``KeyVault`` object supports data encryption key management for
-   :doc:`Client-side field level encryption
-   </core/security-client-side-encryption>`. 
+   :ref:`{+csfle+} <manual-csfle-feature>`. 
 
    :method:`getKeyVault()` has the following syntax:
 
@@ -64,7 +63,7 @@ The following example uses a :ref:`locally managed key
 <field-level-encryption-local-kms>` for the client-side field level
 encryption configuration. 
 
-.. include:: /includes/extracts/csfle-connection-boilerplate.rst
+.. include:: /includes/csfle-connection-boilerplate-example.rst
 
 Use the :method:`getKeyVault()` method to retrieve the
 key vault object:

@@ -1,3 +1,5 @@
+.. _production-considerations:
+
 =========================
 Production Considerations
 =========================
@@ -124,14 +126,24 @@ The :parameter:`transactionLifetimeLimitSeconds` also ensures that
 expired transactions are aborted periodically to relieve storage cache
 pressure.
 
+.. note::
+
+   If you have an uncommitted transaction that causes excessive pressure
+   on the :ref:`WiredTiger cache <storage-wiredtiger>`, the transaction
+   aborts and returns a :term:`write conflict` error.
+
+   If a transaction is too large to ever fit in the WiredTiger cache,
+   the transaction aborts and returns a ``TransactionTooLargeForCache``
+   error.
+
 Transactions and Security
 -------------------------
 
-- If running with :doc:`access control </core/authorization>`, you must
+- If running with :ref:`access control <authorization>`, you must
   have :doc:`privileges </reference/built-in-roles>` for the
   :ref:`operations in the transaction <transactions-operations>`.
 
-- If running with :doc:`auditing </core/auditing>`, operations in an
+- If running with :ref:`auditing <auditing>`, operations in an
   aborted transaction are still audited. However, there is no audit
   event that indicates that the transaction aborted.
 
@@ -320,4 +332,3 @@ Additional Information
 .. seealso::
 
    :doc:`/core/transactions-sharded-clusters`
-

@@ -27,8 +27,8 @@ Definition
 
       Executing JavaScript inside an aggregation expression may
       decrease performance. Only use the :expression:`$function`
-      operator if the provided :doc:`pipeline operators
-      </reference/operator/aggregation>` cannot fulfill your
+      operator if the provided :ref:`pipeline operators
+      <aggregation-pipeline-operator-reference>` cannot fulfill your
       application's needs.
 
 Syntax
@@ -134,15 +134,14 @@ Alternative to ``$where``
 The query operator :query:`$where` can also be used to specify
 JavaScript expression. However:
    
-- Starting in MongoDB 3.6, the :query:`$expr` operator allows the use
-  of :ref:`aggregation expressions <aggregation-framework>` within the
+- The :query:`$expr` operator allows the use of 
+  :ref:`aggregation expressions <aggregation-expressions>` within the
   query language.
-  
+
 - Starting in MongoDB 4.4, the :expression:`$function` and
   :group:`$accumulator` allows users to define custom aggregation
-  expressions in JavaScript if the provided :doc:`pipeline operators
-  </reference/operator/aggregation>` cannot fulfill your application's
-  needs.
+  expressions in JavaScript if the provided pipeline operators
+  cannot fulfill your application's needs.
    
 Given the available aggregation operators:
 
@@ -155,6 +154,12 @@ Given the available aggregation operators:
 - However, if you must create custom expressions,
   :expression:`$function` is preferred over :query:`$where`.
 
+Unsupported Array and String Functions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/fact-6.0-js-engine-change.rst
+
+.. include:: /includes/fact-mozjs-list-lead-in.rst
 
 Examples
 --------
@@ -230,14 +235,12 @@ Example 2: Alternative to ``$where``
 
 .. note:: Aggregation Alternatives Preferred over ``$where``
 
-
-   Starting in MongoDB 3.6, the :query:`$expr` operator allows the use
-   of :ref:`aggregation expressions <aggregation-framework>` within the
+   The :query:`$expr` operator allows the use of 
+   :ref:`aggregation expressions <aggregation-expressions>` within the
    query language. And, starting in MongoDB 4.4, the
    :expression:`$function` and :group:`$accumulator` allows users to
    define custom aggregation expressions in JavaScript if the provided
-   :doc:`pipeline operators </reference/operator/aggregation>` cannot
-   fulfill your application's needs.
+   pipeline operators cannot fulfill your application's needs.
    
    Given the available aggregation operators:
 
@@ -276,4 +279,3 @@ The example can be expressed using :query:`$expr` and :expression:`$function`:
          args: [ "$name" ],
          lang: "js"
    } } } )
-

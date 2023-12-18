@@ -9,81 +9,101 @@ collStats
    :backlinks: none
    :depth: 1
    :class: singlecol
-
+ 
 Definition
 ----------
 
+
 .. dbcommand:: collStats
 
-   The :dbcommand:`collStats` command returns a variety of storage statistics
+   .. deprecated:: 6.2
+   
+   .. include:: /includes/fact-coll-stats-deprecated.rst
+
+   The ``collStats`` command returns a variety of storage statistics
    for a given collection.
+
+   .. include:: /includes/fact-collStats-aggregation-stage.rst
+
+   .. |method| replace:: :method:`~db.collection.stats` helper method.  
+      Specific fields in the ``collStats`` output can be accessed using the
+      :method:`~db.collection.dataSize`,
+      :method:`~db.collection.estimatedDocumentCount`,
+      :method:`~db.collection.isCapped`,
+      :method:`~db.collection.latencyStats`,
+      :method:`~db.collection.storageSize`,
+      :method:`~db.collection.totalIndexSize`, and
+      :method:`~db.collection.totalSize`
+      helper methods
+   .. include:: /includes/fact-dbcommand-tip
 
    .. |command| replace:: ``collStats``
 
    .. include:: /includes/fact-dbcommand.rst
 
-   The :dbcommand:`collStats` command has the following syntax:
+Syntax
+------
 
-   .. code-block:: javascript
+The command has the following syntax:
 
+.. code-block:: javascript
+
+   db.runCommand(
       {
-         collStats: <string>,
-         scale: <int>
+        collStats: <string>,
+        scale: <int>
       }
+   )
 
-   The command takes the following fields:
+Command Fields
+~~~~~~~~~~~~~~
 
+The command takes the following fields:
 
-   .. list-table::
-      :header-rows: 1
-      :widths: 20 20 80
-   
-      * - Field
-   
-        - Type
-   
-        - Description
-   
-      * - ``collStats``
-   
-        - string
-   
-        - The name of the target collection. 
-          
-          If the collection does not exist, :dbcommand:`collStats` returns 
-          an error message.
-          
-          
-   
-      * - ``scale``
-   
-        - int
-   
-        - Optional. The scale factor for the various size data (with the exception of
-          those sizes that specify the unit of measurement in the field name). The
-          value defaults to 1 to return size data in bytes. To display
-          kilobytes rather than bytes, specify a ``scale`` value of ``1024``.
-          
-          If you specify a non-integer scale factor, MongoDB uses the integer
-          part of the specified factor. For example, if you specify a scale
-          factor of ``1023.999``, MongoDB uses ``1023`` as the scale factor.
-          
-          The scale factor rounds the affected size values to whole numbers.
-          
-          .. include:: /includes/extracts/4.2-changes-stats-scaleFactor.rst
-          
-          
-   
-
-
-   .. note::
-
-      Starting in version 4.2, MongoDB removes the MMAPv1 storage
-      engine. In conjunction with this change, MongoDB removes the
-      MMAPv1 specific :dbcommand:`collStats` option ``verbose``.
+.. list-table::
+   :header-rows: 1
+   :widths: 20 20 80
+ 
+   * - Field
+ 
+     - Type
+ 
+     - Description
+ 
+   * - ``collStats``
+ 
+     - string
+ 
+     - The name of the target collection. 
+ 
+   * - ``scale``
+ 
+     - int
+ 
+     - Optional. The scale factor for the various size data (with the exception of
+       those sizes that specify the unit of measurement in the field name). The
+       value defaults to 1 to return size data in bytes. To display
+       kilobytes rather than bytes, specify a ``scale`` value of ``1024``.
+       
+       If you specify a non-integer scale factor, MongoDB uses the integer
+       part of the specified factor. For example, if you specify a scale
+       factor of ``1023.999``, MongoDB uses ``1023`` as the scale factor.
+       
+       The scale factor rounds the affected size values to whole numbers.
 
 Behavior
 --------
+
+Redaction
+~~~~~~~~~
+
+When using :ref:`Queryable Encryption <qe-manual-feature-qe>`,
+``$collStats`` output redacts certain information for encrypted
+collections:
+
+* The output omits ``"queryExecStats"``
+* The output omits ``"latencyStats"``
+* The output redacts ``"WiredTiger"``, if present, to include only the ``url`` field.
 
 Scaled Sizes
 ~~~~~~~~~~~~
@@ -97,7 +117,7 @@ The scale factor rounds the affected size values to whole numbers.
 Accuracy after Unexpected Shutdown
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. |cmd| replace:: :dbcommand:`collStats`
+.. |cmd| replace:: ``collStats``
 .. |opt| replace:: size
 
 .. include:: /includes/fact-unexpected-shutdown-accuracy.rst
@@ -105,8 +125,7 @@ Accuracy after Unexpected Shutdown
 In-Progress Indexes
 ~~~~~~~~~~~~~~~~~~~
 
-Starting in MongoDB 4.2, the :dbcommand:`collStats` includes
-information on indexes currently being built. For details, see:
+``collStats`` includes information on indexes currently being built. For details, see:
 
 - :data:`collStats.nindexes`
 - :data:`collStats.indexDetails`
@@ -119,12 +138,37 @@ Replica Set Member State Restriction
 
 .. include:: /includes/extracts/4.4-changes-repl-state-restrictions-operation.rst
 
-.. |operations| replace:: :dbcommand:`collStats`
+.. |operations| replace:: ``collStats``
+
+Non-Existent Collections
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you run ``collStats`` for a non-existent collection, then
+depending on your database implementation, ``collStats`` might
+return ``0`` values in the output fields instead of returning an error.
+
+For example:
+
+.. code-block:: javascript
+
+   db.runCommand( { collStats : "nonExistentCollection" } )
+
+Example output with ``0`` values in the fields:
+
+.. code-block:: javascript
+   :copyable: false
+
+   {
+      ns: 'test.nonExistentCollection',
+      size: 0,
+      count: 0,
+      ...
+   }
 
 Example
 -------
 
-The following operation runs the :dbcommand:`collStats` command on the
+The following operation runs the ``collStats`` command on the
 ``restaurants`` collection, specifying a scale of ``1024`` bytes:
 
 .. code-block:: javascript
@@ -132,11 +176,10 @@ The following operation runs the :dbcommand:`collStats` command on the
    db.runCommand( { collStats : "restaurants", scale: 1024 } )
 
 The following document provides a representation of the
-:dbcommand:`collStats` output. Depending on the configuration of your
+``collStats`` output. Depending on the configuration of your
 collection and the storage engine, the output fields may vary.
 
 .. code-block:: javascript
-
 
    {
      "ns" : <string>,
@@ -160,6 +203,7 @@ collection and the storage engine, the output fields may vary.
      },
      "count" : <number>,
      "avgObjSize" : <number>,
+     "numOrphanDocs" : <number>,      // Available starting in MongoDB 6.0
      "storageSize" : <number>,
      "freeStorageSize" : <number>,
      "capped" : <boolean>,
@@ -350,7 +394,7 @@ collection and the storage engine, the output fields may vary.
         },
         ...
      },
-     "indexBuilds" : [            // Available starting in MongoDB 4.2
+     "indexBuilds" : [
         <string>,
      ],
      "totalIndexSize" : <number>,
@@ -360,7 +404,7 @@ collection and the storage engine, the output fields may vary.
              "<indexName>" : <number>,
              ...
      },
-     "scaleFactor" : <number> // Available starting in MongoDB 4.2
+     "scaleFactor" : <number>
      "ok" : <number>
    }
 
@@ -387,7 +431,7 @@ Output
 .. data:: collStats.timeseries
 
    :data:`~collStats.timeseries` appears when you run the
-   :dbcommand:`collStats` command on a :ref:`time series collection
+   ``collStats`` command on a :ref:`time series collection
    <manual-timeseries-collection>`.
 
    This document contains data for internal diagnostic use.
@@ -401,6 +445,13 @@ Output
 
    The average size of an object in the collection. The ``scale``
    argument does not affect this value.
+
+.. data:: collStats.numOrphanDocs
+
+   The number of :term:`orphaned documents <orphaned document>` in the 
+   collection.
+
+   .. versionadded:: 6.0
 
 .. data:: collStats.storageSize
 
@@ -433,8 +484,8 @@ Output
    The number of indexes on the collection. All collections have at
    least one index on the :term:`_id` field.
 
-   Starting in MongoDB 4.2, :data:`~collStats.nindexes` includes in its
-   count those indexes currently being built.
+   :data:`~collStats.nindexes` includes indexes currently being built in
+   its count.
 
 .. data:: collStats.indexDetails
 
@@ -447,7 +498,7 @@ Output
    index provided by the storage engine. These statistics are for
    internal diagnostic use.
 
-   Starting in MongoDB 4.2, :data:`~collStats.indexDetails` includes
+   :data:`~collStats.indexDetails` includes
    details on indexes currently being built.
 
 .. data:: collStats.indexBuilds
@@ -456,20 +507,18 @@ Output
    being built on the collection. Once an index build completes, the
    index does not appear in the :data:`~collStats.indexBuilds`.
 
-   .. versionadded:: 4.2
-
 .. data:: collStats.totalIndexSize
 
-   The total size of all indexes. The ``scale`` argument affects this
-   value.
+   Sum of the disk space used by all indexes. The ``scale`` argument 
+   affects this value.
 
    If an index uses prefix compression (which is the :option:`default
    for WiredTiger <mongod --wiredTigerIndexPrefixCompression>`), the
    returned size reflects the compressed size for any such indexes when
    calculating the total.
    
-   Starting in MongoDB 4.2, :data:`~collStats.totalIndexSize` includes
-   in its total the size of those indexes currently being built.
+   :data:`~collStats.totalIndexSize` includes indexes currently being
+   built in the total size.
 
 .. data:: collStats.totalSize
 
@@ -488,8 +537,7 @@ Output
    for WiredTiger <mongod --wiredTigerIndexPrefixCompression>`), the
    returned size reflects the compressed size.
 
-   Starting in MongoDB 4.2, :data:`~collStats.indexSizes` includes
-   sizes of indexes currently being built.
+   :data:`~collStats.indexSizes` includes the sizes of indexes currently being built.
 
 .. data:: collStats.scaleFactor
 
@@ -499,8 +547,6 @@ Output
    integer part of the specified factor. For example, if you specify a
    scale factor of ``1023.999``, MongoDB uses ``1023`` as the scale
    factor.
-
-   .. versionadded:: 4.2
 
 .. data:: collStats.capped
 
@@ -519,7 +565,8 @@ Output
 .. data:: collStats.wiredTiger
 
    :data:`~collStats.wiredTiger` only appears when using the
-   WiredTiger storage engine.
+   WiredTiger storage engine. When using :ref:`Queryable Encryption
+   <qe-manual-feature-qe>`, WiredTiger data is redacted to only the ``url`` field.
 
    This document contains data reported
    directly by the WiredTiger engine and other data for internal
@@ -527,8 +574,8 @@ Output
 
 .. data:: collStats.inMemory
 
-   :data:`~collStats.inMemory` only appears when using the
-    in-memory storage engine.
+   :data:`~collStats.inMemory` only appears when using the in-memory
+   storage engine.
 
    This document contains data reported
    directly by the storage engine and other data for internal

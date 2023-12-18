@@ -10,6 +10,10 @@ setAuditConfig
    :depth: 1
    :class: singlecol
 
+.. important:: 
+   
+   .. include:: /includes/deprecated-get-set-auditconfig.rst
+
 Definition
 ----------
 
@@ -20,53 +24,65 @@ Definition
    :dbcommand:`setAuditConfig` is an administrative command that
    sets new audit configurations for :binary:`~bin.mongod` and
    :binary:`~bin.mongos` server instances at runtime.
+   
+   Use the :method:`db.adminCommand( { command } )<db.adminCommand()>` 
+   method to run :dbcommand:`setAuditConfig` against the ``admin`` 
+   database.
 
-   The command syntax is:
+Syntax
+------
 
-   .. code-block:: javascript
+The command has the following syntax:
 
-      { setAuditConfig: 1, filter: <Filter Document>, auditAuthorizationSuccess: <Boolean> }
+.. code-block:: javascript
 
-   :dbcommand:`setAuditConfig` has the following fields:
+   db.adminCommand(
+      { 
+        setAuditConfig: 1, 
+        filter: <Filter Document>,
+        auditAuthorizationSuccess: <Boolean> 
+      }
+   )
 
-   .. list-table::
-      :header-rows: 1
-      :widths: 20 20 80
+Command Fields
+--------------
 
-      * - Field
-        - Type
-        - Description
+The command has the following fields:
 
-      * - ``setAuditConfig``
-        - integer
-        - Run :dbcommand:`setAuditConfig`
-
-      * - ``filter``
-        - document
-        - An :doc:`audit filter </tutorial/configure-audit-filters>`
-
-      * - ``auditAuthorizationSuccess``
-        - boolean
-        - Log all, or only failed access authorizations
-
-   Use the
-   :method:`db.adminCommand( { command } )<db.adminCommand()>` method
-   to run :dbcommand:`setAuditConfig` against the ``admin`` database.
+.. list-table::
+   :header-rows: 1
+   :widths: 20 20 80
+ 
+   * - Field
+     - Type
+     - Description
+ 
+   * - ``setAuditConfig``
+     - integer
+     - Run :dbcommand:`setAuditConfig`
+ 
+   * - ``filter``
+     - document
+     - An :ref:`audit filter <audit-filter>`
+ 
+   * - ``auditAuthorizationSuccess``
+     - boolean
+     - Log all, or only failed access authorizations
+ 
 
 Behavior
 --------
 
-Enable :doc:`Auditing </core/auditing>` to use
+Enable :ref:`auditing <auditing>` to use
 :dbcommand:`setAuditConfig` at runtime.
 
-:parameter:`auditAuthorizationSuccess` enables
-:doc:`auditing </core/auditing>` of authorization success for the
-:ref:`authCheck <audit-action-details-results>` action. The parameter
-value must be ``true`` to audit :authaction:`read` and
-:authaction:`write` operations. However, when
+:parameter:`auditAuthorizationSuccess` enables auditing of 
+authorization success for the :ref:`authCheck
+<audit-action-details-results>` action. The parameter value must be
+``true`` to audit read and write operations. However, when
 :parameter:`auditAuthorizationSuccess` is ``false`` auditing has less
-performance impact because the :doc:`audit system </core/auditing>`
-only logs authorization failures.
+performance impact because the audit system only logs authorization 
+failures.
 
 Configuration updates are distributed via the :term:`oplog` mechanism
 which means updates on :binary:`~bin.mongod` nodes are distributed to
@@ -76,8 +92,8 @@ have to :parameter:`poll <auditConfigPollingFrequencySecs>` the primary
 server at regular intervals for configuration updates. You may see
 stale data due to polling delay if you run :dbcommand:`setAuditConfig`
 on the primary server and :dbcommand:`getAuditConfig` on a
-:doc:`shard </sharding>` before the shard has polled the primary server
-for updated configuration details.
+:ref:`shard <sharding-introduction>` before the shard has polled the 
+primary server for updated configuration details.
 
 Examples
 --------
@@ -146,8 +162,8 @@ Audit Document Interactions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Set :parameter:`auditAuthorizationSuccess` to ``true`` and create a
-filter which includes actions of interest to audit :authaction:`read`
-and :authaction:`write` operations.
+filter which includes actions of interest to audit read and write
+operations.
 
 
 .. code-block:: javascript
@@ -199,6 +215,7 @@ Search the ``inventory`` collection in the ``sales`` database using the
 
 .. seealso::
 
-   :method:`db.adminCommand`, :dbcommand:`getAuditConfig`,
-   :doc:`configure audit filters</tutorial/configure-audit-filters>`
+   - :method:`db.adminCommand`
+   - :dbcommand:`getAuditConfig`
+   - :ref:`configure audit filters <audit-filter>`
 

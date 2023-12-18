@@ -43,11 +43,15 @@ Definition
 Syntax
 ------
 
-The command takes the following form:
+The command has the following syntax:
 
 .. code-block:: javascript
 
-   db.runCommand( { hello: 1 } )
+   db.runCommand( 
+      { 
+        hello: 1 
+      } 
+   )
 
 The :dbcommand:`hello` command accepts optional fields
 ``saslSupportedMechs: <db.user>`` to return an additional field
@@ -56,7 +60,13 @@ add a log comment associated with the command.
 
 .. code-block:: javascript
 
-   db.runCommand( { hello: 1, saslSupportedMechs: "<db.username>", comment: <any> } )
+   db.runCommand( 
+      { 
+        hello: 1, 
+        saslSupportedMechs: "<db.username>", 
+        comment: <any> 
+      } 
+   )
 
 The :method:`db.hello()` method in :binary:`~bin.mongosh`
 provides a wrapper around :dbcommand:`hello`.
@@ -70,6 +80,8 @@ Client Disconnection
 ~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/extracts/4.2-changes-disconnect.rst
+
+.. _hello-cmd-output:
 
 Output
 ------
@@ -130,7 +142,7 @@ roles:
 
 .. data:: hello.connectionId
 
-   An identifier for the :binary:`~bin.mongod`/:binary:`~bin.mongos`
+   An identifier for the :binary:`mongod` / :binary:`mongos`
    instance's outgoing connection to the client.
 
 .. data:: hello.minWireVersion

@@ -21,8 +21,17 @@ Definition
    The shard key determines how MongoDB distributes the collection's
    documents among the shards.
 
-   The :binary:`~bin.mongosh` method :method:`sh.shardCollection`
-   wraps the :dbcommand:`shardCollection` command.
+   .. note::
+
+      .. versionchanged:: 6.0
+
+      Starting in MongoDB 6.0, sharding a collection does **not** require you to
+      first run the :method:`sh.enableSharding` method to configure the database.
+
+
+   .. |dbcommand| replace:: :dbcommand:`shardCollection` command
+   .. include:: /includes/fact-mongosh-shell-method-alt.rst
+
 
    :method:`sh.shardCollection()` takes the following
    arguments:
@@ -49,7 +58,7 @@ Definition
         - document
    
         - The document that specifies the field or fields to use as the
-          :doc:`shard key </core/sharding-shard-key/>`. 
+          :ref:`shard key <sharding-shard-key>`. 
           
           ``{ <field1>: <1|"hashed">, ... }``
 
@@ -60,7 +69,7 @@ Definition
           - ``"hashed"`` to specify a
             :ref:`hashed shard key <hashed-shard-keys>`.
           
-          :doc:`shard key </core/sharding-shard-key/>` must be
+          :ref:`shard key <sharding-shard-key>` must be
           supported by an index. Unless the collection is empty, the
           index must exist prior to the :dbcommand:`shardCollection`
           command. If the collection is empty, MongoDB creates the
@@ -116,8 +125,8 @@ Definition
           initially when sharding an *empty* collection with a
           :ref:`hashed shard key <sharding-hashed-sharding>`. MongoDB
           then creates and balances chunks across the cluster. The
-          ``numInitialChunks`` must be less than ``8192`` per shard.
-          Defaults to ``2``.
+          ``numInitialChunks`` parameter must be less than ``8192`` chunks per shard.
+          Defaults to ``2`` chunks per shard.
 
           If the collection is not empty or the shard key does not
           contain a hashed field, the operation returns an error.
@@ -145,10 +154,9 @@ Definition
         - document
    
         - Optional. If the collection specified to ``shardCollection``
-          has a default :doc:`collation </reference/collation>`,
-          you *must* include a collation document with
-          ``{ locale : "simple" }``, or
-          the ``shardCollection`` command fails. At least one of the indexes
+          has a default :ref:`collation <collation>`, you *must* include 
+          a collation document with``{ locale : "simple" }``, or the 
+          ``shardCollection`` command fails. At least one of the indexes
           whose fields support the shard key pattern must have the simple
           collation.
 
@@ -179,6 +187,52 @@ Definition
             <updateZoneKeyRange-method-init-chunk-distribution>`.
 
           .. versionadded:: 4.4
+
+      * - :ref:`timeseries <method-shard-collection-timeseries>`
+
+        - document
+
+        - .. _method-shard-collection-timeseries:
+
+          .. include:: /includes/time-series/fact-timeseries-param-desc.rst
+          
+          For detailed syntax, see
+          :ref:`method-sharded-time-series-collection-options`.
+
+.. _method-sharded-time-series-collection-options:
+
+Time Series Options
+~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 5.1
+
+To create a new :ref:`time series collection
+<manual-timeseries-collection>` that is sharded, specify the
+:ref:`timeseries <cmd-shard-collection-timeseries>` option to
+:method:`sh.shardCollection()`.
+
+The :ref:`timeseries <cmd-shard-collection-timeseries>` option takes
+the following fields:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 20 80
+
+   * - Field
+     - Type
+     - Description
+
+   * - ``timeField``
+     - string
+     - .. include:: /includes/time-series/fact-time-field-description.rst
+
+   * - ``metaField``
+     - string
+     - .. include:: /includes/time-series/fact-meta-field-description.rst
+
+   * - ``granularity``
+     - string
+     - .. include:: /includes/time-series/fact-granularity-description.rst
           
 
 Considerations
@@ -193,6 +247,11 @@ While you can :ref:`change your shard key <change-a-shard-key>`
 later, it is important to carefully consider your shard key choice to
 avoid scalability and perfomance issues.
 
+Shard Keys on Time Series Collections
+`````````````````````````````````````
+
+.. include:: /includes/time-series/fact-shard-key-limitations.rst
+
 .. seealso::
 
   - :ref:`sharding-shard-key`
@@ -202,7 +261,7 @@ Hashed Shard Keys
 ~~~~~~~~~~~~~~~~~
 
 :ref:`Hashed shard keys <sharding-hashed-sharding>` use a
-:doc:`hashed index </core/index-hashed>` or  a
+:ref:`hashed index <index-type-hashed>` or  a
 :ref:`compound hashed index <index-type-compound-hashed>`
 as the shard key.
 
@@ -246,7 +305,7 @@ See :ref:`pre-define-zone-range-hashed-example` for an example.
 
 .. seealso::
 
-   :ref:`initial-chunks`
+   :ref:`initial-ranges`
  
 Uniqueness
 ~~~~~~~~~~
@@ -290,7 +349,7 @@ following example uses
 - a :ref:`hashed shard key <sharding-hashed-sharding>` on the
   ``last_name`` field,
 - ``5`` initial chunks, and
-- a :doc:`collation </reference/collation>` of ``simple``. 
+- a collation of ``simple``. 
 
 .. code-block:: javascript
 

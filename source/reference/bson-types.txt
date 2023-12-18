@@ -6,6 +6,10 @@ BSON Types
 
 .. default-domain:: mongodb
 
+.. facet::
+   :name: programming_language 
+   :values: shell
+
 .. contents:: On this page
    :local:
    :backlinks: none
@@ -36,10 +40,21 @@ following table:
 To determine a field's type, see :ref:`check-types-in-shell`.
 
 If you convert BSON to JSON, see
-the :doc:`Extended JSON </reference/mongodb-extended-json>` reference.
+the :ref:`Extended JSON <mongodb-extended-json-v2>` reference.
 
 The following sections describe special considerations for particular
 BSON types.
+
+.. _document-bson-type-binary-data:
+
+Binary Data
+-----------
+
+A BSON binary ``binData`` value is a byte array. A ``binData`` value
+has a subtype that indicates how to interpret the binary data. The
+following table shows the subtypes:
+
+.. include:: /includes/binary-subtypes.rst
 
 .. _document-bson-type-object-id:
 .. _objectid:
@@ -68,9 +83,11 @@ benefits:
 
      .. include:: /includes/fact-ObjectId-timestamp-order.rst
 
-.. seealso::
+Use the :method:`ObjectId()` methods to set and retrieve ObjectId
+values.
 
-   :method:`ObjectId()`
+.. include:: /includes/reference/fact-objectid-and-mongosh.rst
+
 
 .. _document-bson-type-string:
 

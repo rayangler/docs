@@ -69,7 +69,7 @@ These include:
 
 To downgrade the ``featureCompatibilityVersion`` of your replica set:
 
-#. Connect a :binary:`~bin.mongo` shell to the |target|.
+#. Connect a ``mongo`` shell to the |target|.
 
 #. .. include:: /includes/4.2-downgrade-fcv.rst
 
@@ -90,10 +90,17 @@ To downgrade the ``featureCompatibilityVersion`` of your replica set:
    If any member returns a ``featureCompatibilityVersion`` of ``"4.2"``,
    wait for the member to reflect version ``"4.0"`` before proceeding.
 
+.. note::
+
+   .. include:: /includes/arbiter-fcv.rst
+
+   .. include:: /includes/arbiter-fcv-version.rst
+
+
 For more information on the returned ``featureCompatibilityVersion``
 value, see :ref:`view-fcv`.
 
-2. Remove FCV 4.2 Persisted Features
+2. Remove fCV 4.2 Persisted Features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The following steps are necessary only if fCV has ever been set to
@@ -205,7 +212,7 @@ If the member uses ``zstd`` for journal compression only,
       </reference/configuration-options>` to prepare to restart as a
       standalone:
 
-      - Set :setting:`storage.journal.enabled` to ``false``.
+      - Set ``storage.journal.enabled`` to ``false``.
 
       - Comment out the :ref:`replication <replication-options>` settings
         for your deployment.
@@ -239,8 +246,7 @@ If the member uses ``zstd`` for journal compression only,
       - If you are using command-line options instead of a
         configuration file, 
 
-        - Include the :option:`--nojournal <mongod
-          --nojournal>` option
+        - Include the ``--nojournal`` option
         
         - Remove any :ref:`replication command-line options
           <cli-mongod-replica-set>` (such as :option:`--replSet
@@ -265,7 +271,7 @@ If the member uses ``zstd`` for journal compression only,
    #. Update the configuration file to prepare to restart as a replica set
       member with the new journal compressor:
 
-      - Remove the :setting:`storage.journal.enabled` setting.
+      - Remove the ``storage.journal.enabled`` setting.
 
       - Uncomment the :ref:`replication <replication-options>`
         settings for your deployment.
@@ -303,7 +309,7 @@ If the member uses ``zstd`` for journal compression only,
       - If you are using command-line options instead of a configuration
         file:
 
-        - Remove the :option:`--nojournal <mongod --nojournal>` option.
+        - Remove the ``--nojournal`` option.
 
         - Remove the :option:`--wiredTigerJournalCompressor <mongod
           --wiredTigerJournalCompressor>` command-line option to use
@@ -361,8 +367,8 @@ for each collection using the 4.0-incompatible keywords:
 - Use :dbcommand:`collMod` to modify the collection's 
   :collflag:`validator` and replace the :query:`$jsonSchema` with
   a schema that contains only 
-  `4.0-compatible document validation syntax 
-  <https://docs.mongodb.com/v4.0/reference/operator/query/jsonSchema#available-keywords>`__:
+  :v4.0:`4.0-compatible document validation syntax 
+  </reference/operator/query/jsonSchema#available-keywords>`:
 
   .. code-block:: javascript
 

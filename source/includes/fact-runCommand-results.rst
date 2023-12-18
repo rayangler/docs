@@ -7,36 +7,34 @@
 
    * - *<command result>*
 
-     - Result fields specific to the ``command`` that was run.
+     - Result fields specific to the ``command`` that ran.
 
    * - ``ok``
 
-     - A number that indicates whether the command has succeeded
-       (``1``) or failed (``0``).
+     - A number that indicates if the command succeeded (``1``)
+       or failed (``0``).
 
    * - ``operationTime``
 
-     - The logical time of the performed operation, represented in
-       MongoDB by the timestamp from the oplog entry. *Only for replica
-       sets and sharded clusters*
+     - The logical time of the operation. MongoDB uses the logical time 
+       to order operations. *Only for replica sets and sharded 
+       clusters.*
 
-       If the command does not generate an oplog entry, e.g. a read
-       operation, then the operation does not advance the logical
+       If the command does not generate an oplog entry, for example, a
+       read operation, then the operation does not advance the logical
        clock. In this case, ``operationTime`` returns:
 
-       - For read concern :readconcern:`"local"`, the timestamp of the
-         most recent entry in the oplog.
+       - For read concern :readconcern:`"local"`,
+         :readconcern:`"snapshot"`, and :readconcern:`"linearizable"`,
+         the timestamp of the most recent entry in the oplog.
 
-       - For read concern :readconcern:`"majority"` and
-         :readconcern:`"linearizable"`, the timestamp of the most
-         recent :writeconcern:`majority-acknowledged <"majority">`
-         entry in the oplog.
+       - For read concern :readconcern:`"majority"`, the timestamp of
+         the most recent :writeconcern:`majority-acknowledged
+         <"majority">` entry in the oplog.
 
-       For operations associated with :ref:`causally consistent
-       sessions <causal-consistency>`, MongoDB drivers use this time
-       to automatically set the :ref:`afterClusterTime`.
-
-       .. versionadded:: 3.6
+       For operations associated with :ref:`causally consistent sessions
+       <causal-consistency>`, the MongoDB drivers use the logical time
+       to automatically set the :ref:`afterClusterTime` period.
 
    * - ``$clusterTime``
    
@@ -50,6 +48,3 @@
 
        - ``signature``: a document that contains the hash of the cluster time and the id
          of the key used to sign the cluster time.
-
-       .. versionadded:: 3.6
-

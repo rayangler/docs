@@ -15,16 +15,14 @@ Replica Set Arbiter
 
 .. start-content
 
-In some circumstances (such as you have a primary and a secondary but
-cost constraints prohibit adding another secondary), you may choose to
-add an arbiter to your replica set. An arbiter does **not** have a copy
-of the data set and **cannot** become a primary. However, an arbiter
-participates in :ref:`elections for primary <replica-set-elections>`.
-An arbiter has exactly ``1`` election vote.
+In some circumstances (such as when you have a primary and a secondary,
+but cost constraints prohibit adding another secondary), you may choose
+to add an arbiter to your replica set. An arbiter participates in
+:ref:`elections for primary <replica-set-elections>` but an arbiter does
+**not** have a copy of the data set and **cannot** become a primary.
 
-.. versionchanged:: 3.6
-
-   .. include:: /includes/fact-arbiter-priority.rst
+An arbiter has exactly ``1`` election vote. By default an arbiter has
+priority ``0``.
 
 .. important::
 
@@ -35,18 +33,12 @@ To add an arbiter, see :doc:`/tutorial/add-replica-set-arbiter`.
 
 .. end-content
 
-Example
--------
+Release Version Considerations
+------------------------------
 
-.. start-content-even-votes-example
+.. include:: /includes/5.1/fact-do-not-use-with-quarterlies.rst
 
-For example, in the following replica set with a 2 data bearing members
-(the primary and a secondary), an arbiter allows the set to have an odd
-number of votes to break a tie:
-
-.. include:: /images/replica-set-primary-with-secondary-and-arbiter.rst
-
-.. end-content-even-votes-example
+.. _replica-set-arbiter-performance-psa:
 
 Performance Issues with PSA replica sets
 ----------------------------------------
@@ -58,6 +50,51 @@ Replica Set Protocol Version and Arbiter
 
 .. include:: /includes/extracts/arbiters-and-pvs-with-reference.rst
 
+For more information, see the
+:dbcommand:`setFeatureCompatibilityVersion` command.
+
+.. _rollbacks-multi-arbiters:
+
+Concerns with Multiple Arbiters
+-------------------------------
+
+Use a single arbiter to avoid problems with data consistency. Multiple
+arbiters prevent the reliable use of the majority write concern.
+
+To ensure that a write will persist after the failure of a primary node,
+the majority write concern requires a majority of nodes to acknowledge
+a write operation. Arbiters do not store any data, but they do
+contribute to the number of nodes in a replica set. When a replica set
+has multiple arbiters it is less likely that a majority of data bearing
+nodes will be available after a node failure.
+
+.. warning::
+
+   If a secondary node falls behind the primary, and the cluster is
+   :method:`reconfigured <rs.reconfig()>`, votes from multiple arbiters
+   can elect the node that had fallen behind. The new primary will not
+   have the unreplicated writes even though the writes could have been
+   majority committed by the old configuration. The result is data
+   loss.
+
+   To avoid this scenario, use at most a single arbiter.
+
+.. versionadded:: 5.3
+
+Starting in MongoDB 5.3, support for multiple arbiters in a replica set is
+disabled by default. If you attempt to add multiple arbiters to a
+replica set, the server returns an error:
+
+.. code-block:: text
+   :copyable: false
+
+   MongoServerError: Multiple arbiters are not allowed unless all nodes
+   were started with --setParameter 'allowMultipleArbiters=true'
+
+To add multiple arbiters to a replica set using MongoDB 5.3 or later, start
+each node with the :parameter:`allowMultipleArbiters` parameter set to ``true``:
+
+.. include:: /includes/setParameter-allowMultipleArbiters.rst
 
 Security
 --------
@@ -88,3 +125,17 @@ exchanges are not encrypted.
 
 As with all MongoDB components, run arbiters in trusted network
 environments.
+
+Example
+-------
+
+.. start-content-even-votes-example
+
+For example, in the following replica set with 2 data-bearing members
+(the primary and a secondary), an arbiter allows the set to have an odd
+number of votes to break a tie:
+
+.. include:: /images/replica-set-primary-with-secondary-and-arbiter.rst
+
+.. end-content-even-votes-example
+

@@ -1,3 +1,5 @@
+.. _keyvault-getkeybyaltname-method:
+
 ==========================
 KeyVault.getKeyByAltName()
 ==========================
@@ -28,9 +30,6 @@ KeyVault.getKeyByAltName()
   
      Document representing a matching data encryption key.
 
-     Returns nothing if no data encryption key has the specified
-     ``keyAltName``.
-
 Behavior
 --------
 
@@ -45,7 +44,7 @@ Example
 The following example uses a locally managed KMS for the client-side
 field level encryption configuration. 
 
-.. include:: /includes/extracts/csfle-connection-boilerplate.rst
+.. include:: /includes/csfle-connection-boilerplate-example.rst
 
 Retrieve the :method:`KeyVault <getKeyVault()>` object and use the
 :method:`KeyVault.getKeyByAltName()` method to retrieve the data

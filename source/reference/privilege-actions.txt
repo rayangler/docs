@@ -19,7 +19,7 @@ available actions grouped by common purpose.
 
 MongoDB provides built-in roles with pre-defined pairings of resources and
 permitted actions. For lists of the actions granted, see
-:doc:`/reference/built-in-roles`. To define custom roles, see
+:ref:`<built-in-roles>`. To define custom roles, see
 :ref:`create-user-defined-role`.
 
 Query and Write Actions
@@ -29,8 +29,8 @@ Query and Write Actions
 
    User can perform the following commands, and their equivalent helper methods:
 
-   - :dbcommand:`aggregate` for all :doc:`pipeline operations
-     </reference/operator/aggregation>` **except**
+   - :dbcommand:`aggregate` for all :ref:`pipeline operations
+     <aggregation-pipeline-operator-reference>` **except**
      :pipeline:`$collStats`, :pipeline:`$out`, and
      :pipeline:`$indexStats`.
    - :dbcommand:`checkShardingIndex`
@@ -40,7 +40,7 @@ Query and Write Actions
    - :dbcommand:`filemd5`
    - :dbcommand:`find`
    - :dbcommand:`geoSearch` (*Removed in MongoDB 5.0*)
-   - :dbcommand:`getLastError`
+   - :dbcommand:`getLastError` (*Removed in MongoDB 5.1*)
    - :dbcommand:`getMore`
    - :dbcommand:`killCursors`, provided that the cursor is associated
      with a currently authenticated user.
@@ -60,11 +60,7 @@ Query and Write Actions
    and :dbcommand:`renameCollection` commands and the
    :method:`db.collection.renameCollection()` helper method.
 
-   .. include:: /includes/extracts/listDatabases-auth-4.0.6.rst
-
-   .. include:: /includes/extracts/listDatabases-auth-4.0.5.rst
-
-   .. include:: /includes/extracts/listDatabases-auth-4.0.0-4.0.4.rst
+   .. include:: /includes/listDatabases-auth
 
    Apply this action to database or collection resources.
 
@@ -131,10 +127,8 @@ Query and Write Actions
 
 .. authaction:: bypassDocumentValidation
 
-   .. versionadded:: 3.2
-
-   Users can bypass :doc:`document validation
-   </core/schema-validation>` on commands and methods that support
+   Users can bypass :ref:`document validation
+   <schema-validation-overview>` on commands and methods that support
    the ``bypassDocumentValidation`` option. The following commands and
    their equivalent methods support bypassing document validation:
 
@@ -148,8 +142,6 @@ Query and Write Actions
    Apply this action to database or collection resources.
 
 .. authaction:: useUUID
-
-   .. versionadded:: 3.6
 
    User can execute the following commands using a
    :abbr:`UUID (Universally Unique Identifier)` as if it were a
@@ -185,14 +177,12 @@ Database Management Actions
 .. authaction:: changeOwnCustomData
 
    Users can change their own custom information. Apply this action to
-   database resources. See also
-   :doc:`/tutorial/change-own-password-and-custom-data`.
+   database resources. See also :ref:`<change-password-custom-data>`.
 
 .. authaction:: changeOwnPassword
 
    Users can change their own passwords. Apply this action to database
-   resources. See also
-   :doc:`/tutorial/change-own-password-and-custom-data`.
+   resources. See also :ref:`<change-password-custom-data>`. 
 
 .. authaction:: changePassword
 
@@ -260,10 +250,15 @@ Database Management Actions
 
 .. authaction:: killAnyCursor
 
-   .. versionadded:: 3.6.3
-
    User can kill **any** cursor, even cursors created by other users.
    Apply this action to collection resources.
+
+.. authaction:: planCacheIndexFilter
+
+   User can run the :dbcommand:`planCacheClearFilters`,
+   :dbcommand:`planCacheListFilters`, and
+   :dbcommand:`planCacheSetFilter` commands. Apply the
+   :authaction:`planCacheIndexFilter` action to collection resources.
 
 .. authaction:: revokeRole
 
@@ -272,20 +267,18 @@ Database Management Actions
 
 .. authaction:: setAuthenticationRestriction
 
-   .. versionadded:: 3.6
-
    User can specify the
    :ref:`authenticationRestrictions <create-user-auth-restrictions>`
    field in the ``user`` document when running the following commands:
 
-   - :doc:`createUser </reference/command/createUser/>`
-   - :doc:`updateUser </reference/command/updateUser/>`
+   - :dbcommand:`createUser`
+   - :dbcommand:`updateUser`
 
    User can specify the ``authenticationRestrictions`` field in the
    ``role`` document when running the following commands:
 
-   - :doc:`createRole </reference/command/createRole/>`
-   - :doc:`updateRole </reference/command/updateRole/>`
+   - :dbcommand:`createRole`
+   - :dbcommand:`updateRole`
 
    .. note::
 
@@ -301,6 +294,11 @@ Database Management Actions
       also provide this privilege.
 
    Apply this action to database resources.
+
+.. authaction:: setFeatureCompatibilityVersion
+
+   User can run the :dbcommand:`setFeatureCompatibilityVersion` command. 
+   Apply this action to the ``cluster`` resource.
 
 .. authaction:: unlock
 
@@ -377,9 +375,8 @@ Deployment Management Actions
    methods. Apply this action to database or collection resources.
 
 .. authaction:: storageDetails
-
-   User can perform the deprecated ``storageDetails`` command. Apply this
-   action to database or collection resources.
+   
+   *Deprecated in 7.0:* The ``storageDetails`` action has been removed from the database.
 
 Change Stream Actions
 ---------------------
@@ -388,8 +385,8 @@ Change Stream Actions
 
    User with :authaction:`changeStream` and :authaction:`find` on the
    specific collection, all non-``system`` collections in a
-   specifc database, or all non-``system`` collections across all databases can
-   open :doc:`change stream cursor </changeStreams>` for that resource.
+   specific database, or all non-``system`` collections across all databases can
+   open :ref:`change stream cursor <changeStreams>` for that resource.
 
 Replication Actions
 -------------------
@@ -442,6 +439,13 @@ Sharding Actions
    User can perform the :dbcommand:`addShard` command. Apply this action
    to the ``cluster`` resource.
 
+.. authaction:: checkMetadataConsistency
+
+   User can perform the :dbcommand:`checkMetadataConsistency` command.
+   Apply this action to ``cluster``, database or collection resources.
+
+   .. versionadded:: 7.0
+      
 .. authaction:: clearJumboFlag
 
    *Available starting in 4.2.3 and 4.0.15*
@@ -454,14 +458,7 @@ Sharding Actions
 
 .. authaction:: enableSharding
 
-   .. COMMENT for docs team - Recognizing that the wording differs
-      somewhat from the pattern. HOWEVER, this page will undergo a
-      rewrite/reorg (DOCS-2935) and keeping the pattern until the
-      rewrite can be confusing for those commands that are admin commands
-      but affect other databases, such as this one.
-
    .. note:: Applicable Resources
-
 
       The action can apply to either:
 
@@ -470,9 +467,7 @@ Sharding Actions
         for a database or shard a collection.
 
       - :ref:`Cluster <resource-specific-collection>` resource to
-        perform various shard zone operations (Starting in version
-        4.2.2, 4.0.14, 3.6.16).
-
+        perform various shard zone operations.
 
    .. list-table::
       :widths: 25 75
@@ -512,13 +507,21 @@ Sharding Actions
 .. authaction:: refineCollectionShardKey
 
    Provides privileges to refine the shard key for a sharded
-   collection; i.e. run the :dbcommand:`refineCollectionShardKey`
+   collection and run the :dbcommand:`refineCollectionShardKey`
    command. Apply this action to :ref:`database <resource-specific-db>`
-   or :ref:`collection <resource-specific-db-collection>` resource.
+   or :ref:`collection <resource-specific-db-collection>` resources.
 
    Included in the :authrole:`clusterManager` built-in role.
 
    .. versionadded:: 4.4
+
+.. authaction:: reshardCollection
+
+   User can perform the :dbcommand:`reshardCollection` command. Apply 
+   this action to :ref:`database <resource-specific-db>` or 
+   :ref:`collection <resource-specific-db-collection>` resources.
+
+   .. versionadded:: 5.0
 
 .. authaction:: flushRouterConfig
 
@@ -542,31 +545,33 @@ Sharding Actions
 
 .. authaction:: moveChunk
 
-   User can perform the :dbcommand:`moveChunk` command. In addition, user
-   can perform the :dbcommand:`movePrimary` command provided that the privilege
-   is applied to an appropriate database resource. Apply this action to database
-   or collection resources.
+   User can perform the :dbcommand:`moveChunk` and 
+   :dbcommand:`moveRange` commands. In addition, user can perform the 
+   :dbcommand:`movePrimary` command provided that the privilege is 
+   applied to an appropriate database resource. Apply this action to 
+   database or collection resources.
 
 .. authaction:: removeShard
 
    User can perform the :dbcommand:`removeShard` command. Apply this
    action to the ``cluster`` resource.
 
+.. authaction:: shardedDataDistribution
+
+   User can perform the :pipeline:`$shardedDataDistribution` aggregation 
+   pipeline stage.
+
+   .. versionadded:: 6.0.3
+
 .. authaction:: shardingState
 
    User can perform the :dbcommand:`shardingState` command. Apply this
    action to the ``cluster`` resource.
 
-.. authaction:: splitChunk
-
-   User can perform the :dbcommand:`splitChunk` command and the
-   :dbcommand:`mergeChunks` command. Apply this action to database or
-   collection resources.
-
 .. authaction:: splitVector
 
-   User can perform the :dbcommand:`splitVector` command. Apply this action to
-   database or collection resources.
+   User can perform the :dbcommand:`splitVector` command. Apply this
+   action to database or collection resources.
 
 Server Administration Actions
 -----------------------------
@@ -575,6 +580,12 @@ Server Administration Actions
 
    User can perform the :dbcommand:`logApplicationMessage` command. Apply
    this action to the ``cluster`` resource.
+
+.. authaction:: bypassWriteBlockingMode
+
+   User can perform writes even when writes are blocked by the
+   :dbcommand:`setUserWriteBlockMode` command.
+   Apply this action to the ``cluster`` resource.
 
 .. authaction:: closeAllDatabases
 
@@ -591,9 +602,14 @@ Server Administration Actions
    User can perform the :dbcommand:`compact` command. Apply this action to
    database or collection resources.
 
+.. authaction:: compactStructuredEncryptionData
+
+   User can perform the :dbcommand:`compactStructuredEncryptionData`
+   command. Apply this action to database or collection resources.
+
 .. authaction:: connPoolSync
 
-   User can perform the :dbcommand:`connPoolSync` command. Apply this
+   User can perform the internal ``connPoolSync`` command. Apply this
    action to the ``cluster`` resource.
 
 .. authaction:: convertToCapped
@@ -617,8 +633,6 @@ Server Administration Actions
    to database or collection resources.
 
 .. authaction:: forceUUID
-
-   .. versionadded:: 3.6
 
    User can create a collection with a user-defined
    :ref:`collection UUID <collections-uuids>` using the
@@ -645,6 +659,11 @@ Server Administration Actions
 
    Provides information about the server the MongoDB instance runs on. Apply
    this action to the ``cluster`` resource.
+
+.. authaction:: oidReset
+
+   Required to reset the 5 byte random string that is used in the
+   :ref:`ObjectID <objectid>`.
 
 .. authaction:: logRotate
 
@@ -687,6 +706,11 @@ Server Administration Actions
    User can perform the :dbcommand:`setParameter` command. Apply this
    action to the ``cluster`` resource.
 
+.. authaction:: setUserWriteBlockMode
+
+   User can perform the :dbcommand:`setUserWriteBlockMode` command.
+   Apply this action to the ``cluster`` resource.
+
 .. authaction:: shutdown
 
    User can perform the :dbcommand:`shutdown` command. Apply this action
@@ -702,8 +726,6 @@ Session Actions
 
 .. authaction:: impersonate
 
-   .. versionadded:: 3.6
-
    User can perform the :dbcommand:`killAllSessionsByPattern` command
    with ``users`` and ``roles`` pattern. Apply this action to the
    ``cluster`` resource.
@@ -714,15 +736,11 @@ Session Actions
 
 .. authaction:: listSessions
 
-   .. versionadded:: 3.6
-
    User can perform the :pipeline:`$listSessions` operation or
    :pipeline:`$listLocalSessions` operation for all users or specified
    user(s). Apply this action to the ``cluster`` resource.
 
 .. authaction:: killAnySession
-
-   .. versionadded:: 3.6
 
    User can perform the :dbcommand:`killAllSessions` and the
    :dbcommand:`killAllSessionsByPattern` command. Apply this action to
@@ -732,22 +750,34 @@ Session Actions
 
       :authaction:`impersonate`
 
-Free Monitoring Actions
------------------------
+.. _privilege-actions-atlas-search:
 
-.. authaction:: checkFreeMonitoringStatus
+Atlas Search Index Actions
+--------------------------
 
-   User with this action on the ``cluster`` resource can check the
-   status of :doc:`/administration/free-monitoring`.
+The following actions enable users to run :ref:`Atlas Search Database
+Commands <db-commands-atlas-search>`. These actions are only relevant
+for deployments hosted on :atlas:`MongoDB Atlas </>`.
 
-   .. versionadded:: 4.0
+.. authaction:: createSearchIndexes
 
-.. authaction:: setFreeMonitoring
+   User can run the :dbcommand:`createSearchIndexes` database command.
+   Apply this action to the database or collection resource.
 
-   User with this action on the ``cluster`` resource can enable or
-   disable :doc:`/administration/free-monitoring`.
+.. authaction:: dropSearchIndex
 
-   .. versionadded:: 4.0
+   User can run the :dbcommand:`dropSearchIndex` database command.
+   Apply this action to the database or collection resource.
+
+.. authaction:: listSearchIndexes
+
+   User can run the :pipeline:`$listSearchIndexes` aggregation stage.
+   Apply this action to the database or collection resource.
+
+.. authaction:: updateSearchIndex
+
+   User can run the :dbcommand:`updateSearchIndex` database command.
+   Apply this action to the database or collection resource.
 
 Diagnostic Actions
 ------------------
@@ -761,11 +791,6 @@ Diagnostic Actions
 
    User can perform the :dbcommand:`connPoolStats` command. Apply this
    action to the ``cluster`` resource.
-
-.. authaction:: cursorInfo
-
-   User can perform the :dbcommand:`cursorInfo` command. Apply this action
-   to the ``cluster`` resource.
 
 .. authaction:: dbHash
 
@@ -789,22 +814,18 @@ Diagnostic Actions
 
 .. authaction:: indexStats
 
-   User can perform the ``indexStats`` command. Apply this action
-   to database or collection resources.
+   User can run the :pipeline:`$indexStats` aggregation pipeline stage. Apply 
+   this action to database or collection resources.
 
-   .. versionchanged:: 3.0
-      MongoDB 3.0 removes the ``indexStats`` command.
-
+   To use the ``$indexStats`` stage, users must authenticate with at least the 
+   :authrole:`clusterMonitor` role.
+   
 .. authaction:: listDatabases
 
    User can perform the :dbcommand:`listDatabases` command. Apply this
    action to the ``cluster`` resource.
 
-   .. include:: /includes/extracts/listDatabases-auth-4.0.6.rst
-
-   .. include:: /includes/extracts/listDatabases-auth-4.0.5.rst
-
-   .. include:: /includes/extracts/listDatabases-auth-4.0.0-4.0.4.rst
+   .. include:: /includes/listDatabases-auth
 
 .. authaction:: listCollections
 
@@ -829,6 +850,16 @@ Diagnostic Actions
    User can perform the :dbcommand:`netstat` command. Apply this action to
    the ``cluster`` resource.
 
+.. authaction:: queryStatsRead
+   
+   User can run the :pipeline:`$queryStats` aggregation stage without
+   the ``transformIdentifiers`` option.
+
+.. authaction:: queryStatsReadTransformed
+   
+   User can run the :pipeline:`$queryStats` aggregation stage with or without
+   the ``transformIdentifiers`` option.
+
 .. authaction:: serverStatus
 
    User can perform the :dbcommand:`serverStatus` command. Apply this action
@@ -836,8 +867,9 @@ Diagnostic Actions
 
 .. authaction:: validate
 
-   User can perform the :dbcommand:`validate` command. Apply this action
-   to database or collection resources.
+   User can perform the :dbcommand:`validate` and 
+   :dbcommand:`validateDBMetadata` commands. Apply this action to 
+   database or collection resources.
 
 .. authaction:: top
 

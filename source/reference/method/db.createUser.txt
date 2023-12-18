@@ -4,6 +4,10 @@ db.createUser()
 
 .. default-domain:: mongodb
 
+.. facet::
+   :name: programming_language
+   :values: shell
+
 .. contents:: On this page
    :local:
    :backlinks: none
@@ -19,6 +23,9 @@ Definition
    :method:`db.createUser()` returns a *duplicate user* error if the
    user already exists on the database.
 
+   .. |dbcommand| replace:: :dbcommand:`createUser` command
+   .. include:: /includes/fact-mongosh-shell-method-alt.rst
+
    The :method:`db.createUser()` method has the following syntax:
 
 
@@ -27,31 +34,15 @@ Definition
       :widths: 20 20 80
    
       * - Field
-   
         - Type
-   
         - Description
-   
       * - ``user``
-   
         - document
-   
         - The document with authentication and access information about the
           user to create.
-          
-          
-   
       * - ``writeConcern``
-   
         - document
-   
-        - Optional. The level of :doc:`write concern </reference/write-concern>` for the
-          creation operation. The ``writeConcern`` document takes the same
-          fields as the :dbcommand:`getLastError` command.
-          
-          
-   
-
+        - .. include:: /includes/fact-write-concern-spec-link.rst
 
    The ``user`` document defines the user and has the following form:
 
@@ -154,8 +145,6 @@ Definition
           user is allowed to connect to the server or from which the server can
           accept users.
           
-          .. versionadded:: 3.6
-          
           
    
       * - ``mechanisms``
@@ -177,18 +166,9 @@ Definition
           
             - Uses the ``SHA-256`` hashing function.
           
-            - Requires featureCompatibilityVersion set to ``4.0``.
-          
             - Requires passwordDigestor to be ``server``.
           
-          The default for featureCompatibilityVersion is ``4.0`` is both
-          ``SCRAM-SHA-1`` and ``SCRAM-SHA-256``.
-          
-          The default for featureCompatibilityVersion is ``3.6`` is
-          ``SCRAM-SHA-1``.
-          
-          .. versionadded:: 4.0
-          
+          The default is both ``SCRAM-SHA-1`` and ``SCRAM-SHA-256``.
           
    
       * - ``passwordDigestor``
@@ -207,13 +187,6 @@ Definition
                 The client digests the password and passes the digested
                 password to the server.
           
-          .. versionchanged:: 4.0
-          
-             The default value is ``"server"``. In earlier versions, the
-             default value is ``"client"``.
-          
-          
-   
 
 
 Roles

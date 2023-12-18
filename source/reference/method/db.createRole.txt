@@ -20,6 +20,9 @@ Definition
    inherit privileges from other roles or both. The role applies to
    the database on which you run the method.
 
+   .. |dbcommand| replace:: :dbcommand:`createRole` command
+   .. include:: /includes/fact-mongosh-shell-method-alt.rst
+
    The :method:`db.createRole()` method accepts the following arguments:
 
 
@@ -28,30 +31,14 @@ Definition
       :widths: 20 20 80
    
       * - Parameter
-   
         - Type
-   
         - Description
-   
       * - ``role``
-   
         - document
-   
         - A document containing the name of the role and the role definition.
-          
-          
-   
       * - ``writeConcern``
-   
         - document
-   
-        - Optional. The level of :doc:`write concern </reference/write-concern>` to apply
-          to this operation. The ``writeConcern`` document uses the same fields
-          as the :dbcommand:`getLastError` command.
-          
-          
-   
-
+        - .. include:: /includes/fact-write-concern-spec-link.rst
 
    The ``role`` document has the following form:
 
@@ -129,12 +116,6 @@ Definition
           
           .. include:: /includes/fact-auth-restrictions-role-desc.rst
           
-          
-   
-
-
-   The :method:`db.createRole()` method wraps the :dbcommand:`createRole`
-   command.
 
 Roles
 ~~~~~

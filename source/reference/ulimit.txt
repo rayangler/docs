@@ -1,3 +1,5 @@
+.. _ulimit:
+
 =========================
 UNIX ``ulimit`` Settings
 =========================
@@ -30,7 +32,7 @@ deployment and its use to determine ideal ``ulimit`` settings.
 
 Generally, all :binary:`~bin.mongod` and :binary:`~bin.mongos` instances:
 
-- track each incoming connection with a file descriptor *and* a
+- track each incoming connection with two file descriptors *and* a
   thread.
 
 - track each internal thread or *pthread* as a system process.
@@ -41,8 +43,8 @@ Generally, all :binary:`~bin.mongod` and :binary:`~bin.mongos` instances:
 - 1 file descriptor for each data file in use by the
   :binary:`~bin.mongod` instance.
 
-- 1 file descriptor for each journal file used by the
-  :binary:`~bin.mongod` instance when :setting:`storage.journal.enabled` is ``true``.
+- 1 file descriptor for each journal file used by the :binary:`~bin.mongod` 
+  instance.
 
 - In replica sets, each :binary:`~bin.mongod` maintains a connection to
   all other members of the set.
@@ -93,8 +95,8 @@ system limits, as in the following example:
    -s: stack size (kbytes)        8192
    -c: core file size (blocks)    0
    -m: resident set size (kbytes) unlimited
-   -u: processes                  192276
-   -n: file descriptors           21000
+   -u: processes                  64000
+   -n: file descriptors           64000
    -l: locked-in-memory size (kb) unlimited
    -v: address space (kb)         unlimited
    -x: file locks                 unlimited
@@ -150,17 +152,37 @@ change to system limits made using ``ulimit`` may revert following
 a system restart. Check your distribution and operating
 system documentation for more information.
 
+You should typically start :binary:`~bin.mongod` using ``systemctl``,
+which uses the ``ulimit`` settings:
+
+.. code-block:: bash
+
+   systemctl start mongod.service
+
+If you *do not* start :binary:`~bin.mongod` using ``systemctl``,
+``systemd`` overrides some of the ``ulimit`` settings. For example, if
+you start :binary:`~bin.mongod` as shown in the following command, then
+a user slice (such as ``user-1000.slice``) ``systemd`` setting is used:
+
+.. code-block:: bash
+
+   mongod --config ~/mongod.conf
+
+.. note::
+
+   A ``systemd`` user slice limits the resources for the user's
+   processes.
+
 macOS
 `````
 
 For macOS systems that have installed MongoDB Community using the 
-:ref:`brew installation method<install-with-homebrew>`, the
+brew installation method, the
 recommended open files value is automatically set when you start
-MongoDB through ``brew services``. See
-:ref:`Run MongoDB with brew<run-with-homebrew>` for more information.
+MongoDB through ``brew services``.
 
 For macOS systems running MongoDb Enterprise or using the TGZ
-installation method, use the ``launchctl limit`` command to set the
+installation method, use the ``ulimit`` command to set the
 :ref:`recommended values<recommended-ulimit-settings>`. See your
 operating system documentation for the precise procedure for changing
 system limits on running systems.
@@ -214,14 +236,19 @@ the following thresholds and settings are particularly important for
 - ``-m`` (memory size): ``unlimited`` [#memory-size]_ [#rss-linux]_
 - ``-u`` (processes/threads): ``64000``
 
-.. note::
-
-   For the macOS platform, the recommended process limit is ``2500``,
-   which is the maximum configurable value for this platform.
-
 Always remember to restart your :binary:`~bin.mongod` and
 :binary:`~bin.mongos` instances after changing the ``ulimit`` settings to
 ensure that the changes take effect.
+
+Considerations
+``````````````
+
+.. |ulimit| replace:: ``ulimit``
+
+- .. include:: /includes/4.2-changes/open-file-connection-increase.rst
+
+- For the macOS platform, the recommended process limit is ``2500``,
+  which is the maximum configurable value for this platform.
 
 Linux distributions using Upstart
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -257,11 +284,12 @@ form:
 Linux distributions using ``systemd``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For Linux distributions that use ``systemd``, you can specify
-limits within the ``[Service]`` sections of service scripts if you
-start :binary:`~bin.mongod` and/or
-:binary:`~bin.mongos` instances as ``systemd`` services. You can do this
-by using `resource limit directives
+If you start a :binary:`~bin.mongod` and/or :binary:`~bin.mongos` 
+instance as a ``systemd`` service, you can specify limits within the 
+``[Service]`` section of its service file. The service file has a 
+location like ``/etc/systemd/system/<process-name>.service``.
+
+You can set limits by using `resource limit directives
 <http://www.freedesktop.org/software/systemd/man/systemd.exec.html#LimitCPU=>`_.
 
 Specify the :ref:`recommended-ulimit-settings`, as in the following

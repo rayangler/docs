@@ -78,7 +78,7 @@ Remove Support for the ``group`` Command
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Starting in version 4.2, MongoDB removes the ``group`` command
-(deprecated since version 3.4) and its :binary:`~bin.mongo` shell
+(deprecated since version 3.4) and its ``mongo`` shell
 helper ``db.collection.group()``.
 
 Use :method:`db.collection.aggregate()` with the :pipeline:`$group`
@@ -92,7 +92,7 @@ Remove Support for the ``eval`` Command
 Starting in version 4.2, MongoDB removes the ``eval`` command. The
 ``eval`` command has been deprecated since version 3.0.
 
-The associated MongoDB 4.2 :binary:`~bin.mongo` shell methods
+The associated MongoDB 4.2 ``mongo`` shell methods
 ``db.eval()`` and ``db.collection.copyTo()`` can only be run when
 connected to MongoDB 4.0 or earlier.
 
@@ -104,7 +104,7 @@ Remove Support for the ``copydb`` and ``clone`` Commands
 Starting in version 4.2, MongoDB removes the deprecated ``copydb``
 command and ``clone`` command.
 
-The corresponding :binary:`~bin.mongo` shell helpers
+The corresponding ``mongo`` shell helpers
 ``db.copyDatabase()`` and ``db.cloneDatabase()`` can only be run when
 connected to MongoDB 4.0 or earlier.
 
@@ -127,7 +127,7 @@ Remove ``maxScan``
 ~~~~~~~~~~~~~~~~~~
 
 MongoDB removes the deprecated option ``maxScan`` for the
-:dbcommand:`find` command and the :binary:`~bin.mongo` shell helper
+:dbcommand:`find` command and the ``mongo`` shell helper
 ``cursor.maxScan()``. Use either the ``maxTimeMS`` option for the
 :dbcommand:`find` command or the helper :method:`cursor.maxTimeMS()` instead.
 
@@ -181,7 +181,7 @@ Remove Support for the ``repairDatabase`` Command
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Starting in version 4.2, MongoDB removes the ``repairDatabase`` command
-and its :binary:`~bin.mongo` shell helper ``db.repairDatabase()`` as
+and its ``mongo`` shell helper ``db.repairDatabase()`` as
 well as the ``repairDatabase`` privilege.
 
 As alternatives:
@@ -203,7 +203,7 @@ Remove Support for ``getPrevError`` Command
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Starting in version 4.2, MongoDB removes the deprecated
-``getPrevError`` command and its :binary:`~bin.mongo` shell helper
+``getPrevError`` command and its ``mongo`` shell helper
 ``db.getPrevError()``.
 
 
@@ -213,7 +213,7 @@ Deprecate Support for ``cloneCollection``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 MongoDB deprecates the ``cloneCollection`` command and its
-:binary:`~bin.mongo` shell helper ``db.cloneCollection()``
+``mongo`` shell helper ``db.cloneCollection()``
 
 As alternatives, 
 
@@ -236,16 +236,12 @@ MongoDB deprecates the following:
 - ``PlanCache.getPlansByQuery()``
   method/``planCacheListPlans`` command.
 
-  | To get the cached query plans for a shape, use the
+  | To get the cached query plans for a hash, use the
     :pipeline:`$planCacheStats` aggregation stage instead. See
-    :ref:`planCacheStats-cache-entry-for-query-shape`.
+    :ref:`planCacheStats-cache-entry-for-query-hash`.
 
 - ``PlanCache.listQueryShapes()``
   method/``planCacheListQueryShapes`` command.
-
-  | To list the cached query shapes, use the
-    :pipeline:`$planCacheStats` aggregation stage instead. See
-    :ref:`planCacheStats-list-query-shapes`.
 
 .. _4.2-compat-agg:
 
@@ -260,7 +256,7 @@ Aggregation
 ``$out`` and Views
 ``````````````````
 
-The :doc:`view </core/views>` definition ``pipeline`` cannot include
+The :ref:`view <views-landing-page>` definition ``pipeline`` cannot include
 the :pipeline:`$out` stage. If you already have an existing view
 that includes the :pipeline:`$out` stage, you can no longer create
 new views from this existing view.
@@ -357,11 +353,9 @@ Transactions
 - .. include:: /includes/extracts/transactions-killop-change.rst
 
 - Starting in MongoDB 4.2, you cannot write to
-  :doc:`capped </core/capped-collections>` collections in
-  :doc:`transactions </core/transactions>`.  Reads from
-  :doc:`capped </core/capped-collections>`
-  collections are still supported in
-  :doc:`transactions </core/transactions>`.
+  :ref:`capped <capped-collection>` collections in
+  :ref:`transactions <transactions>`.  Reads from capped collections 
+  are still supported in transactions.
 
 - Starting in MongoDB 4.2, MongoDB removes the 16MB total size
   limit for a transaction. In version 4.2, MongoDB creates as many
@@ -398,6 +392,12 @@ Resume Token Modification
 
 .. include:: /includes/extracts/4.2-changes-change-stream-modification-error.rst
 
+Increased File Descriptors Required for Incoming Connections
+------------------------------------------------------------
+
+.. |ulimit| replace:: :ref:`ulimit <ulimit>`
+
+.. include:: /includes/4.2-changes/open-file-connection-increase.rst
 
 MongoDB Tools
 -------------
@@ -488,7 +488,7 @@ MongoDB changes the returned response if you create an index with one
 name, and then try to create the index again with another name.
 
 Starting in version 4.2, the :dbcommand:`createIndexes` command and the
-:binary:`~bin.mongo` shell helpers
+``mongo`` shell helpers
 :method:`db.collection.createIndex()` and
 :method:`db.collection.createIndexes()` report an error if you create
 an index with one name, and then try to create the same index again but
@@ -521,19 +521,16 @@ that implied that the index was not recreated. For example:
 Hashed Index on PowerPC
 ```````````````````````
 
-For :doc:`hashed indexes </core/index-hashed>`, MongoDB 4.2 ensures
+For :ref:`hashed indexes <index-type-hashed>`, MongoDB 4.2 ensures
 that the hashed value for the floating point value 2\ :sup:`63` on
 PowerPC is consistent with other platforms. In previous versions, the
 hashed value for the floating point value 2\ :sup:`63` on PowerPC is
 inconsistent with other platforms.
 
-Although :doc:`hashed indexes </core/index-hashed>` on a field that may
+Although :ref:`hashed indexes <index-type-hashed>` on a field that may
 contain floating point values greater than 2\ :sup:`53` is an
 unsupported configuration, clients may still insert documents where the
 indexed field has the value 2\ :sup:`63`.
-
-To list all hashed indexes for your deployment, see
-:ref:`hashed-index-power-pc-check`.
 
 If the current MongoDB 4.0 sharded cluster on PowerPC contains hashed
 values for 2\ :sup:`63` as part of the shard key, additional
@@ -812,12 +809,12 @@ features include:
 - Removal of :limit:`Index Name Length` for MongoDB versions with fCV
   set to 4.2+.
 
-- New internal format for :doc:`unique indexes </core/index-unique>`.
+- New internal format for :ref:`unique indexes <index-type-unique>`.
   The new format applies to both existing unique indexes as well as
   newly created/rebuilt unique indexes.
 
 - .. include:: /includes/extracts/4.2-changes-type-0.rst
 
-- MongoDB 4.2 adds :doc:`wildcard indexes </core/index-wildcard>` to 
+- MongoDB 4.2 adds :ref:`wildcard indexes <wildcard-index-core>` to 
   support workloads where users query against custom fields or a large 
   variety of fields in a collection.

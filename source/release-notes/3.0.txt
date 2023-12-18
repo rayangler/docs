@@ -1,3 +1,5 @@
+.. _release-notes-3.0:
+
 =============================
 Release Notes for MongoDB 3.0
 =============================
@@ -24,7 +26,7 @@ release notes
 <http://docs.opsmanager.mongodb.com/current/release-notes/application/>`_
 for more information.
 
-Minor Releases
+Patch Releases
 --------------
 
 .. toctree::

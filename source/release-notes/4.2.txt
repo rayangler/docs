@@ -1,3 +1,5 @@
+.. _release-notes-4.2:
+
 =============================
 Release Notes for MongoDB 4.2
 =============================
@@ -10,8 +12,225 @@ Release Notes for MongoDB 4.2
    :depth: 1
    :class: twocols
 
-Minor Releases
+Patch Releases
 --------------
+
+.. warning:: Past Release Limitations
+
+   .. include:: /includes/release-notes/critical-warning-text.rst
+
+   .. list-table::
+      :header-rows: 1
+
+      * - Issue
+        - Affected Versions
+
+      * - :issue:`WT-10461` 
+        - 4.2.0 - 4.2.23 (ARM64 or POWER system architectures)
+
+
+.. _4.2.24-release-notes:
+
+4.2.24 - Feb 27, 2023
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed in 4.2.24:
+
+- :issue:`SERVER-71759` dataSize command doesn't yield
+- :issue:`SERVER-68115` Bug fix for "elemMatchRootLength > 0" invariant
+  trigger
+- :issue:`SERVER-72535` Sharded clusters allow creating the 'admin',
+  'local', and 'config' databases with alternative casings
+- :issue:`SERVER-62738` Give mongos the ability to passthrough to a
+  specific shard
+- :issue:`SERVER-68361`
+  LogTransactionOperationsForShardingHandler::commit misses transferring
+  documents from prepared and non-prepared transactions changing a
+  document's shard key value
+
+- `All JIRA issues closed in 4.2.24
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.2.24%27>`__
+
+- :ref:`4.2.24-changelog`
+
+.. _4.2.23-release-notes:
+
+4.2.23 - Sep 29, 2022
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed in 4.2.23:
+
+- :issue:`SERVER-68925` Reintroduce check table logging settings at
+  startup (revert :issue:`SERVER-43664`)
+- :issue:`SERVER-56127` Retryable update may execute more than once if
+  chunk is migrated and shard key pattern uses nested fields
+- :issue:`SERVER-68359` [4.4] Prevent TTLMonitor from processing index
+  if expireAfterSeconds is NaN
+- :issue:`SERVER-68714` NaN issues in secure random number generator in
+  mongo shell
+- :issue:`SERVER-66310` Make ExpressionSetUnion::isCommutative()
+  collation aware
+
+- `All JIRA issues closed in 4.2.23
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.2.23%27>`__
+
+- :ref:`4.2.23-changelog`
+
+.. _4.2.22-release-notes:
+
+4.2.22 - Aug 19, 2022
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed in 4.2.22:
+
+- :issue:`SERVER-64403` Find queries with SORT_MERGE collation-encode
+  the missing sort attribute
+- :issue:`SERVER-68359` Prevent TTLMonitor from processing index if
+  expireAfterSeconds is NaN
+- :issue:`SERVER-62656` Decouple mongos-to-config-server connection pool
+  sizing from mongos-to-shard-server connection pool sizing
+- :issue:`SERVER-62272` Adding schema validation to a collection can
+  prevent chunk migrations of failing documents
+- :issue:`SERVER-66418` Bad projection created during dependency
+  analysis due to string order assumption
+
+- `All JIRA issues closed in 4.2.22
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.2.22%27>`__
+
+- :ref:`4.2.22-changelog`
+
+.. _4.2.21-release-notes:
+
+4.2.21 - Jun 21, 2022
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed in 4.2.21:
+
+- :issue:`SERVER-62272`  Adding schema validation to a collection can prevent chunk migrations of failing documents
+- :issue:`SERVER-66176`  [v4.4/v4.2] Minimize work under CollectionCatalog mutex
+- :issue:`SERVER-61097`  SizeStorer can cause deadlocks with cache eviction
+- :issue:`SERVER-58506`  Command to expose settability for Server Parameters
+
+- `All JIRA issues closed in 4.2.21
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.2.21%27>`__
+
+- :ref:`4.2.21-changelog`
+
+.. _4.2.20-release-notes:
+
+4.2.20 - May 9, 2022
+~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed in 4.2.20:
+
+- :issue:`SERVER-64983` Release Client lock before rolling back WT
+  transaction in TransactionParticipant::_resetTransactionState
+- :issue:`SERVER-60412` Host memory limit check does not honor cgroups
+  v2
+- :issue:`SERVER-64642` Fix error where mongos returns CallbackCanceled
+  and not InterruptedAtShutdown on shutdown
+- :issue:`SERVER-59435` Fix a double free inside
+  DocumentSource::optimizeAt()
+- :issue:`SERVER-41714` $facet operator duplicates documents in the
+  pipeline when preceded by $addFields and $match operators (in this
+  exact order)
+
+- `All JIRA issues closed in 4.2.20
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.2.20%27>`__
+
+- :ref:`4.2.20-changelog`
+
+.. _4.2.19-release-notes:
+
+4.2.19 - Mar 7, 2022
+~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed in 4.2.19:
+
+- :issue:`SERVER-62065` Upgrade path from 3.6 to 4.0 can leave chunk 
+  entries without history on the shards
+- :issue:`SERVER-60685` TransactionCoordinator may interrupt locally 
+  executing update with non-Interruption error category, leading to 
+  server crash
+- :issue:`SERVER-60682` TransactionCoordinator may block acquiring 
+  WiredTiger write ticket to persist its decision, prolonging 
+  transactions being in the prepared state
+- :issue:`SERVER-53335` Queries, updates, and deletes with non-"simple"
+  collations may miss documents when using hashed sharding
+- :issue:`SERVER-40691` $nin:[...] queries are not indexed
+
+- `All JIRA issues closed in 4.2.19
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.2.19%27>`__
+
+- :ref:`4.2.19-changelog`
+
+.. _4.2.18-release-notes:
+
+4.2.18 - Jan 6, 2022
+~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed in 4.2.18:
+
+- :issue:`SERVER-61427` Unique index builds can cause a loss of
+  availability during commit due to checking many false duplicates
+- :issue:`SERVER-56227` Add user-facing command to set allowMigrations
+  to false for a sharded collection
+- :issue:`SERVER-59226` Deadlock when stepping down with a profile
+  session marked as uninterruptible
+- :issue:`SERVER-56226` [v4.4] Introduce 'permitMigrations' field on
+  config.collections entry to prevent chunk migrations from committing
+- :issue:`SERVER-54064` Sessions on arbiters accumulate and cannot be
+  cleared out
+
+- `All JIRA issues closed in 4.2.18
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.2.18%27>`__
+
+- :ref:`4.2.18-changelog`
+
+.. _4.2.17-release-notes:
+
+4.2.17 - Sep 28, 2021
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed in 4.2.17:
+
+- :issue:`SERVER-59876`: Large delays in returning from libcrypto.so 
+  while establishing egress connections
+- :issue:`SERVER-59456`: Start the LDAPReaper threadpool
+- :issue:`SERVER-50549`: Transform connection-related error codes in 
+  proxied commands
+- :issue:`SERVER-49521`: fix tests in core/txn to use write concern 
+  "majority" for createIndexes commands run before starting transactions
+- :issue:`SERVER-44152`: Pre-warm connection pools in mongos
+
+- `All JIRA issues closed in 4.2.17
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.2.17%27>`__
+
+- :ref:`4.2.17-changelog`
+
+.. _4.2.16-release-notes:
+
+4.2.16 - Sep 13, 2021
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed in 4.2.16:
+
+- :issue:`SERVER-59074`: Do not acquire storage tickets just to
+  set/wait on oplog visibility
+- :issue:`SERVER-54729`: MongoDB Enterprise Debian/Ubuntu packages
+  should depend on libsasl2-modules and libsasl2-modules-gssapi-mit
+- :issue:`SERVER-39621`: Disabled chaining should enforce sync source
+  change when the primary steps down even if the oplog fetcher isn't
+  killed on sync source
+- :issue:`SERVER-34938`: Secondary slowdown or hang due to content
+  pinned in cache by single oplog batch
+- :issue:`WT-7776`: Add a hard limit on the number of modify updates
+  before we instantiate a complete update
+
+- `All JIRA issues closed in 4.2.16
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.2.16%27>`__
+
+- :ref:`4.2.16-changelog`
 
 .. _4.2.15-release-notes:
 
@@ -411,12 +630,12 @@ Distributed transactions:
   total size limit for a transaction.
 
 - Extends transaction support to deployments whose secondary members
-  use the :doc:`in-memory storage engine </core/inmemory>`. That is,
+  use the :ref:`in-memory storage engine <storage-inmemory>`. That is,
   transactions are available for deployments that use the WiredTiger
   storage engine for the primary and either the WiredTiger or the
-  :doc:`in-memory </core/inmemory>` storage engine for the secondary
-  members. In MongoDB 4.0, transactions are available for deployments
-  that use the WiredTiger storage engine only.
+  in-memory storage engine for the secondary members. In MongoDB 4.0, 
+  transactions are available for deployments that use the WiredTiger 
+  storage engine only.
 
 For more information, see :doc:`/core/transactions`.
 
@@ -506,7 +725,7 @@ Removed Commands and Methods
 
      - 
 
-     - The MongoDB 4.2 :binary:`~bin.mongo` shell methods ``db.eval()``
+     - The MongoDB 4.2 ``mongo`` shell methods ``db.eval()``
        and ``db.collection.copyTo()`` can only be run when
        connected to MongoDB 4.0 or earlier.
 
@@ -515,7 +734,7 @@ Removed Commands and Methods
 
      - 
 
-     - The corresponding :binary:`~bin.mongo` shell helpers
+     - The corresponding ``mongo`` shell helpers
        ``db.copyDatabase()`` can only be run when connected to MongoDB
        4.0 or earlier.
 
@@ -528,7 +747,7 @@ Removed Commands and Methods
 
      - 
 
-     - The corresponding :binary:`~bin.mongo` shell helpers
+     - The corresponding ``mongo`` shell helpers
        ``db.cloneDatabase()`` can only be run when connected to MongoDB
        4.0 or earlier.
 
@@ -567,7 +786,7 @@ Remove ``maxScan`` Option
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 MongoDB removes the deprecated option ``maxScan`` for the
-:dbcommand:`find` command and the :binary:`~bin.mongo` shell helper
+:dbcommand:`find` command and the ``mongo`` shell helper
 ``cursor.maxScan()``. Use either the ``maxTimeMS`` option for the
 :dbcommand:`find` command or the helper :method:`cursor.maxTimeMS()` instead.
 
@@ -646,14 +865,14 @@ New ``TLS`` Options
 
 MongoDB 4.2 adds ``TLS`` options for the :ref:`mongod
 <tls-mongod-options>`, the :ref:`mongos <mongos-tls-options>`, and the
-:ref:`mongo shell<mongo-shell-tls>` to replace the corresponding
-``SSL`` options (deprecated in 4.2). The new TLS options provide
-**identical** functionality as the deprecated ``SSL`` options as MongoDB
-has always supported TLS 1.0 and later.
+``mongo shell`` to replace the corresponding ``SSL`` options 
+(deprecated in 4.2). The new TLS options provide **identical** 
+functionality as the deprecated ``SSL`` options as MongoDB has always 
+supported TLS 1.0 and later.
 
 - For the command-line TLS options, refer to the :ref:`mongod
   <tls-mongod-options>`, :ref:`mongos <mongos-tls-options>`, and
-  :ref:`mongo shell <mongo-shell-tls>` pages.
+  ``mongo`` shell pages.
 
 - For the corresponding ``mongod`` and ``mongos`` configuration file
   options, refer to the :ref:`configuration file
@@ -682,7 +901,7 @@ Deprecated ``SSL`` Options
 
 MongoDB 4.2 deprecates the ``SSL`` options for the :ref:`mongod
 <ssl-mongod-options>`, the :ref:`mongos <mongos-ssl-options>`, and the
-:ref:`mongo shell<mongo-shell-ssl>` as well as the corresponding
+``mongo`` shell as well as the corresponding
 :ref:`net-ssl-conf-options` configuration file options.
 
 Use the new :ref:`TLS <4.2-tls>` options instead.
@@ -822,7 +1041,7 @@ select MongoDB 4.2+ compatible drivers, see the
 
 Explicit (manual) encryption of fields
   Official MongoDB 4.2+ compatible drivers and the MongoDB 4.2 or later
-  :binary:`~bin.mongo` shell support explicitly encrypting or decrypting
+  ``mongo`` shell support explicitly encrypting or decrypting
   fields with a specific data encryption key and encryption algorithm.
 
   Applications must modify any code associated with constructing read
@@ -832,13 +1051,13 @@ Explicit (manual) encryption of fields
   per-operation basis.
 
   For more information, see
-  :doc:`/core/security-explicit-client-side-encryption`.
+  :ref:`csfle-fundamentals-manual-encryption`.
 
 Automatic encryption of fields
   .. include:: /includes/extracts/csfle-enterprise-atlas-only.rst
 
   Official MongoDB 4.2+ compatible drivers and the MongoDB 4.2 or later
-  :binary:`~bin.mongo` shell support automatically encrypting fields in
+  ``mongo`` shell support automatically encrypting fields in
   read and write operations. 
 
   Applications must create a database connection object (e.g.
@@ -853,11 +1072,11 @@ Automatic encryption of fields
   documentation on automatic encryption rules.
 
   For more information, see
-  :doc:`/core/security-automatic-client-side-encryption`.
+  :ref:`field-level-encryption-automatic`.
 
 
 For complete documentation on client-side field level encryption,
-see :doc:`/core/security-client-side-encryption`.
+see :ref:`manual-csfle-feature`.
 
 General Security Enhancements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -878,7 +1097,7 @@ General Security Enhancements
      X509v3 Subject Alternative Name: 
          DNS:hostname.example.com, DNS:localhost, IP Address:127.0.0.1
   
-  Then, to connect a :binary:`~bin.mongo` shell to the instance, you
+  Then, to connect a ``mongo`` shell to the instance, you
   can specify the host of ``127.0.0.1`` or the DNS names:
 
   - .. code-block:: none
@@ -1170,7 +1389,7 @@ Update and Hint
 ~~~~~~~~~~~~~~~
 
 Starting in MongoDB 4.2, the :dbcommand:`update` command and the
-associated :binary:`~bin.mongo` shell method
+associated ``mongo`` shell method
 :method:`db.collection.update()` can accept a hint argument to specify
 the index to use. See:
 
@@ -1190,11 +1409,7 @@ Wildcard Indexes
 MongoDB 4.2 introduces :ref:`wildcard indexes <wildcard-index-core>` for 
 supporting queries against fields whose names are unknown or arbitrary.
 
-.. include:: /includes/extracts/wildcard-index-summary.rst
-
-.. include:: /includes/extracts/wildcard-index-planning.rst
-
-.. include:: /includes/extracts/wildcard-index-fcv.rst
+.. include:: /includes/4.2-changes/wildcard-indexes-refactored.rst
 
 You can create a wildcard index using the :dbcommand:`createIndexes` 
 database command or its shell helpers 
@@ -1222,8 +1437,6 @@ Platform Support
   - Ubuntu 16.04 POWER/PPC64LE (Also removed in version 3.6.13 and 3.4.21)
 
   - macOS 10.11
-  
-See :ref:`mongodb-supported-platforms`.
 
 MongoDB Tools
 -------------
@@ -1424,9 +1637,9 @@ Logging
   temporary files due to memory restrictions. For more information on
   aggregation memory restrictions, see :ref:`agg-memory-restrictions`.
 
-- .. _slow-oplog:
+.. _slow-oplog:
 
-  Starting in version 4.2 (also available starting in 4.0.6),
+- Starting in version 4.2 (also available starting in 4.0.6),
   secondary members of a replica set now log oplog entries that take
   longer than the slow operation threshold to apply. These messages are
   :option:`logged <mongod --logpath>` for the secondaries under the
@@ -1533,7 +1746,7 @@ See also :ref:`4.2 current op compatibility changes <4.2-current-op-compat>`
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 Starting in MongoDB 4.2, the :dbcommand:`serverStatus` command and the
-:binary:`~bin.mongo` shell method :method:`db.serverStatus()` include
+``mongo`` shell method :method:`db.serverStatus()` include
 the following output changes:
 
 .. list-table::
@@ -1549,7 +1762,7 @@ the following output changes:
 
         - :serverstatus:`shardingStatistics.countDocsClonedOnDonor`
 
-        - :serverstatus:`shardingStatistics.countDocsDeletedOnDonor`
+        - ``shardingStatistics.countDocsDeletedOnDonor``
 
         - :serverstatus:`shardingStatistics.countRecipientMoveChunkStarted`
 
@@ -1600,7 +1813,7 @@ Replica Set Status Metrics
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Starting in version MongoDB 4.2, :dbcommand:`replSetGetStatus` and its
-:binary:`~bin.mongo` shell helper :method:`rs.status()` return:
+``mongo`` shell helper :method:`rs.status()` return:
 
 - The IP address, :data:`replSetGetStatus.members[n].ip` for the
   replica set members.
@@ -1638,7 +1851,7 @@ Lock Diagnostics Reporting
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Starting in MongoDB 4.2, the :pipeline:`$collStats` aggregation, the
-:dbcommand:`collStats` command, and the :binary:`~bin.mongo` shell
+:dbcommand:`collStats` command, and the ``mongo`` shell
 helper :method:`db.collection.stats` return information on indexes that
 are currently being built. 
 
@@ -1651,7 +1864,7 @@ For details, see:
 - :data:`collStats.indexSizes`
 
 Starting in MongoDB 4.2, the :pipeline:`$collStats` aggregation, the
-:dbcommand:`collStats` command, and the :binary:`~bin.mongo` shell
+:dbcommand:`collStats` command, and the ``mongo`` shell
 helper :method:`db.collection.stats` return the ``scaleFactor`` used to
 scale the various size data.
 
@@ -1659,7 +1872,7 @@ scale the various size data.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Starting in MongoDB 4.2, the :dbcommand:`dbStats` command, and the
-:binary:`~bin.mongo` shell helper :method:`db.stats()` return
+``mongo`` shell helper :method:`db.stats()` return
 the ``scaleFactor`` used to scale the various size data.
 
 General Improvements
@@ -1695,7 +1908,7 @@ For complete documentation, see :ref:`externally-sourced-values`.
 
 MongoDB 4.2 adds the :option:`--outputConfig <mongod --outputConfig>`
 option for :binary:`~bin.mongod` and :binary:`~bin.mongos`. The option
-outputs to ``stdout`` the :binary:`~bin.mongod`/:binary:`~bin.mongos`
+outputs to ``stdout`` the :binary:`mongod` / :binary:`mongos`
 instance's configuration, in YAML format.
 
 If the configuration uses any :ref:`externally-sourced-values`, the
@@ -1741,7 +1954,7 @@ Drop multiple indexes
 `````````````````````
 
 Starting in MongoDB 4.2, you can specify multiple indexes to the
-:dbcommand:`dropIndexes` command and its :binary:`~bin.mongo` shell
+:dbcommand:`dropIndexes` command and its ``mongo`` shell
 helper :method:`db.collection.dropIndexes()`. To specify multiple
 indexes to drop, pass an array of index names to
 :dbcommand:`dropIndexes`/:method:`db.collection.dropIndexes()`.
@@ -1887,14 +2100,14 @@ that encountered a duplicate key error.
 ``db.dropDatabase()`` and Write Concern
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting in MongODB 4.2, the :binary:`~bin.mongo` shell method
+Starting in MongODB 4.2, the ``mongo`` shell method
 :method:`db.dropDatabase()` can take an optional write concern document.
 
 ``dropConnections``
 ~~~~~~~~~~~~~~~~~~~
 
 The :dbcommand:`dropConnections` command drops the 
-:binary:`~bin.mongod`/:binary:`~bin.mongos` instance's outgoing
+:binary:`mongod` / :binary:`mongos` instance's outgoing
 connections to the specified hosts. The :dbcommand:`dropConnections`
 must be run  against the ``admin`` database. 
 
@@ -1940,7 +2153,7 @@ the operation completes, MongoDB marks the |operation| for termination
 
      - 
 
-   * - :dbcommand:`getnonce`
+   * - ``getnonce``
      -
      -
 
@@ -1995,9 +2208,9 @@ For more information, see :ref:`rollback-time-limit`.
 ``isInteractive()``
 ~~~~~~~~~~~~~~~~~~~~
 
-MongoDB 4.2 adds a new :binary:`~bin.mongo` shell method
-:method:`isInteractive()` that returns a boolean indicating whether the
-:binary:`~bin.mongo` shell is running in interactive or script mode.
+MongoDB 4.2 adds a new ``mongo`` shell method
+``isInteractive()`` that returns a boolean indicating whether the
+``mongo`` shell is running in interactive or script mode.
 
 Change to ``explain`` Output
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2012,7 +2225,7 @@ Change to ``isMaster`` Output
 Starting in MongoDB 4.2, the output for ``isMaster``, and the
 ``db.isMaster()`` helper method, returns the
 ``isMaster.connectionId`` for the
-:binary:`~bin.mongod`/:binary:`~bin.mongos` instance's connection to
+:binary:`mongod` / :binary:`mongos` instance's connection to
 the client.
 
 .. _4.2-index-builds:
@@ -2083,10 +2296,10 @@ Upgrade Procedures
 
    - :doc:`/release-notes/4.2-upgrade-sharded-cluster`
 
-If you need guidance on upgrading to 4.2, `MongoDB offers major version
-upgrade services
-<https://www.mongodb.com/products/consulting?tck=docs_server>`_
-to help ensure a smooth transition without interruption to your MongoDB application.
+If you need guidance on upgrading to 4.2, `MongoDB professional services
+<https://www.mongodb.com/products/consulting?tck=docs_server>`_ offer
+major version upgrade support to help ensure a smooth transition
+without interruption to your MongoDB application.
 
 Download
 --------

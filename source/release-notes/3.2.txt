@@ -1,3 +1,4 @@
+.. _release-notes-3.2:
 
 =============================
 Release Notes for MongoDB 3.2
@@ -23,7 +24,7 @@ release notes
 <http://docs.opsmanager.mongodb.com/current/release-notes/application/>`_
 for more information.
 
-Minor Releases
+Patch Releases
 --------------
 
 .. toctree::
@@ -346,7 +347,7 @@ Issues fixed:
 - :issue:`SERVER-22970`: Background index build may result in extra index
   key entries that do not correspond to indexed documents.
 
-- :issue:`SERVER-22043`: :binary:`~bin.mongo` shell method :method:`~cursor.count()`
+- :issue:`SERVER-22043`: ``mongo`` shell method :method:`~cursor.count()`
   ignores read preference.
 
 - :ref:`3.2.6-changelog`
@@ -393,7 +394,7 @@ Issues fixed:
   setting value and instead implies ``true``.
 
 - :issue:`SERVER-22043`: :method:`~cursor.count()` method in the
-  :binary:`~bin.mongo` shell does not apply the read preferences.
+  ``mongo`` shell does not apply the read preferences.
 
 - :ref:`3.2.4-changelog`
 
@@ -464,7 +465,7 @@ engine setting either:
 
      mongod --storageEngine mmapv1
 
-- Or in a :doc:`configuration file </reference/configuration-options>`,
+- Or in a :ref:`Configuration File <configuration-options>`,
   using the :setting:`storage.engine` setting:
 
   .. code-block:: yaml
@@ -543,10 +544,9 @@ Sharded Cluster Enhancements
 MongoDB 3.2 deprecates the use of three mirrored :binary:`~bin.mongod`
 instances for config servers.
 
-Instead, starting in 3.2, the :doc:`config servers
-</core/sharded-cluster-config-servers>` for a sharded cluster can be
-deployed as a replica set. The replica set config servers must run the
-WiredTiger storage engine.
+Instead, starting in 3.2, the :ref:`config servers <sharding-config-server>` for a
+sharded cluster can be deployed as a replica set. The replica set config
+servers must run the WiredTiger storage engine.
 
 This change improves consistency across the config servers, since
 MongoDB can take advantage of the standard replica set read and write
@@ -554,7 +554,7 @@ protocols for sharding config data. In addition, this allows a sharded
 cluster to have more than 3 config servers since a replica set can have
 up to 50 members.
 
-For more information, see :doc:`/core/sharded-cluster-config-servers`.
+For more information, see :ref:`sharding-config-server`.
 To deploy a **new** sharded cluster with replica set config servers,
 see :doc:`/tutorial/deploy-shard-cluster`.
 
@@ -654,8 +654,8 @@ For deployments that have enabled access control, you must have
 :authaction:`bypassDocumentValidation` action. The built-in roles
 :authrole:`dbAdmin` and :authrole:`restore` provide this action.
 
-Aggregation Framework Enhancements
-----------------------------------
+Aggregation Pipeline Enhancements
+---------------------------------
 
 MongoDB introduces:
 
@@ -952,8 +952,8 @@ Text Search Enhancements
 ``text`` Index Version 3
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-MongoDB 3.2 introduces a version 3 of the :doc:`text index
-</core/index-text>`. Key features of the new version of the index are:
+MongoDB 3.2 introduces a version 3 of the :ref:`text index
+<index-type-text>`. Key features of the new version of the index are:
 
 - Improved :ref:`case insensitivity <text-index-case-insensitivity>`.
 
@@ -963,7 +963,7 @@ MongoDB 3.2 introduces a version 3 of the :doc:`text index
   <text-index-tokenization-delimiters>`.
 
 Starting in MongoDB 3.2, version 3 is the default version for new
-:doc:`text </core/index-text>` indexes.
+:ref:`text <index-type-text>` indexes.
 
 .. seealso::
 
@@ -1066,7 +1066,7 @@ SpiderMonkey JavaScript Engine
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 MongoDB 3.2 uses SpiderMonkey as the JavaScript engine for the
-:binary:`~bin.mongo` shell and :binary:`~bin.mongod` server. SpiderMonkey
+``mongo`` shell and :binary:`~bin.mongod` server. SpiderMonkey
 provides support for additional platforms and has an improved memory
 management model.
 
@@ -1084,7 +1084,7 @@ transparent to the user.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To provide consistency with the MongoDB drivers' CRUD
-(Create/Read/Update/Delete) API, the :binary:`~bin.mongo` shell introduces
+(Create/Read/Update/Delete) API, the ``mongo`` shell introduces
 additional CRUD methods that are consistent with the drivers' CRUD API:
 
 .. list-table::
@@ -1127,7 +1127,7 @@ additional CRUD methods that are consistent with the drivers' CRUD API:
 
      - Equivalent to :method:`db.collection.findAndModify()` method
        with ``update`` set to a document that specifies modifications
-       using :doc:`update operators </reference/operator/update>`.
+       using :ref:`update operators <update-operators-top-level>`.
 
    * - :method:`db.collection.insertMany()`
      - Equivalent to :method:`db.collection.insert()` method
@@ -1148,8 +1148,8 @@ additional CRUD methods that are consistent with the drivers' CRUD API:
      - Equivalent to :method:`db.collection.update( \<query\>,
        \<update\>, { multi: true, ... }) <db.collection.update()>`
        method with an ``<update>`` document that specifies
-       modifications using :doc:`update operators
-       </reference/operator/update>` and the ``multi`` option set to
+       modifications using :ref:`update operators
+       <update-operators-top-level>` and the ``multi`` option set to
        true.
 
    * - :method:`db.collection.updateOne()`
@@ -1157,14 +1157,14 @@ additional CRUD methods that are consistent with the drivers' CRUD API:
      - Equivalent to :method:`db.collection.update( \<query\>,
        \<update\> ) <db.collection.update()>` method with an
        ``<update>`` document that specifies modifications using
-       :doc:`update operators </reference/operator/update>`.
+       :ref:`update operators <update-operators-top-level>`.
 
 WiredTiger and ``fsyncLock``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Starting in MongoDB 3.2, the WiredTiger storage engine supports the
 :dbcommand:`fsync` command with the ``lock`` option or the
-:binary:`~bin.mongo` shell method :method:`db.fsyncLock()`. That is, for
+``mongo`` shell method :method:`db.fsyncLock()`. That is, for
 the WiredTiger storage engine, these operations can guarantee that the
 data files do not change, ensuring consistency for the purposes of
 creating backups.
@@ -1212,10 +1212,10 @@ For ``explain`` operations run in ``executionStats`` or
 </reference/explain-results>` contains the ``keysExamined`` statistic,
 representing the number of index keys examined during index scans.
 
-Prior to 3.2, ``keysExamined`` count in some queries did not include
-the last scanned key. As of 3.2 this error has been corrected. For more
-information, see :data:`
-~explain.executionStats.executionStages.inputStage.keysExamined`.
+Prior to 3.2, ``keysExamined`` count in some queries did not include the
+last scanned key. As of 3.2 this error has been corrected. For more
+information, see
+:data:`~explain.executionStats.executionStages.inputStage`.
 
 The diagnostic logs and the system profiler report on this statistic.
 
@@ -1224,13 +1224,12 @@ The diagnostic logs and the system profiler report on this statistic.
 Geospatial Optimization
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-MongoDB 3.2 introduces version 3 of :doc:`2dsphere
-indexes </core/2dsphere>`, which index :doc:`GeoJSON geometries
-</reference/geojson>` at a finer gradation. The new version improves
-performance of :doc:`2dsphere index </core/2dsphere>` queries over
-smaller regions. In addition, for both :doc:`2d indexes </core/2d>` and
-:doc:`2dsphere indexes </core/2dsphere>`, the performance of
-geoNear queries has been improved for dense datasets.
+MongoDB 3.2 introduces version 3 of :ref:`2dsphere-index`, which index
+:doc:`GeoJSON geometries </reference/geojson>` at a finer gradation. The
+new version improves performance of ``2dsphere`` index queries over
+smaller regions. In addition, for both :ref:`2d-index` and ``2dsphere`` 
+indexes, the performance of geoNear queries has been improved for dense 
+datasets.
 
 .. seealso::
 

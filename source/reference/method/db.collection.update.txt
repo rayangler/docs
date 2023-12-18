@@ -1,10 +1,13 @@
+.. _collection-update:
+
 ======================
 db.collection.update()
 ======================
 
 .. default-domain:: mongodb
 
-
+.. meta:: 
+   :keywords: deprecated
 
 .. contents:: On this page
    :local:
@@ -12,12 +15,12 @@ db.collection.update()
    :depth: 1
    :class: singlecol
 
+.. include:: /includes/fact-mongosh-shell-method-deprecated.rst
+
 Definition
 ----------
 
 .. method:: db.collection.update(query, update, options)
-
-   .. include:: /includes/fact-mongosh-shell-method.rst
 
    Modifies an existing document or documents in a collection. The
    method can modify specific fields of an existing document or documents
@@ -27,6 +30,17 @@ Definition
    By default, the :method:`db.collection.update()` method updates a
    **single** document. Include the option :ref:`multi: true <multi-parameter>`
    to update all documents that match the query criteria.
+
+Compatibility
+-------------
+
+.. |operator-method| replace:: ``db.collection.update()``
+
+.. include:: /includes/fact-compatibility.rst
+
+To learn how to update documents hosted in {+atlas+} by 
+using the Atlas UI, see :atlas:`Create, View, Update, and Delete Documents
+</atlas-ui/documents/#edit-one-document>`.
 
 Syntax
 ------
@@ -51,6 +65,8 @@ The :method:`db.collection.update()` method has the following form:
       }
    )
 
+.. _update-parameters:
+
 Parameters
 ~~~~~~~~~~
 
@@ -62,15 +78,11 @@ parameters:
    :widths: 20 20 80
 
    * - Parameter
-
      - Type
-
      - Description
 
    * - :ref:`query <update-query>`
-
      - document
-
      - .. _update-query:
 
        The selection criteria for the update. The same :ref:`query
@@ -81,9 +93,7 @@ parameters:
           :end-before: end-short-description
 
    * - :ref:`update <update-parameter>`
-
      - document or pipeline
-
      - .. _update-parameter:
 
        The modifications to apply. Can be one of the following:
@@ -116,17 +126,13 @@ parameters:
        For details and examples, see :ref:`update-method-examples`.
 
    * - :ref:`upsert <update-upsert>`
-
      - boolean
-
      - .. _update-upsert:
 
        .. include:: /includes/extracts/update-upsert-behavior-method.rst
 
    * - :ref:`multi <update-multi>`
-
      - boolean
-
      - .. _update-multi:
 
        Optional. If set to ``true``, updates multiple documents that
@@ -136,14 +142,12 @@ parameters:
        <multi-parameter>`.
 
    * - :ref:`writeConcern <update-wc>`
-
      - document
-
      - .. _update-wc:
 
-       Optional. A document expressing the :doc:`write concern
-       </reference/write-concern>`. Omit to use the default write
-       concern ``w: 1``.
+       Optional. A document expressing the :ref:`write concern
+       <write-concern>`. Omit to use the default write concern 
+       ``w: "majority"``.
 
        .. include:: /includes/extracts/transactions-operations-write-concern.rst
 
@@ -151,9 +155,7 @@ parameters:
        :ref:`example-update-write-concern`.
 
    * - :ref:`collation <update-collation>`
-
      - document
-
      - .. _update-collation:
 
        Optional.
@@ -163,12 +165,8 @@ parameters:
        For an example using ``collation``, see
        :ref:`example-update-collation`.
 
-       .. versionadded:: 3.4
-
    * - :ref:`arrayFilters <update-array-filters>`
-
      - array
-
      - .. _update-array-filters:
 
        Optional. An array of filter documents that determine which array
@@ -186,16 +184,12 @@ parameters:
 
        For examples, see :ref:`update-arrayFilters`.
 
-       .. versionadded:: 3.6
-
    * - :ref:`hint <update-hint>`
-
      - Document or string
-
      - .. _update-hint:
 
-       Optional. A document or string that specifies the :doc:`index
-       </indexes>` to use to support the :ref:`query predicate
+       Optional. A document or string that specifies the :ref:`index
+       <indexes>` to use to support the :ref:`query predicate
        <update-query>`.
 
        The option can take an index specification document or the index
@@ -209,18 +203,15 @@ parameters:
        .. versionadded:: 4.2
 
    * - :ref:`let <db.collection.update-let-syntax>`
-
      - document
-        
      - .. _db.collection.update-let-syntax:
      
        Optional.
      
        .. include:: /includes/let-variables-syntax.rst
-
        .. include:: /includes/let-variables-syntax-note.rst
 
-       For a complete MQL example using ``let`` and variables, see
+       For a complete example using ``let`` and variables, see
        :ref:`db.collection.update-let-example`.
 
        .. versionadded:: 5.0
@@ -315,9 +306,9 @@ To modify the **existing** shard key value with
 - You :red:`must` run on a :binary:`~bin.mongos`. Do :red:`not`
   issue the operation directly on the shard.
 
-- You :red:`must` run either in a :doc:`transaction
-  </core/transactions>` or as a :doc:`retryable write
-  </core/retryable-writes>`.
+- You :red:`must` run either in a :ref:`transaction
+  <transactions>` or as a :ref:`retryable write
+  <retryable-writes>`.
 
 - You :red:`must` specify ``multi: false``.
 
@@ -361,9 +352,9 @@ In addition, the following requirements also apply:
 
    * - To set to a non-``null`` value
 
-     - - :red:`Must` be performed either inside a :doc:`transaction
-         </core/transactions>` or as a :doc:`retryable write
-         </core/retryable-writes>`.
+     - - :red:`Must` be performed either inside a :ref:`transaction
+         <transactions>` or as a :ref:`retryable write
+         <retryable-writes>`.
 
        - :red:`Must` specify ``multi: false``.
 
@@ -447,11 +438,6 @@ The following tabs showcase a variety of common
           an array, use :ref:`dot notation <document-dot-notation>`
           to specify the field.
 
-      You can use the web shell below to insert the sample
-      documents and execute the example update operation:
-
-      .. include:: /includes/fact-mws.rst
-
       .. code-block:: javascript
 
          db.books.update(
@@ -521,7 +507,7 @@ The following tabs showcase a variety of common
       .. seealso::
 
          :update:`$set`, :update:`$inc`,
-         :doc:`/reference/operator/update`,
+         :ref:`update operators <update-operators>`
          :ref:`dot notation <document-dot-notation>`
 
    .. tab:: Arrays
@@ -532,11 +518,6 @@ The following tabs showcase a variety of common
 
       The following operation uses the :update:`$push` update
       operator to append a new object to the ``ratings`` array.
-
-      You can use the web shell below to insert the sample
-      documents and execute the example update operation:
-
-      .. include:: /includes/fact-mws.rst
 
       .. code-block:: javascript
 
@@ -581,11 +562,6 @@ The following tabs showcase a variety of common
       The following operation uses the :update:`$unset` operator to remove
       the ``tags`` field from the document with ``{ _id: 1 }``.
 
-      You can use the web shell below to insert the sample
-      documents and execute the example update operation:
-
-      .. include:: /includes/fact-mws.rst
-
       .. code-block:: javascript
 
          db.books.update( { _id: 1 }, { $unset: { tags: 1 } } )
@@ -618,7 +594,7 @@ The following tabs showcase a variety of common
 
       .. seealso::
 
-         :update:`$unset`, :update:`$rename`, :doc:`/reference/operator/update`
+         :update:`$unset`, :update:`$rename`, :ref:`update operators <update-operators>`
 
    .. tab:: Multiple
       :tabid: update-multiple
@@ -636,11 +612,6 @@ The following tabs showcase a variety of common
       ``10``. If the ``reorder`` field does not exist in the matching
       document(s), the :update:`$set` operator adds the field
       with the specified value.
-
-      You can use the web shell below to insert the sample
-      documents and execute the example update operation:
-
-      .. include:: /includes/fact-mws.rst
 
       .. code-block:: javascript
 
@@ -762,13 +733,13 @@ with :method:`~db.collection.update()`.
          :emphasize-lines: 8
 
          db.books.update(
-            { item: "ZZZ135" },   // Query parameter
-            {                     // Replacement document
-              item: "ZZZ135",
-              stock: 5,
-              tags: [ "database" ]
+            { item: "ZZZ135" },  // Query parameter
+            { $set:
+               {
+                  item: "ZZZ135", stock: 5, tags: [ "database" ]  // Replacement document
+               }
             },
-            { upsert: true }      // Options
+            { upsert: true }  // Options
          )
 
       If no document matches the ``<query>`` parameter, the update
@@ -813,7 +784,7 @@ with :method:`~db.collection.update()`.
       from the equality clauses in the ``<query>`` parameter and
       applies the expressions from the ``<update>`` parameter.
 
-      :doc:`Comparison </reference/operator/query>` operations from
+      :ref:`Comparison <query-projection-operators-top>` operations from
       the ``<query>`` will not be included in the new document. If
       the new document does not include the ``_id`` field, MongoDB
       adds the ``_id`` field with an :ref:`objectid` value.
@@ -920,7 +891,7 @@ with :method:`~db.collection.update()`.
 
       .. code-block:: javascript
 
-         db.books.insertMany([
+         db.books.insertMany( [
            {
              _id: 5,
              item: "RQM909",
@@ -935,7 +906,7 @@ with :method:`~db.collection.update()`.
              info: { publisher: "1111", pages: 72 },
              reorder: true
            }
-         ])
+         ] )
 
       The following operation specifies both the ``multi`` option and
       the ``upsert`` option. If matching documents exist, the
@@ -1051,10 +1022,9 @@ Update with Aggregation Pipeline
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Starting in MongoDB 4.2, the :method:`db.collection.update()` method
-can accept an :doc:`aggregation pipeline
-</core/aggregation-pipeline>` ``[ <stage1>, <stage2>, ... ]`` that
-specifies the modifications to perform. The pipeline can consist of
-the following stages:
+can accept an :ref:`aggregation pipeline <aggregation-pipeline>` 
+``[ <stage1>, <stage2>, ... ]`` that specifies the modifications to 
+perform. The pipeline can consist of the following stages:
 
 .. include:: /includes/list-update-agg-stages.rst
 
@@ -1065,31 +1035,31 @@ field values or updating one field using the value of another field(s).
 Modify a Field Using the Values of the Other Fields in the Document
 ```````````````````````````````````````````````````````````````````
 
-Create a ``members`` collection with the following documents:
+Create a ``students`` collection with the following documents:
 
 .. code-block:: javascript
 
-   db.members.insertMany([
-      { "_id" : 1, "member" : "abc123", "status" : "A", "points" : 2, "misc1" : "note to self: confirm status", "misc2" : "Need to activate", "lastUpdate" : ISODate("2019-01-01T00:00:00Z") },
-      { "_id" : 2, "member" : "xyz123", "status" : "A", "points" : 60, "misc1" : "reminder: ping me at 100pts", "misc2" : "Some random comment", "lastUpdate" : ISODate("2019-01-01T00:00:00Z") }
-   ])
+   db.students.insertMany( [
+      { "_id" : 1, "student" : "Skye", "points" : 75, "commentsSemester1" : "great at math", "commentsSemester2" : "loses temper", "lastUpdate" : ISODate("2019-01-01T00:00:00Z") },
+      { "_id" : 2, "students" : "Elizabeth", "points" : 60, "commentsSemester1" : "well behaved", "commentsSemester2" : "needs improvement", "lastUpdate" : ISODate("2019-01-01T00:00:00Z") }
+   ] )
 
-Assume that instead of separate ``misc1`` and ``misc2`` fields, you
-want to gather these into a new ``comments`` field. The following
+Assume that instead of separate ``commentsSemester1`` and ``commentsSemester2`` 
+fields, you want to gather these into a new ``comments`` field. The following
 update operation uses an aggregation pipeline to:
 
 - add the new ``comments`` field and set the ``lastUpdate`` field.
 
-- remove the ``misc1`` and ``misc2`` fields for all documents in the
-  collection.
+- remove the ``commentsSemester1`` and ``commentsSemester2`` fields for all 
+  documents in the collection.
 
 .. code-block:: javascript
 
    db.members.update(
       { },
       [
-         { $set: { status: "Modified", comments: [ "$misc1", "$misc2" ], lastUpdate: "$$NOW" } },
-         { $unset: [ "misc1", "misc2" ] }
+         { $set: { comments: [ "$commentsSemester1", "$commentsSemester2" ], lastUpdate: "$$NOW" } },
+         { $unset: [ "commentsSemester1", "commentsSemester2" ] }
       ],
       { multi: true }
    )
@@ -1105,7 +1075,7 @@ First Stage
    The :pipeline:`$set` stage:
 
    - creates a new array field ``comments`` whose elements are the current
-     content of the ``misc1`` and ``misc2`` fields and
+     content of the ``commentsSemester1`` and ``commentsSemester2`` fields and
 
    - sets the field ``lastUpdate`` to the value of the aggregation
      variable :variable:`NOW`. The aggregation variable
@@ -1115,18 +1085,19 @@ First Stage
      and enclose in quotes.
 
 Second Stage
-   The :pipeline:`$unset` stage removes the ``misc1`` and ``misc2`` fields.
+   The :pipeline:`$unset` stage removes the ``commentsSemester1`` and 
+   ``commentsSemester2`` fields.
 
 After the command, the collection contains the following documents:
 
 .. code-block:: javascript
 
-   { "_id" : 1, "member" : "abc123", "status" : "Modified", "points" : 2, "lastUpdate" : ISODate("2020-01-23T05:11:45.784Z"), "comments" : [ "note to self: confirm status", "Need to activate" ] }
-   { "_id" : 2, "member" : "xyz123", "status" : "Modified", "points" : 60, "lastUpdate" : ISODate("2020-01-23T05:11:45.784Z"), "comments" : [ "reminder: ping me at 100pts", "Some random comment" ] }
+   { "_id" : 1, "student" : "Skye", "status" : "Modified", "points" : 75, "lastUpdate" : ISODate("2020-01-23T05:11:45.784Z"), "comments" : [ "great at math", "loses temper" ] }
+   { "_id" : 2, "student" : "Elizabeth", "status" : "Modified", "points" : 60, "lastUpdate" : ISODate("2020-01-23T05:11:45.784Z"), "comments" : [ "well behaved", "needs improvement" ] }
 
 .. seealso::
 
-   :doc:`/tutorial/update-documents-with-aggregation-pipeline`
+   :ref:`updates-agg-pipeline`
 
 Perform Conditional Updates Based on Current Field Values
 `````````````````````````````````````````````````````````
@@ -1135,11 +1106,11 @@ Create a ``students3`` collection with the following documents:
 
 .. code-block:: javascript
 
-   db.students3.insert([
+   db.students3.insertMany( [
       { "_id" : 1, "tests" : [ 95, 92, 90 ], "lastUpdate" : ISODate("2019-01-01T00:00:00Z") },
       { "_id" : 2, "tests" : [ 94, 88, 90 ], "lastUpdate" : ISODate("2019-01-01T00:00:00Z") },
       { "_id" : 3, "tests" : [ 70, 75, 82 ], "lastUpdate" : ISODate("2019-01-01T00:00:00Z") }
-   ]);
+   ] )
 
 Using an aggregation pipeline, you can update the documents with the
 calculated grade average and letter grade.
@@ -1199,7 +1170,7 @@ After the command, the collection contains the following documents:
 
 .. seealso::
 
-   :doc:`/tutorial/update-documents-with-aggregation-pipeline`
+   :ref:`updates-agg-pipeline`
 
 .. _update-arrayFilters:
 
@@ -1221,11 +1192,11 @@ collection with the following documents:
 
 .. code-block:: javascript
 
-   db.students.insertMany([
+   db.students.insertMany( [
       { "_id" : 1, "grades" : [ 95, 92, 90 ] },
       { "_id" : 2, "grades" : [ 98, 100, 102 ] },
       { "_id" : 3, "grades" : [ 95, 110, 100 ] }
-   ])
+   ] )
 
 To update all elements that are greater than or equal to ``100`` in the
 ``grades`` array, use the filtered positional operator
@@ -1262,7 +1233,7 @@ collection with the following documents:
 
 .. code-block:: javascript
 
-   db.students2.insertMany([
+   db.students2.insertMany( [
      {
        "_id" : 1,
        "grades" : [
@@ -1270,7 +1241,7 @@ collection with the following documents:
           { "grade" : 85, "mean" : 90, "std" : 4 },
           { "grade" : 85, "mean" : 85, "std" : 6 }
        ]
-     }
+     },
      {
         "_id" : 2,
         "grades" : [
@@ -1279,7 +1250,7 @@ collection with the following documents:
            { "grade" : 85, "mean" : 85, "std" : 4 }
         ]
      }
-   ])
+   ] )
 
 To modify the value of the ``mean`` field for all elements in the
 ``grades`` array where the grade is greater than or equal to ``85``,
@@ -1325,41 +1296,40 @@ Specify ``hint`` for Update Operations
 
 .. versionadded:: 4.2
 
-In :binary:`~bin.mongosh`, create a ``members``
+In :binary:`~bin.mongosh`, create a ``newStudents``
 collection with the following documents:
 
 .. code-block:: javascript
 
-   db.members.insertMany([
-      { "_id" : 1, "member" : "abc123", "status" : "P", "points" :  0,  "misc1" : null, "misc2" : null },
-      { "_id" : 2, "member" : "xyz123", "status" : "A", "points" : 60,  "misc1" : "reminder: ping me at 100pts", "misc2" : "Some random comment" },
-      { "_id" : 3, "member" : "lmn123", "status" : "P", "points" :  0,  "misc1" : null, "misc2" : null },
-      { "_id" : 4, "member" : "pqr123", "status" : "D", "points" : 20,  "misc1" : "Deactivated", "misc2" : null },
-      { "_id" : 5, "member" : "ijk123", "status" : "P", "points" :  0,  "misc1" : null, "misc2" : null },
-      { "_id" : 6, "member" : "cde123", "status" : "A", "points" : 86,  "misc1" : "reminder: ping me at 100pts", "misc2" : "Some random comment" }
-   ])
+   db.newStudents.insertMany( [
+      { "_id" : 1, "student" : "Richard", "grade" : "F", "points" :  0,  "comments1" : null, "comments2" : null },
+      { "_id" : 2, "student" : "Jane", "grade" : "A", "points" : 60,  "comments1" : "well behaved", "comments2" : "fantastic student" },
+      { "_id" : 3, "student" : "Ronan", "grade" : "F", "points" :  0,  "comments1" : null, "comments2" : null },
+      { "_id" : 4, "student" : "Noah", "grade" : "D", "points" : 20,  "comments1" : "needs improvement", "comments2" : null },
+      { "_id" : 5, "student" : "Adam", "grade" : "F", "points" :  0,  "comments1" : null, "comments2" : null },
+      { "_id" : 6, "student" : "Henry", "grade" : "A", "points" : 86,  "comments1" : "fantastic student", "comments2" : "well behaved" }
+   ] )
 
-Create the following indexes on the collection:
+Create the following index on the collection:
 
 .. code-block:: javascript
 
-   db.members.createIndex( { status: 1 } )
-   db.members.createIndex( { points: 1 } )
+   db.newStudents.createIndex( { grade: 1 } )
 
 The following update operation explicitly :ref:`hints <update-hint>` to
-use the index ``{status: 1 }``:
+use the index ``{grade: 1 }``:
+
+.. code-block:: javascript
+
+   db.newStudents.update(
+      { points: { $lte: 20 }, grade: "F" },     // Query parameter
+      { $set: { comments1: "failed class" } },  // Update document
+      { multi: true, hint: { grade: 1 } }       // Options
+   )
 
 .. note::
 
-   If you specify an index that does not exist, the operation errors.
-
-.. code-block:: javascript
-
-   db.members.update(
-      { points: { $lte: 20 }, status: "P" },     // Query parameter
-      { $set: { misc1: "Need to activate" } },   // Update document
-      { multi: true, hint: { status: 1 } }       // Options
-   )
+   If you specify an index that does not exist, the operation errors.   
 
 The update command returns the following:
 
@@ -1371,10 +1341,10 @@ To see the index used, run :dbcommand:`explain` on the operation:
 
 .. code-block:: javascript
 
-   db.members.explain().update(
-      { "points": { $lte: 20 }, "status": "P" },
-      { $set: { "misc1": "Need to activate" } },
-      { multi: true, hint: { status: 1 } }
+   db.newStudents.explain().update(
+      { "points": { $lte: 20 }, "grade": "F" },
+      { $set: { "comments1": "failed class" } },
+      { multi: true, hint: { grade: 1 } }
    )
 
 The :method:`db.collection.explain().update() <db.collection.explain>`
@@ -1404,8 +1374,8 @@ Use Variables in ``let``
 Override Default Write Concern
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The following operation to a replica set specifies a :doc:`write concern
-</reference/write-concern>` of ``w: 2`` with a ``wtimeout`` of 5000
+The following operation to a replica set specifies a :ref:`write concern
+<write-concern>` of ``w: 2`` with a ``wtimeout`` of 5000
 milliseconds. This operation either returns after the write propagates
 to both the primary and one secondary, or times out after 5 seconds.
 
@@ -1432,12 +1402,11 @@ In :binary:`~bin.mongosh`, create a collection named
 
 .. code-block:: javascript
 
-   db.myColl.insertMany(
-     [
+   db.myColl.insertMany( [
        { _id: 1, category: "café", status: "A" },
        { _id: 2, category: "cafe", status: "a" },
        { _id: 3, category: "cafE", status: "a" }
-     ])
+   ] )
 
 The following operation includes the :ref:`collation <collation>`
 option and sets ``multi`` to ``true`` to update all matching documents:
@@ -1451,7 +1420,7 @@ option and sets ``multi`` to ``true`` to update all matching documents:
         collation: { locale: "fr", strength: 1 },
         multi: true
       }
-   );
+   )
 
 The :ref:`write result <writeresults-update>` of the operation returns the following document, indicating that all three documents in the
 collection were updated:

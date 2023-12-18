@@ -18,6 +18,9 @@ Definition
    Updates a :ref:`user-defined role <user-defined-roles>`. The
    :dbcommand:`updateRole` command must run on the role's database.
 
+   .. |method| replace:: :method:`db.updateRole` helper method
+   .. include:: /includes/fact-dbcommand-tip
+
    An update to a field **completely replaces** the previous field's values.
    To grant or remove roles or :ref:`privileges <privileges>` without
    replacing all values, use one or more of the following commands:
@@ -32,12 +35,17 @@ Definition
       An update to the ``privileges`` or ``roles`` array
       completely replaces the previous array's values.
 
-   The :dbcommand:`updateRole` command uses the following syntax. To
-   update a role, you must provide the ``privileges`` array, ``roles``
-   array, or both:
+Syntax
+------
 
-   .. code-block:: javascript
+To update a role, you must provide the ``privileges`` array, ``roles`` 
+array, or both.
 
+The command uses the following syntax:
+
+.. code-block:: javascript
+
+   db.runCommand(
       {
         updateRole: "<role>",
         privileges:
@@ -61,79 +69,56 @@ Definition
         writeConcern: <write concern document>,
         comment: <any>
       }
+    )
+ 
+Command Fields
+--------------
 
-   The :dbcommand:`updateRole` command has the following fields:
+The command takes the following fields:
 
+.. list-table::
+   :header-rows: 1
+   :widths: 20 20 80
+ 
+   * - Field
+     - Type
+     - Description
 
-   .. list-table::
-      :header-rows: 1
-      :widths: 20 20 80
-   
-      * - Field
-   
-        - Type
-   
-        - Description
-   
-      * - ``updateRole``
-   
-        - string
-   
-        - The name of the :ref:`user-defined role <user-defined-roles>` role to update.
-          
-          
-   
-      * - ``privileges``
-   
-        - array
-   
-        - Optional. Required if you do not specify :data:`~admin.system.roles.roles` array.
-          The privileges to grant the role. An update to the ``privileges``
-          array overrides the previous array's values. For the syntax for
-          specifying a privilege, see the :data:`~admin.system.roles.privileges`
-          array.
-          
-          
-   
-      * - ``roles``
-   
-        - array
-   
-        - Optional. Required if you do not specify :data:`~admin.system.roles.privileges` array.
-          The roles from which this role inherits privileges. An update to the
-          ``roles`` array overrides the previous array's values.
-          
-          
-   
-      * - ``authenticationRestrictions``
-   
-        - array
-   
-        - Optional.
-          
-          .. include:: /includes/fact-auth-restrictions-role-desc.rst
-          
-          
-   
-      * - ``writeConcern``
-   
-        - document
-   
-        - Optional. The level of :doc:`write concern </reference/write-concern>` for the
-          update operation. The ``writeConcern`` document takes the same
-          fields as the :dbcommand:`getLastError` command.
-          
-          
-      * - ``comment``
+   * - ``updateRole``
+     - string
+     - The name of the :ref:`user-defined role <user-defined-roles>` role to update.
 
-        - any
+   * - ``privileges``
+     - array
+     - Optional. Required if you do not specify :data:`~admin.system.roles.roles` array.
+       The privileges to grant the role. An update to the ``privileges``
+       array overrides the previous array's values. For the syntax for
+       specifying a privilege, see the :data:`~admin.system.roles.privileges`
+       array.
 
-        - .. include:: /includes/extracts/comment-content.rst
-       
-          .. versionadded:: 4.4
+   * - ``roles``
+     - array
+     - Optional. Required if you do not specify :data:`~admin.system.roles.privileges` array.
+       The roles from which this role inherits privileges. An update to the
+       ``roles`` array overrides the previous array's values.
 
+   * - ``authenticationRestrictions``
+     - array
+     - Optional.
 
-   .. |local-cmd-name| replace:: :dbcommand:`updateRole`
+       .. include:: /includes/fact-auth-restrictions-role-desc.rst
+
+   * - ``writeConcern``
+     - document
+     - .. include:: /includes/fact-write-concern-spec-link.rst
+
+   * - ``comment``
+     - any
+     - .. include:: /includes/extracts/comment-content.rst
+       .. versionadded:: 4.4
+ 
+ 
+.. |local-cmd-name| replace:: :dbcommand:`updateRole`
 
 Roles
 ~~~~~

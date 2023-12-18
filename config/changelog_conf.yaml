@@ -5,6 +5,8 @@ groups:
 
   "Security":
     - Security
+    - Queryable Encryption
+    - Field Level Encryption
   "Sharding":
     - Sharding
   "Replication":
@@ -12,7 +14,10 @@ groups:
   "Query":
     - Querying
     - Query Execution
+    - Query Language
+    - Query Planning
     - Indexing
+    - Index Maintenance
     - Geo
     - Text Search
   "Write Operations":
@@ -23,6 +28,7 @@ groups:
   "JavaScript":
     - JavaScript
   "WiredTiger":
+    - Block cache
     - WiredTiger
   "MMAP":
     - MMAPv1
@@ -42,10 +48,15 @@ groups:
     - Shell
     - Usability
     - HTTP Console
+    - Client-side Field-level Encryption
   "Build and Packaging":
     - Build
+    - Build/compile
     - Packaging
     - Mobile
+    - Change streams
+    - Build-compile
+    - Evergreen
   "Internals":
     - Testing
     - Python tests
@@ -63,6 +74,7 @@ groups:
     - Cache and eviction
     - Backup
     - Checkpoints
+    - Documentation
   "Tools":
     - Tools
     - All Tools

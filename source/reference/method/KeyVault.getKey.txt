@@ -1,3 +1,5 @@
+.. _keyvault-getkey-method:
+
 =================
 KeyVault.getKey()
 =================
@@ -32,10 +34,7 @@ KeyVault.getKey()
    :returns:
   
      Document representing a matching data encryption key.
-
-     Returns nothing if no key in the key vault has the specified
-     ``UUID``.
-
+     
 Behavior
 --------
 
@@ -51,7 +50,7 @@ The following example uses a :ref:`locally managed KMS
 <field-level-encryption-local-kms>` for the client-side field level
 encryption configuration. 
 
-.. include:: /includes/extracts/csfle-connection-boilerplate.rst
+.. include:: /includes/csfle-connection-boilerplate-example.rst
 
 Retrieve the :method:`keyVault <getKeyVault()>` object and
 use the :method:`KeyVault.getKey()` to retrieve

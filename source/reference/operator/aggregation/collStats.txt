@@ -1,3 +1,5 @@
+.. _coll-stats-agg:
+
 ========================
 $collStats (aggregation)
 ========================
@@ -14,8 +16,6 @@ Definition
 ----------
 
 .. pipeline:: $collStats
-
-   .. versionadded:: 3.4
 
    Returns statistics regarding a collection or view.
 
@@ -89,8 +89,6 @@ Definition
 
           See :ref:`collstat-count`
 
-          .. versionadded:: 3.6
-
       * - ``queryExecStats``
         - Adds :ref:`query execution statistics
           <collstat-queryexecstats>` to the return document.
@@ -121,13 +119,9 @@ Definition
         :ref:`sharded and non-sharded collections<sharded-vs-non-sharded-collections>`
         will produce this field.
 
-        .. versionadded:: 3.6
-
     * - ``host``
       - The hostname and port of the ``mongod`` process which produced
         the output document.
-
-        .. versionadded:: 3.6
 
     * - ``localTime``
       - The current time on the MongoDB server, expressed as UTC
@@ -135,7 +129,7 @@ Definition
 
     * - ``latencyStats``
       - Statistics related to request latency for a collection or
-        :doc:`view </core/views>`. See :ref:`latency-stats-document`
+        :ref:`view <views-landing-page>`. See :ref:`latency-stats-document`
         for details on this document.
 
         Only present when the ``latencyStats: {}`` option is specified.
@@ -152,7 +146,7 @@ Definition
 
         Only present when the ``storageStats`` option is specified.
 
-        Returns an error if applied to a :doc:`view </core/views>`.
+        Returns an error if applied to a view.
 
     * - ``count``
       - The total number of documents in the collection. This data is
@@ -165,14 +159,13 @@ Definition
            clusters.
 
         Only present when the ``count: {}`` option is specified. Returns
-        an error if applied to a :doc:`view </core/views>`.
+        an error if applied to a view.
 
     * - ``queryExecStats``
       - Statistics related to query execution for the collection. 
 
         Only present when the ``queryExecStats: {}`` option is
-        specified. Returns an error if applied to a :doc:`view
-        </core/views>`. 
+        specified. Returns an error if applied to a :ref:`view <views-landing-page>`.
 
 Behavior
 --------
@@ -180,10 +173,21 @@ Behavior
 ``$collStats`` must be the first stage in an aggregation pipeline, or
 else the pipeline returns an error.
 
+Redaction
+~~~~~~~~~
+
+When using :ref:`Queryable Encryption <qe-manual-feature-qe>`,
+``$collStats`` output redacts certain information for encrypted
+collections:
+
+* The output omits ``"queryExecStats"``
+* The output omits ``"latencyStats"``
+* The output redacts ``"WiredTiger"``, if present, to include only the ``url`` field.
+
 Transactions
 ~~~~~~~~~~~~
 
-``$collStats`` is not allowed in :doc:`transactions </core/transactions>`.
+``$collStats`` is not allowed in :ref:`transactions <transactions>`.
 
 .. _latency-stats-document:
 
@@ -287,7 +291,7 @@ This query returns a result similar to the following:
        "indexDetails" : {
          ...
        },
-       "indexBuilds" : [    // Starting in MongoDB 4.2
+       "indexBuilds" : [
           "_id_1_abc_1"
        ],
        "totalIndexSize" : 260337664,
@@ -296,7 +300,7 @@ This query returns a result similar to the following:
          "_id_" : 9891840,
          "_id_1_abc_1" : 250445824
        },
-       "scaleFactor" : 1    // Starting in MongoDB 4.2
+       "scaleFactor" : 1 
      }
    }
 
@@ -304,8 +308,7 @@ See :ref:`collStats-output` for a reference on this document.
 
 .. note:: In-progress Indexes
 
-   Starting in MongoDB 4.2, the returned ``storageStats`` includes
-   information on indexes being built. For details, see:
+   The returned ``storageStats`` includes information on indexes being built. For details, see:
 
    - :data:`collStats.nindexes`
    - :data:`collStats.indexDetails`
@@ -314,14 +317,12 @@ See :ref:`collStats-output` for a reference on this document.
    - :data:`collStats.indexSizes`
 
 Performing ``$collStats`` with the ``storageStats`` option on a
-:doc:`view </core/views>` results in an error.
+view results in an error.
 
 .. _collstat-count:
 
 ``count`` Field
 ~~~~~~~~~~~~~~~
-
-.. versionadded:: 3.6
 
 The ``count`` field only exists in the output if you specify the
 ``count`` option.

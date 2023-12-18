@@ -16,8 +16,12 @@ Definition
 .. method:: db.revokePrivilegesFromRole(rolename, privileges, writeConcern)
 
    Removes the specified privileges from the :ref:`user-defined
-   <user-defined-roles>` role on the database where the method runs. The
-   :method:`db.revokePrivilegesFromRole` method has the following syntax:
+   <user-defined-roles>` role on the database where the method runs. 
+   
+   .. |dbcommand| replace:: :dbcommand:`revokePrivilegesFromRole` command
+   .. include:: /includes/fact-mongosh-shell-method-alt.rst
+
+   The :method:`db.revokePrivilegesFromRole` method has the following syntax:
 
    .. code-block:: javascript
 
@@ -38,44 +42,21 @@ Definition
       :widths: 20 20 80
    
       * - Parameter
-   
         - Type
-   
         - Description
-   
       * - ``rolename``
-   
         - string
-   
         - The name of the :ref:`user-defined <user-defined-roles>` role from
           which to revoke privileges.
-          
-          
-   
       * - ``privileges``
-   
         - array
-   
         - An array of privileges to remove from the role.  See
           :data:`~admin.system.roles.privileges` for more information on the
           format of the privileges.
-          
-          
-   
       * - ``writeConcern``
-   
         - document
-   
-        - Optional. The level of :doc:`write concern </reference/write-concern>` for the
-          modification. The ``writeConcern`` document takes the same
-          fields as the :dbcommand:`getLastError` command.
-          
-          
-   
+        - .. include:: /includes/fact-write-concern-spec-link.rst
 
-
-   The :method:`db.revokePrivilegesFromRole()` method wraps the
-   :dbcommand:`revokePrivilegesFromRole` command.
 
 Behavior
 --------

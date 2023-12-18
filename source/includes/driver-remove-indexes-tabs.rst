@@ -3,24 +3,24 @@
    tabs:
      - id: shell
        content: |
-         MongoDB provides two methods for removing indexes from a collection:
+         
+         When removing indexes in the MongoDB Shell, you can either:
 
-         - :method:`db.collection.dropIndex()` and
+         - Remove a specific index.
 
-         - :method:`db.collection.dropIndexes()`
+         - Remove all indexes from the collection.
 
- 
          Remove Specific Index
          ~~~~~~~~~~~~~~~~~~~~~
 
          To remove an index, use the :method:`db.collection.dropIndex()` method.
 
-         For example, the following operation removes an ascending index on the
-         ``tax-id`` field in the ``accounts`` collection:
+         For example, the following operation removes an index with the name
+         ``taxIndex`` in the ``accounts`` collection:
 
          .. code-block:: javascript
 
-            db.accounts.dropIndex( { "tax-id": 1 } )
+            db.accounts.dropIndex( { "taxIndex" } )
 
          The operation returns a document with the status of the operation:
 
@@ -31,7 +31,7 @@
          Where the value of ``nIndexesWas`` reflects the number of indexes
          *before* removing this index.
 
-         For :doc:`text </core/index-text>` indexes, pass the index name to the
+         For :ref:`text <index-type-text>` indexes, pass the index name to the
          :method:`db.collection.dropIndex()` method. See :ref:`drop-text-index`
          for details.
 
@@ -67,16 +67,15 @@
 
      - id: compass
        content: |
+
          To remove an index from a collection in |compass|:
 
-         1. Navigate to the collection on which the target
-            index exists.
+         1. Navigate to the collection containing the target index.
 
          2. Click the :guilabel:`Indexes` tab.
 
-         3. Click the :guilabel:`trash can` icon in the
-            :guilabel:`Drop` column for the index you wish to delete.
+         3. In the :guilabel:`Drop` column for the target index, click
+            the trash icon.
 
          .. figure:: /images/compass-delete-index.png
             :alt: Delete an index in Compass
-

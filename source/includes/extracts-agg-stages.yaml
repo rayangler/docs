@@ -31,6 +31,16 @@ content: |
           to evenly distribute the documents into the specified number
           of buckets.
 
+      * - :pipeline:`$changeStream`
+
+        - Returns a :ref:`Change Stream <changeStreams>` cursor for the
+          collection.  This stage can only occur once in an aggregation
+          pipeline and it must occur as the first stage.
+
+      * - :pipeline:`$changeStreamSplitLargeEvent`
+
+        -  .. include:: /includes/changeStreamSplitLargeEvent-introduction.rst
+
       * - :pipeline:`$collStats`
 
         - Returns statistics regarding a collection or view.
@@ -42,6 +52,13 @@ content: |
 
           Distinct from the :group:`$count` aggregation accumulator.
 
+      * - :pipeline:`$densify`
+
+        - .. include:: /includes/fact-densify-description.rst
+
+      * - :pipeline:`$documents`
+        - Returns literal documents from input expressions.
+
       * - :pipeline:`$facet`
 
         - Processes multiple :ref:`aggregation pipelines
@@ -49,6 +66,10 @@ content: |
           of input documents. Enables the creation of multi-faceted
           aggregations capable of characterizing data across multiple
           dimensions, or facets, in a single stage.
+
+      * - :pipeline:`$fill`
+
+        - .. include:: /includes/fact-fill-description.rst
 
       * - :pipeline:`$geoNear`
 
@@ -81,6 +102,15 @@ content: |
           outputs either one document (for the first *n* documents) or
           zero documents (after the first *n* documents).
 
+      * - :pipeline:`$listSampledQueries`
+
+        - Lists sampled queries for all collections or a specific 
+          collection.
+
+      * - :pipeline:`$listSearchIndexes`
+
+        - .. include:: /includes/atlas-search-commands/command-descriptions/getSearchIndexes-description.rst
+      
       * - :pipeline:`$listSessions`
 
         - Lists all sessions that have been active long enough to
@@ -131,6 +161,12 @@ content: |
           
           See also :pipeline:`$unset` for removing existing fields.
 
+      * - :pipeline:`$queryStats`
+
+        - .. include:: /includes/aggregation/queryStats/description.rst
+
+          .. include:: /includes/aggregation/queryStats/unsupported-warning.rst
+
       * - :pipeline:`$redact`
 
         - Reshapes each document in the stream by restricting the
@@ -176,8 +212,25 @@ content: |
           .. note:: 
 
              ``$search`` is only available for MongoDB Atlas clusters, 
-             and is not available for self-managed deployments.
+             and is not available for self-managed deployments. To 
+             learn more, see :atlas:`Atlas Search Aggregation Pipeline 
+             Stages </reference/atlas-search/query-syntax>`.
 
+      * - :pipeline:`$searchMeta`
+
+        - Returns different types of metadata result documents for the 
+          :atlas:`Atlas Search </atlas-search>` query against an 
+          :atlas:`Atlas </reference/atlas-search/query-syntax/>` 
+          collection. 
+
+          .. note:: 
+
+             ``$searchMeta`` is only available for MongoDB Atlas 
+             clusters running MongoDB v4.4.9 or higher, and is not 
+             available for self-managed deployments. To learn more, see 
+             :atlas:`Atlas Search Aggregation Pipeline Stages 
+             </reference/atlas-search/query-syntax>`.
+      
       * - :pipeline:`$set`
 
         - Adds new fields to documents. Similar to
@@ -252,10 +305,20 @@ content: |
       * - Stage
         - Description
 
+      * - :pipeline:`$changeStream`
+
+        - Returns a :ref:`Change Stream <changeStreams>` cursor for the
+          collection.  This stage can only occur once in an aggregation
+          pipeline and it must occur as the first stage.
+
       * - :pipeline:`$currentOp`
       
         - Returns information on active and/or dormant operations for
           the MongoDB deployment.
+
+      * - :pipeline:`$documents`
+
+        - Returns literal documents from input values.
 
       * - :pipeline:`$listLocalSessions`
 
@@ -263,4 +326,5 @@ content: |
           connected :binary:`~bin.mongos` or :binary:`~bin.mongod`
           instance. These sessions may have not yet propagated to the
           ``system.sessions`` collection.
+
 ...

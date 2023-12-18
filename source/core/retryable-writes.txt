@@ -12,13 +12,11 @@ Retryable Writes
    :depth: 1
    :class: singlecol
 
-.. versionadded:: 3.6
-
 Retryable writes allow MongoDB drivers to automatically retry certain
 write operations a single time if they encounter network errors, or if
-they cannot find a healthy :term:`primary` in the
-:ref:`replica sets <replication>` or :ref:`sharded cluster
-<sharding-introduction>`. [#duplicate-key-update]_
+they cannot find a healthy :term:`primary` in the :ref:`replica set
+<replication>` or :ref:`sharded cluster <sharding-introduction>`.
+[#duplicate-key-update]_
 
 Prerequisites
 -------------
@@ -32,7 +30,7 @@ Supported Deployment Topologies
 
 Supported Storage Engine
   Retryable writes require a storage engine supporting document-level
-  locking, such as the :doc:`WiredTiger </core/wiredtiger>` or
+  locking, such as the :ref:`WiredTiger <storage-wiredtiger>` or
   :doc:`in-memory </core/inmemory>` storage engines.
 
 3.6+ MongoDB Drivers
@@ -74,12 +72,13 @@ MongoDB Drivers
   .. include:: /includes/extracts/4.2-changes-drivers-retryWrites-default.rst
 
 :binary:`~bin.mongosh`
-  To enable retryable writes in :binary:`~bin.mongosh`, use
-  the :option:`--retryWrites <mongosh --retryWrites>` command line option:
+  Retryable writes are enabled by default in :binary:`~bin.mongosh`. To
+  disable retryable writes, use the :option:`--retryWrites=false
+  <mongosh --retryWrites>` command line option:
 
   .. code-block:: bash
 
-     mongosh --retryWrites
+     mongosh --retryWrites=false
 
 .. _retryable-write-ops:
 
@@ -102,27 +101,21 @@ cannot be :writeconcern:`{w: 0} <\<number\>>`.
      - Descriptions
 
    * - | :method:`db.collection.insertOne()`
-       | :method:`db.collection.insert()`
        | :method:`db.collection.insertMany()`
-
      - Insert operations.
 
    * - | :method:`db.collection.updateOne()`
        | :method:`db.collection.replaceOne()`
-       | :method:`db.collection.update()` where ``multi`` is ``false``
-
      - Single-document update operations. [#duplicate-key-update]_
 
    * - | :method:`db.collection.deleteOne()`
        | :method:`db.collection.remove()` where ``justOne`` is ``true``
-
      - Single document delete operations.
 
    * - | :method:`db.collection.findAndModify()`
        | :method:`db.collection.findOneAndDelete()`
        | :method:`db.collection.findOneAndReplace()`
        | :method:`db.collection.findOneAndUpdate()`
-
      - ``findAndModify`` operations. All ``findAndModify`` operations
        are single document operations.
 
@@ -130,18 +123,14 @@ cannot be :writeconcern:`{w: 0} <\<number\>>`.
        operations:
 
        - :ref:`bulkwrite-write-operations-insertOne`
-
        - :ref:`updateOne <bulkwrite-write-operations-updateOneMany>`
-
        - :ref:`bulkwrite-write-operations-replaceOne`
-
        - :ref:`deleteOne <bulkwrite-write-operations-deleteOneMany>`
 
      - Bulk write operations that only consist of the single-document
        write operations. A retryable bulk operation can include any
        combination of the specified write operations but cannot include
        any multi-document write operations, such as ``updateMany``.
-
 
    * - :method:`Bulk <Bulk()>` operations for:
 
@@ -160,7 +149,7 @@ cannot be :writeconcern:`{w: 0} <\<number\>>`.
    Starting in MongoDB 4.2, you can update a document's shard key value
    (unless the shard key field is the immutable ``_id`` field) by
    issuing single-document update/findAndModify operations either as a
-   retryable write or in a :doc:`transaction </core/transactions>`. For
+   retryable write or in a :ref:`transaction <transactions>`. For
    details, see :ref:`update-shard-key`.
 
 .. [#duplicate-key-update]
@@ -361,8 +350,6 @@ retrying upserts which failed due to duplicate key errors.
 Diagnostics
 ~~~~~~~~~~~
 
-.. versionadded:: 3.6.3
-
 The :dbcommand:`serverStatus` command, and its :binary:`~bin.mongosh`
 shell helper :method:`db.serverStatus()` includes statistics on
 retryable writes in the :serverstatus:`transactions` section.
@@ -379,3 +366,8 @@ disabled.
 To disable retryable writes, specify
 :urioption:`retryWrites=false <retryWrites>` in the 
 :ref:`connection string <mongodb-uri>` for the MongoDB cluster.
+
+Error Handling
+~~~~~~~~~~~~~~
+
+.. include:: /includes/6.1-retry-writes-error-handling.rst

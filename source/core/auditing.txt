@@ -20,9 +20,11 @@ deployments with multiple users and applications.
 Enable and Configure Audit Output
 ---------------------------------
 
-The auditing facility can write audit events to the console, the :term:`syslog`, a JSON
-file, or a BSON file. To enable auditing for MongoDB Enterprise, see
-:doc:`/tutorial/configure-auditing`.
+The auditing facility can write audit events to the console, the
+:term:`syslog`, a JSON file, or a BSON file. To enable auditing in
+MongoDB Enterprise, set an audit output destination with
+:option:`--auditDestination <mongod --auditDestination>`. For details,
+see :doc:`/tutorial/configure-auditing`.
 
 For information on the audit log messages, see :doc:`/reference/audit-message`.
 
@@ -31,7 +33,8 @@ For information on the audit log messages, see :doc:`/reference/audit-message`.
 Audit Events and Filter
 -----------------------
 
-Once enabled, the auditing system can record the following operations [#transactions]_:
+Once enabled, the auditing system can record the following operations
+[#transactions]_:
 
 - schema (DDL),
 - replica set and sharded cluster,
@@ -76,15 +79,18 @@ That is, before adding an operation to the journal, MongoDB writes all
 audit events on the connection that triggered the operation, up to and
 including the entry for the operation.
 
-These auditing guarantees require that MongoDB run with
-:setting:`journaling <storage.journal.enabled>` enabled.
+.. warning::
 
-.. warning:: MongoDB may lose events **if** the server terminates
-   before it commits the events to the audit log. The client may
-   receive confirmation of the event before MongoDB commits to the
-   audit log. For example, while auditing an aggregation operation, the
-   server might crash after returning the result but before the audit
-   log flushes.
+   MongoDB may lose events **if** the server terminates before it
+   commits the events to the audit log. The client may receive
+   confirmation of the event before MongoDB commits to the audit log.
+   For example, while auditing an aggregation operation, the server
+   might terminate after returning the result but before the audit log
+   flushes.
+
+   In addition, if the server cannot write to the audit log at the
+   :option:`audit destination <mongod --auditDestination>`, the server
+   will terminate.
 
 .. [#filter] Audit configuration can include a :ref:`filter
    <audit-filter>` to limit events to audit.

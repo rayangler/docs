@@ -1,8 +1,21 @@
+.. _map-reduce:
+
 ==========
 Map-Reduce
 ==========
 
 .. default-domain:: mongodb
+
+.. facet::
+   :name: programming_language
+   :values: javascript/typescript
+
+.. facet::
+   :name: genre
+   :values: reference
+
+.. meta:: 
+   :keywords: deprecated
 
 .. contents:: On this page
    :local:
@@ -14,6 +27,14 @@ Map-Reduce
 .. note:: Aggregation Pipeline as Alternative
 
    .. include:: /includes/fact-use-aggregation-not-map-reduce.rst
+
+.. |page-topic| replace:: :atlas:`run aggregation pipelines in the UI </atlas-ui/agg-pipeline>`
+
+.. cta-banner::
+   :url: https://www.mongodb.com/docs/atlas/atlas-ui/agg-pipeline
+   :icon: Cloud
+
+   .. include:: /includes/fact-atlas-compatible.rst
 
 Map-reduce is a data processing paradigm for condensing large volumes
 of data into useful *aggregated* results. To perform map-reduce
@@ -39,6 +60,11 @@ documents of a single :term:`collection` as the *input* and can perform
 any arbitrary sorting and limiting before beginning the map stage.
 :dbcommand:`mapReduce` can return the results of a map-reduce operation
 as a document, or may write the results to collections.
+
+.. note::
+
+   Map-reduce is unsupported for {+atlas+} free clusters and 
+   {+atlas+} serverless instances.
    
 Map-Reduce JavaScript Functions
 -------------------------------
@@ -58,13 +84,12 @@ map and reduce operation, such as perform additional calculations.
 .. note::
 
    Starting in MongoDB 4.4, :dbcommand:`mapReduce` no longer supports
-   the deprecated BSON type JavaScript code with scope
-   (:doc:`BSON type 15 </reference/bson-types/>`) for its functions. The
-   ``map``, ``reduce``, and ``finalize`` functions must be either BSON
-   type String (:doc:`BSON type 2 </reference/bson-types/>`) or
-   BSON type JavaScript (:doc:`BSON type 13 </reference/bson-types/>`).
-   To pass constant values which will be accessible in the ``map``,
-   ``reduce``, and ``finalize`` functions, use the ``scope`` parameter.
+   the deprecated :ref:`BSON type <bson-types>` JavaScript code with 
+   scope (BSON Type 15) for its functions. The ``map``, ``reduce``, 
+   and ``finalize`` functions must be either BSON type String 
+   (BSON Type 2) or BSON type JavaScript (BSON Type 13). To pass 
+   constant values which will be accessible in the ``map``, ``reduce``, 
+   and ``finalize`` functions, use the ``scope`` parameter.
 
    The use of JavaScript code with scope for the :dbcommand:`mapReduce`
    functions has been deprecated since version 4.2.1.
@@ -89,8 +114,8 @@ and restrictions on map-reduce operations, see the
 Sharded Collections
 -------------------
 
-MongoDB supports map-reduce operations on :doc:`sharded collections
-</sharding>`.
+MongoDB supports map-reduce operations on :ref:`sharded collections
+<sharding-background>`.
 
 However, starting in version 4.2, MongoDB deprecates the map-reduce
 option to *create* a new sharded collection and the use of the

@@ -1,3 +1,5 @@
+.. _db-commands-sharding:
+
 =================
 Sharding Commands
 =================
@@ -34,6 +36,12 @@ Sharding Commands
 
      - Associates a shard with a :term:`zone`. Supports configuring :ref:`zones <zone-sharding>` in sharded clusters.
 
+   * - :dbcommand:`analyzeShardKey`
+
+     - Calculates metrics for evaluating a shard key.
+
+       .. versionadded:: 7.0
+
    * - :dbcommand:`balancerCollectionStatus`
 
      - Returns information on whether the chunks of a sharded
@@ -52,6 +60,12 @@ Sharding Commands
    * - :dbcommand:`balancerStop`
 
      - Stops the balancer thread.
+
+   * - :dbcommand:`checkMetadataConsistency`
+
+     - Performs a series of consistency checks on sharding metadata.
+
+       .. versionadded:: 7.0
 
    * - :dbcommand:`checkShardingIndex`
 
@@ -78,17 +92,30 @@ Sharding Commands
 
        .. versionadded:: 5.0
 
+   * - :dbcommand:`configureCollectionBalancing`
+
+     - Configures balancer settings on a sharded collection.
+
+       .. versionadded:: 5.3
+
+   * - :dbcommand:`configureQueryAnalyzer`
+
+     - Configures query sampling for a collection.
+       
+       .. versionadded:: 7.0
+
    * - :dbcommand:`enableSharding`
 
-     - Enables sharding on a specific database.
+     - Creates a database.
 
    * - :dbcommand:`flushRouterConfig`
 
-     - Forces a :binary:`~bin.mongod`/:binary:`~bin.mongos` instance to update its cached routing metadata.
+     - Forces a :binary:`mongod` / :binary:`mongos` instance to update its cached routing metadata.
 
    * - :dbcommand:`getShardMap`
 
-     - Internal command that reports on the state of a sharded cluster.
+     - Returns the hostnames and connection strings for shards in the
+       cluster and the config servers for your cluster.
 
    * - :dbcommand:`getShardVersion`
 
@@ -105,7 +132,7 @@ Sharding Commands
    * - :dbcommand:`medianKey`
 
      - Deprecated internal command. See :dbcommand:`splitVector`.
-
+   
    * - :dbcommand:`moveChunk`
 
      - Internal command that migrates chunks between shards.
@@ -113,6 +140,14 @@ Sharding Commands
    * - :dbcommand:`movePrimary`
 
      - Reassigns the :term:`primary shard` when removing a shard from a sharded cluster.
+
+   * - :dbcommand:`moveRange`
+
+     - Migrates ranges between shards.
+
+   * - :dbcommand:`mergeAllChunksOnShard`
+
+     - Squashes :ref:`mergeable <mergeability>` chunks for a given collection on a shard.
 
    * - :dbcommand:`mergeChunks`
 
@@ -140,6 +175,12 @@ Sharding Commands
 
        .. versionadded:: 5.0
 
+   * - :dbcommand:`setAllowMigrations`
+
+     - Prevents the start of new :ref:`automatic migrations <sharding-chunk-migration-automatic>` on a 
+       collection, prevents in-flight :ref:`manual migrations <sharding-chunk-migration-manual>` from 
+       committing, and excludes the collection from new balancer rounds.
+
    * - :dbcommand:`setShardVersion`
 
      - Internal command to sets the :term:`config server <config database>` version.
@@ -155,10 +196,6 @@ Sharding Commands
    * - :dbcommand:`split`
 
      - Creates a new :term:`chunk`.
-
-   * - :dbcommand:`splitChunk`
-
-     - Internal command to split chunk. Instead use the methods :method:`sh.splitFind()` and :method:`sh.splitAt()`.
 
    * - :dbcommand:`splitVector`
 
@@ -181,15 +218,19 @@ Sharding Commands
    /reference/command/abortReshardCollection
    /reference/command/addShard
    /reference/command/addShardToZone
+   /reference/command/analyzeShardKey
    /reference/command/balancerCollectionStatus
    /reference/command/balancerStart
    /reference/command/balancerStatus
    /reference/command/balancerStop
+   /reference/command/checkMetadataConsistency
    /reference/command/checkShardingIndex
    /reference/command/clearJumboFlag
    /reference/command/cleanupOrphaned
    /reference/command/cleanupReshardCollection
    /reference/command/commitReshardCollection
+   /reference/command/configureCollectionBalancing
+   /reference/command/configureQueryAnalyzer
    /reference/command/enableSharding
    /reference/command/flushRouterConfig
    /reference/command/getShardMap
@@ -199,16 +240,17 @@ Sharding Commands
    /reference/command/medianKey
    /reference/command/moveChunk
    /reference/command/movePrimary
+   /reference/command/moveRange
    /reference/command/mergeChunks
    /reference/command/refineCollectionShardKey
    /reference/command/removeShard
    /reference/command/removeShardFromZone
    /reference/command/reshardCollection
+   /reference/command/setAllowMigrations
    /reference/command/setShardVersion
    /reference/command/shardCollection
    /reference/command/shardingState
    /reference/command/split
-   /reference/command/splitChunk
    /reference/command/splitVector
    /reference/command/unsetSharding
    /reference/command/updateZoneKeyRange

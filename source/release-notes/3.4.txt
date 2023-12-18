@@ -1,3 +1,5 @@
+.. _release-notes-3.4:
+
 =============================
 Release Notes for MongoDB 3.4
 =============================
@@ -19,7 +21,7 @@ Release Notes for MongoDB 3.4
    and the :opsmgr:`Ops Manager Release Notes </release-notes/application/>`
    for more information.
 
-Minor Releases
+Patch Releases
 --------------
 
 .. toctree::
@@ -557,28 +559,28 @@ primary member of the config server replica set. Associated with this
 change:
 
 - The primary of the CSRS config server holds the ``"balancer"`` lock,
-  using a process id named ``"ConfigServer"``, which is never released.
+  using a process ID named ``"ConfigServer"``, which is never released.
 
 - MongoDB 3.4 adds:
 
   - :dbcommand:`balancerStart` command and updates the 3.4
-    :binary:`~bin.mongo` shell method :method:`sh.startBalancer()` to wrap
-    the new command. A 3.2 or earlier :binary:`~bin.mongo` shell method
+    ``mongo`` shell method :method:`sh.startBalancer()` to wrap
+    the new command. A 3.2 or earlier ``mongo`` shell method
     :method:`sh.startBalancer()` is incompatible with a 3.4 sharded
     cluster.
 
   - :dbcommand:`balancerStop` command and updates the 3.4
-    :binary:`~bin.mongo` shell method :method:`sh.stopBalancer()` to wrap
-    the new command. A 3.2 or earlier :binary:`~bin.mongo` shell method
+    ``mongo`` shell method :method:`sh.stopBalancer()` to wrap
+    the new command. A 3.2 or earlier ``mongo`` shell method
     :method:`sh.stopBalancer()` is incompatible with a 3.4 sharded
     cluster.
 
   - :dbcommand:`balancerStatus` command.
 
-- MongoDB 3.4 deprecates :binary:`~bin.mongo` shell method
-  :method:`sh.getBalancerHost()`. A 3.2 or earlier :binary:`~bin.mongo`
-  shell method :method:`sh.getBalancerHost()` is incompatible with a
-  3.4 sharded cluster.
+- MongoDB 3.4 deprecates ``mongo`` shell method 
+  ``sh.getBalancerHost()``. A 3.2 or earlier ``mongo`` shell method 
+  ``sh.getBalancerHost()`` is incompatible with a 3.4 sharded 
+  cluster.
 
 - MongoDB 3.4 removes the following configuration options from the
   :binary:`~bin.mongos`:
@@ -629,7 +631,7 @@ MongoDB 3.4 introduces :doc:`/core/zone-sharding`, which supersedes
 tag-aware sharding available in earlier versions.
 
 To support zones, MongoDB introduces the following commands and
-:binary:`~bin.mongo` shell helpers:
+``mongo`` shell helpers:
 
 .. list-table::
    :header-rows: 1
@@ -746,7 +748,7 @@ the new ``decimal`` data type. The decimal128 format supports numbers with
 up to 34 decimal digits (i.e. significant digits) and an exponent range
 of −6143 to +6144.
 
-To support the format, the :binary:`~bin.mongo` shell adds the
+To support the format, the ``mongo`` shell adds the
 :ref:`NumberDecimal <shell-type-decimal>` wrapper.
 
 .. code-block:: javascript
@@ -782,8 +784,8 @@ Aggregation
 New Aggregation Stage for Recursive Search
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-3.4 introduces a stage to the :doc:`aggregation pipeline
-</core/aggregation-pipeline>` that allows for recursive search.
+3.4 introduces a stage to the :ref:`aggregation pipeline
+<aggregation-pipeline>` that allows for recursive search.
 
 .. list-table::
    :header-rows: 1
@@ -812,8 +814,8 @@ documents, you may want to classify items by a single category, such as
 by the price range, or by multiple categories, such as by price range
 as well as separately by the departments.
 
-3.4 introduces stages to the :doc:`aggregation pipeline
-</core/aggregation-pipeline>` that allow for faceted search.
+3.4 introduces stages to the :ref:`aggregation pipeline
+<aggregation-pipeline>` that allow for faceted search.
 
 .. list-table::
    :header-rows: 1
@@ -852,8 +854,8 @@ as well as separately by the departments.
 New Aggregation Stages to Facilitate Reshaping Documents
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-3.4 introduces stages to the :doc:`aggregation pipeline
-</core/aggregation-pipeline>` that faciliate replacing documents as
+3.4 introduces stages to the :ref:`aggregation pipeline
+<aggregation-pipeline>` that faciliate replacing documents as
 well as adding new fields.
 
 .. list-table::
@@ -878,8 +880,8 @@ well as adding new fields.
 New Aggregation Stage to Count
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-3.4 introduces a new stage to the :doc:`aggregation pipeline
-</core/aggregation-pipeline>` that faciliate counting document.
+3.4 introduces a new stage to the :ref:`aggregation pipeline
+<aggregation-pipeline>` that faciliate counting document.
 
 .. list-table::
    :header-rows: 1
@@ -1074,14 +1076,14 @@ Collation and Case-Insensitive Indexes
 --------------------------------------
 
 To allow for language-specific rules for string comparison, MongoDB
-3.4 introduces :doc:`collation </reference/collation>` to its query language and
+3.4 introduces :ref:`collation <collation>` to its query language and
 indexes.
 
 The following operations support collation:
 
 .. include:: /includes/extracts/collation-operations-table.rst
 
-For details, see :doc:`Collation </reference/collation>`.
+For details, see :ref:`Collation <collation>`.
 
 .. [#index-restriction]
 
@@ -1110,14 +1112,14 @@ introduces:
 
      db.runCommand( { create: <view>, viewOn: <source>, pipeline: <pipeline>, collation: <collation> } )
 
-- and a corresponding :binary:`~bin.mongo` shell helper
+- and a corresponding ``mongo`` shell helper
   :method:`db.createView()`:
 
   .. code-block:: javascript
 
      db.createView(<view>, <source>, <pipeline>, <collation>)
 
-For more information on creating views, see :ref:`3.4-reference-views`.
+For more information on creating views, see :ref:`views-landing-page`.
 
 Security Enhancement
 --------------------
@@ -1145,13 +1147,13 @@ MongoDB Tools
 ``mongoreplay``
 ~~~~~~~~~~~~~~~
 
-MongoDB introduces :binary:`~bin.mongoreplay`, a workload capture and
+MongoDB introduces ``mongoreplay``, a workload capture and
 analysis tool that replaces ``mongosniff``. You can use
-:binary:`~bin.mongoreplay` to inspect and record commands sent to a MongoDB
+``mongoreplay`` to inspect and record commands sent to a MongoDB
 instance, and then replay the commands back onto another host at a
 later time.
 
-:binary:`~bin.mongoreplay` is available for Linux and macOS.
+``mongoreplay`` is available for Linux and macOS.
 
 General Enhancements
 --------------------
@@ -1181,25 +1183,25 @@ following:
 
 - .. include:: /includes/fact-diagnostic-info.rst
 
-- :binary:`~bin.mongo` shell adds support for marshalling fields of type
+- ``mongo`` shell adds support for marshalling fields of type
   :ref:`javascript<bson-types>` and
   :ref:`javascriptWithScope<bson-types>` to JavaScript functions.
-  See :option:`--disableJavaScriptProtection <mongo --disableJavaScriptProtection>`.
+  See ``--disableJavaScriptProtection``.
 
 - Added support for system certificates. If a :binary:`~bin.mongod`
   instance presents a certificate signed with a CA trusted by the
-  operating system, the :binary:`~bin.mongo` shell will connect without any
-  errors. Previously, the :binary:`~bin.mongo` shell exited with an error
+  operating system, the ``mongo`` shell will connect without any
+  errors. Previously, the ``mongo`` shell exited with an error
   that it could not validate the certificate.
 
 - Added message compression support for internal communication between
   members of a replica set or a sharded cluster as well as
-  communication between :binary:`~bin.mongo` shell and :binary:`~bin.mongod` or
+  communication between ``mongo`` shell and :binary:`~bin.mongod` or
   :binary:`~bin.mongos`.
 
   See configuration :setting:`net.compression.compressors` setting as
   well as the ``--networkMessageCompressors`` option for
-  :binary:`~bin.mongod`, :binary:`~bin.mongos`, and the :binary:`~bin.mongo` shell.
+  :binary:`~bin.mongod`, :binary:`~bin.mongos`, and the ``mongo`` shell.
 
 - Upgraded the SpiderMonkey JavaScript engine to 45.0.2 ESR.
 

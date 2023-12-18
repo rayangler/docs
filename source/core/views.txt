@@ -1,4 +1,4 @@
-.. _3.4-reference-views:
+.. _views-landing-page:
 
 =====
 Views
@@ -6,150 +6,122 @@ Views
 
 .. default-domain:: mongodb
 
+.. facet::
+   :name: genre
+   :values: reference
+
 .. contents:: On this page
    :local:
    :backlinks: none
    :depth: 1
    :class: singlecol
 
-A MongoDB view is a queryable object whose contents are defined by an
-:ref:`aggregation pipeline <aggregation-pipeline>` on other collections
-or views. MongoDB does not persist the view contents to disk. A view's
-content is computed on-demand when a client :ref:`queries
-<views-supported-operations>` the view. MongoDB can require clients to
-:ref:`have permission <authorization>` to query the view. MongoDB does
-not support write operations against views.
+A MongoDB view is a read-only queryable object whose contents are
+defined by an :ref:`aggregation pipeline <aggregation-pipeline>` on
+other collections or views.
 
-For example, you can:
+MongoDB does not persist the view contents to disk. A view's content is
+computed on-demand when a client queries the view.
 
-- Create a view on a collection of employee data to 
-  :pipeline:`exclude <$project>` any private or personal
-  information (PII). Applications can query the view for employee
-  data that does not contain any PII.
+.. include:: /includes/views/disambiguate-standard-materialized.rst
 
-- Create a view on a collection of collected sensor data to 
-  :pipeline:`add <$addFields>` computed fields and metrics. Applications
-  can use simple find operations to query the data.
+.. |page-topic| replace:: :ref:`create materialized views in the UI <create-view-atlas>`
 
-- Create a view that :pipeline:`joins <$lookup>` two collections
-  containing inventory and order history respectively. Applications can
-  query the joined data without managing or understanding the underlying
-  complex pipeline.
+.. cta-banner::
+   :url: https://www.mongodb.com/docs/manual/core/materialized-views/#create-a-materialized-view-in-the-mongodb-atlas-ui
+   :icon: Cloud
 
-When clients :ref:`query a view <views-supported-operations>`, MongoDB
-appends the client query to the underlying pipeline and returns the
-results of that combined pipeline to the client. MongoDB may apply
-:doc:`aggregation pipeline optimizations
-</core/aggregation-pipeline-optimization>` to the combined pipeline.
+   .. include:: /includes/fact-atlas-compatible.rst
 
-.. note::
+Use Cases
+---------
 
-   The following page discusses views. For discussion of
-   on-demand materialized views, see :doc:`/core/materialized-views`
-   instead.
+You can use views to:
 
+- Create a view on a collection of employee data to exclude any
+  personally identifiable information (PII). Your application can query
+  the view for employee data that does not contain any :abbr:`PII
+  (Personally Identifiable Information)`.
 
-Create View
------------
+- Create a view on a collection of sensor data to add computed fields
+  and metrics. Your application can use :method:`find operations
+  <db.collection.find()>` to query the computed data.
 
-To create or define a view:
+- Create a view that joins two collections containing inventory and
+  order history. Your application can query the view without managing or
+  understanding the underlying pipeline.
 
-- Use the :method:`db.createCollection()` method or the 
-  :dbcommand:`create` command:
+Create and Manage Views
+-----------------------
 
-  .. code-block:: javascript
+To learn how to create and manage views, see the following resources:
 
-     db.createCollection( 
-       "<viewName>", 
-       {
-         "viewOn" : "<source>", 
-         "pipeline" : [<pipeline>],
-         "collation" : { <collation> }
-       }
-     )
+- :ref:`create-view-atlas`
+- :ref:`manual-views-create`
+- :ref:`manual-views-lookup`
+- :ref:`manual-views-collation`
+- :ref:`manual-views-modify`
+- :ref:`manual-views-remove`
 
-- Use the :method:`db.createView()` method:
+.. _view-materialized-view-compare:
 
-  .. code-block:: javascript
+Comparison with On-Demand Materialized Views
+--------------------------------------------
 
-     db.createView(
-       "<viewName>",
-       "<source>",
-       [<pipeline>],
-       {
-         "collation" : { <collation> }
-       }
-     )
+.. include:: /includes/views/fact-compare-view-and-materialized-view.rst
 
-.. note::
-   - You must create views in the same database as the source collection.
-
-   - .. include:: /includes/extracts/views-restriction-output-to-disk.rst
+.. _manual-views-behavior:
 
 Behavior
 --------
 
-.. include:: /includes/extracts/views-behavior.rst
+The following sections describe behavior specific to views.
 
-Public View Definition
-~~~~~~~~~~~~~~~~~~~~~~
+Read Only
+~~~~~~~~~
 
-Operations that lists collections, such as
-:method:`db.getCollectionInfos()` and
-:method:`db.getCollectionNames()`, include views in their outputs.
+Views are read-only. Write operations on views return an error.
 
-.. important::
+View Pipelines
+~~~~~~~~~~~~~~
 
-   .. include:: /includes/extracts/views-public-definition.rst
+The view's underlying aggregation pipeline is subject to the 100
+megabyte memory limit for blocking sort and blocking group
+operations. 
 
-Drop a View
------------
+.. include:: /includes/fact-allowDiskUseByDefault.rst
 
-To remove a view, use the :method:`db.collection.drop()` method on the
-view.
+Sharded Views
+~~~~~~~~~~~~~
 
-.. _views-modify:
+Views are considered sharded if their underlying collection is sharded.
+You cannot specify a sharded view for the ``from`` field in
+:pipeline:`$lookup` and :pipeline:`$graphLookup` operations.
 
-Modify a View
--------------
+Time Series Collections
+~~~~~~~~~~~~~~~~~~~~~~~
 
-You can modify a view either by dropping and recreating the view or
-using the :dbcommand:`collMod` command.
+- :ref:`Time series collections <manual-timeseries-collection>` are
+  writable non-materialized views. Limitations for views apply to time
+  series collections. For more information, see :ref:`Time Series
+  Collection Limitations <manual-timeseries-collection-limitations>`.
 
-.. _views-supported-operations:
+- You cannot create a view from a time series bucket collection
+  namespace (namely, a collection prefixed with ``system.buckets``).
 
-Supported Operations
---------------------
+.. include:: /includes/database-profiler-note.rst
 
-The following operations provide support for views, except for the
-restrictions mentioned in this page:
+Access Control
+--------------
 
-.. list-table::
-   :header-rows: 1
-   
-   * - Commands
-     - Methods
+.. include:: /includes/extracts/views-access-control.rst
 
-   * - :dbcommand:`create`
-     - | :method:`db.createCollection()`
-       | :method:`db.createView()`
+.. toctree::
+   :titlesonly:
 
-   * - :dbcommand:`collMod`
-     -
-
-   * - 
-     - | :method:`db.getCollection()`
-       | :method:`db.getCollectionInfos()`
-       | :method:`db.getCollectionNames()`
-
-   * - | :dbcommand:`find`
-       | :dbcommand:`distinct`
-       | :dbcommand:`count`
-
-     - | :method:`db.collection.aggregate()`
-       | :method:`db.collection.find()`
-       | :method:`db.collection.findOne()`
-       | :method:`db.collection.countDocuments()`
-       | :method:`db.collection.estimatedDocumentCount()`
-       | :method:`db.collection.count()`
-       | :method:`db.collection.distinct()`
+   /core/views/create-view
+   /core/views/join-collections-with-view
+   /core/views/specify-collation
+   /core/views/update-view
+   /core/views/drop-view
+   /core/views/supported-operations

@@ -1,3 +1,5 @@
+.. _release-notes-4.4:
+
 =============================
 Release Notes for MongoDB 4.4
 =============================
@@ -10,8 +12,415 @@ Release Notes for MongoDB 4.4
    :depth: 1
    :class: twocols
 
-Minor Releases
+.. warning:: Past Release Limitations
+
+   .. include:: /includes/release-notes/critical-warning-text.rst
+
+   .. list-table::
+      :header-rows: 1
+
+      * - Issue
+        - Affected Versions
+       
+      * - :issue:`WT-7426`
+        - 4.4.5
+
+      * - :issue:`WT-7984`
+        - 4.4.8
+
+      * - :issue:`WT-7995`
+        - 4.4.2 - 4.4.8
+
+      * - :issue:`WT-10461` 
+        - 4.4.0 - 4.4.18 (ARM64 or POWER system architectures)
+
+      * - :issue:`WT-10551` 
+        - 4.4.8 - 4.4.21 (Incremental backups on Ops Manager or Cloud
+          Manager clusters)
+
+      * - :issue:`SERVER-58936`
+        - 4.4.7
+
+Patch Releases
 --------------
+
+.. _4.4.26-release-notes:
+
+4.4.26 - Nov 27, 2023
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-50792` Return more useful errors when a shard key index can't 
+  be found for shardCollection or refineCollectionShardKey
+- :issue:`SERVER-80021` Make $convert round-trip correctly between double and 
+  string
+- :issue:`SERVER-81106` Recipient shard doesn't wait for the collection version 
+  to be locally persisted before starting the cloning phase
+- :issue:`SERVER-81966` Avoid modification of previous ChunkMap instances 
+  during refresh
+- :issue:`WT-10424` cursor::search_near slow performance if many deleted items 
+  are present
+
+- `All JIRA issues closed in 4.4.26
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%204.4.26>`_
+
+- :ref:`4.4.26-changelog`
+
+.. _4.4.25-release-notes:
+
+4.4.25 - Sep 29, 2023
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-76299` Report writeConflicts in serverStatus on
+  secondaries
+- :issue:`SERVER-78828` LDAP host timing data can be inconsistent during
+  sorting
+- :issue:`WT-11031` Fix RTS to skip tables with no time window
+  information in the checkpoint 
+
+- :issue:`SERVER-70973` Balancer should stop iterating collections when there are no more available shards
+- :issue:`SERVER-71627` Refreshed cached collection route info will severely block all client request when a cluster with 1 million chunks
+- :issue:`SERVER-78813` Commit point propagation fails indefinitely with exhaust cursors with null lastCommitted optime
+- :issue:`WT-8570` Do not increase oldest ID during recovery
+- :issue:`WT-10449` Do not save update chain when there are no updates to be written to the history store
+
+- `All JIRA issues closed in 4.4.25
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%204.4.25>`_
+
+- :ref:`4.4.25-changelog`
+
+.. _4.4.24-release-notes:
+
+4.4.24 - Aug 23, 2023
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-76299` Report writeConflicts in serverStatus on
+  secondaries
+- :issue:`SERVER-78828` LDAP host timing data can be inconsistent during
+  sorting
+- :issue:`WT-11031` Fix RTS to skip tables with no time window
+  information in the checkpoint 
+
+- `All JIRA issues closed in 4.4.24
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2C%20TOOLS%2C%20WT)%20AND%20resolution%20%3D%20Fixed%20AND%20fixVersion%20%3D%204.4.24>`_
+
+- :ref:`4.4.24-changelog`
+
+.. _4.4.23-release-notes:
+
+4.4.23 - Jul 13, 2023
+~~~~~~~~~~~~~~~~~~~~~
+
+- :issue:`SERVER-73943` Pin code pages in memory in memory constrained systems
+- :issue:`SERVER-75922` Partial unique indexes created on MongoDB 4.0 can be 
+  missing index keys after upgrade to 4.2 and later, leading to uniqueness 
+  violations
+- :issue:`SERVER-78126` For specific kinds of input, mongo::Value() always 
+  hashes to the same result on big-endian platforms
+- `All JIRA issues closed in 4.4.23
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.4.23%27>`_
+- :ref:`4.4.23-changelog`
+
+
+.. _4.4.22-release-notes:
+
+4.4.22 - May 18, 2023
+~~~~~~~~~~~~~~~~~~~~~
+
+- :issue:`SERVER-48196` Upgrade the timelib to the latest to update the built-in
+  timezone files to the latest
+- :issue:`SERVER-57056` Syslog severity set incorrectly for INFO messages
+- :issue:`WT-10551` Incremental backup may omit modified blocks
+- `All JIRA issues closed in 4.4.22
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.4.22%27>`_
+- :ref:`4.4.22-changelog`
+
+
+.. _4.4.21-release-notes:
+
+4.4.21 - April 27, 2023
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-75261` "listCollections" command fails with BSONObjectTooLarge error
+
+- :issue:`SERVER-76098` Allow queries with $search and non-simple collations
+
+- `All JIRA issues closed in 4.4.21
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.4.21%27>`_
+
+- :ref:`4.4.21-changelog`
+
+
+.. _4.4.20-release-notes:
+
+4.4.20 - Apr 10, 2023
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-51835` Mongos readPreferenceTags are not working as
+  expected
+- :issue:`SERVER-74345` mongodb-org-server 4.4.19, 5.0.15, 6.0.5 not
+  starting after upgrading from older version (Debian, RPM Packages)
+- :issue:`SERVER-75205` Deadlock between stepdown and restoring locks
+  after yielding when all read tickets exhausted
+- :issue:`WT-9500` Fix RTS to use cell time window instead of key/value
+  timestamps of HS update
+
+- `All JIRA issues closed in 4.4.20
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.4.20%27>`_
+
+- :ref:`4.4.20-changelog`
+
+.. _4.4.19-release-notes:
+
+4.4.19 - Feb 27, 2023
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-68122` Investigate replicating the collection
+  WiredTiger config string during initial sync
+- :issue:`SERVER-71759` dataSize command doesn't yield
+- :issue:`SERVER-72222` MapReduce with single reduce optimization fails when merging results in sharded cluster
+- :issue:`SERVER-72535` Sharded clusters allow creating the 'admin', 'local', and 'config' databases with alternative casings
+- :issue:`SERVER-70235` Don't create range deletion documents upon v4.2-v4.4 upgrade in case of collection uuid mismatch
+- :issue:`WT-9599` Acquire the hot backup lock to call fallocate in the block manager
+
+- `All JIRA issues closed in 4.4.19
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.4.19%27>`_
+
+- :ref:`4.4.19-changelog`
+
+4.4.18 - Nov 21, 2022
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-66289` $out incorrectly throws BSONObj size error on
+  v5.0.8
+- :issue:`SERVER-61185` Use prefix_search for unique index lookup
+- :issue:`SERVER-68115` Bug fix for "elemMatchRootLength > 0" invariant
+  trigger
+- :issue:`SERVER-50454` Avoiding sending the "keyValue" field to drivers
+  on duplicate key error
+- :issue:`SERVER-69443` [4.4] Allow speculative majority reads in
+  multi-doc txns when --enableMajorityReadConcern=false
+
+- `All JIRA issues closed in 4.4.18
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.4.18%27>`_
+
+- :ref:`4.4.18-changelog`
+
+.. _4.4.17-release-notes:
+
+4.4.17 - Sep 28, 2022
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-68925` Reintroduce check table logging settings at
+  startup (revert :issue:`SERVER-43664`)
+- :issue:`SERVER-56127` Retryable update may execute more than once if
+  chunk is migrated and shard key pattern uses nested fields
+- :issue:`SERVER-64142` Add new enforceUniqueness to
+  refineCollectionShardKey command
+- :issue:`SERVER-65382` AutoSplitVector should not use clientReadable to
+  reorder shard key fields
+- :issue:`SERVER-61275` Destruct the size storer after the session cache
+  has shutdown
+- :issue:`WT-9870` Fix updating pinned timestamp whenever oldest timestamp is 
+  updated during recovery
+
+- `All JIRA issues closed in 4.4.17
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.4.17%27>`_
+
+- :ref:`4.4.17-changelog`
+
+.. _4.4.16-release-notes:
+
+4.4.16 - Aug 19, 2022
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-67302` "Reading from replicated collection without read
+  timestamp or PBWM lock" crash with clock changes
+- :issue:`SERVER-61321` Improve handling of large/NaN values for text
+  index version
+- :issue:`SERVER-60607` Improve handling of large/NaN values for geo
+  index version
+- :issue:`SERVER-66418` Bad projection created during dependency
+  analysis due to string order assumption
+- :issue:`WT-9096` Fix search near returning wrong key/value sometimes
+  when key doesn't exist
+
+- `All JIRA issues closed in 4.4.16
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.4.16%27>`_
+
+- :ref:`4.4.16-changelog`
+
+.. _4.4.15-release-notes:
+
+4.4.15 - Jun 21, 2022
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-66433`  Backport deadline waiting for overlapping range
+  deletion to finish to pre-v5.1 versions
+- :issue:`SERVER-65821`  Deadlock during setFCV when there are prepared 
+  transactions that have not persisted commit/abort decision
+- :issue:`SERVER-65131`  Disable opportunistic read targeting 
+  (except for hedged reads)
+- :issue:`SERVER-62272`  Adding schema validation to a collection can 
+  prevent chunk migrations of failing documents
+- :issue:`SERVER-54900`  Blocking networking calls can delay sync-source
+  resolution indefinitely
+
+- `All JIRA issues closed in 4.4.15
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.4.15%27>`_
+
+- :ref:`4.4.15-changelog`
+
+.. _4.4.14-release-notes:
+
+4.4.14 - May 9, 2022
+~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-64983` Release Client lock before rolling back WT
+  transaction in TransactionParticipant::_resetTransactionState
+- :issue:`SERVER-62229` Fix invariant when applying index build entries
+  while recoverFromOplogAsStandalone=true
+- :issue:`SERVER-60412` Host memory limit check does not honor cgroups
+  v2
+- :issue:`SERVER-55429` Abort migration earlier when receiver is not
+  cleaning overlapping ranges
+- :issue:`WT-8924` Don't check against on disk time window if there is
+  an insert list when checking for conflicts in row-store
+
+- `All JIRA issues closed in 4.4.14
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.4.14%27>`_
+
+- :ref:`4.4.14-changelog`
+
+.. _4.4.13-release-notes:
+
+4.4.13 - Mar 7, 2022
+~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-63203` Chunk splitter never splits if more than 8192 split points are found
+- :issue:`SERVER-62065` Upgrade path from 3.6 to 4.0 can leave chunk entries without history on the shards
+- :issue:`SERVER-59754` Incorrect logging of queryHash/planCacheKey for operations that share the same $lookup shape
+- :issue:`SERVER-55483` Add a new startup parameter that skips verifying the table log settings
+- :issue:`SERVER-40691` $nin:[...] queries are not indexed
+
+- `All JIRA issues closed in 4.4.13
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.4.13%27>`_
+
+- :ref:`4.4.13-changelog`
+
+.. _4.4.12-release-notes:
+
+4.4.12 - Jan 21, 2022
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-62203` Change the thread name "Health checks progress 
+  monitor" to "FaultManagerProgressMonitor"
+- :issue:`SERVER-61930` Individual health observers should return an 
+  error if a timeout period elapses when doing a single health check
+- :issue:`SERVER-61637` Review range deleter batching policy
+- :issue:`SERVER-59362` Setup Fault Manager State Machine
+
+- `All JIRA issues closed in 4.4.12
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.4.12%27>`_
+
+- :ref:`4.4.12-changelog`
+
+.. _4.4.11-release-notes:
+
+4.4.11 - Dec 30, 2021
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`WT-8395` Inconsistent data after upgrade from 4.4.3 and 4.4.4 
+  to 4.4.8+ and 5.0.2+
+- :issue:`SERVER-60326` Windows Server fails to start when X509
+  certificate has empty subject name
+- :issue:`SERVER-60310` OCSP response validation should not consider 
+  statuses of irrelevant certificates
+- :issue:`SERVER-59226` Deadlock when stepping down with a profile
+  session marked as uninterruptible
+- :issue:`SERVER-56226` [v4.4] Introduce 'permitMigrations' field on
+  config.collections entry to prevent chunk migrations from committing
+- :issue:`SERVER-51329` Unexpected non-retryable error when shutting
+  down a mongos server
+- :issue:`SERVER-45953` Exempt oplog readers from acquiring read
+  tickets
+
+- `All JIRA issues closed in 4.4.11
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.4.11%27>`_
+
+- :ref:`4.4.11-changelog`
+
+.. _4.4.10-release-notes:
+
+4.4.10 - Oct 15, 2021 
+~~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-59876`: Large delays in returning from libcrypto.so
+  while establishing egress connections
+- :issue:`SERVER-59867`: Split horizon mappings in
+  ReplSetConfig/MemberConfig should be serialized deterministically
+- :issue:`SERVER-59456`: Start the LDAPReaper threadpool
+- :issue:`SERVER-59074`: Do not acquire storage tickets just to
+  set/wait on oplog visibility
+- :issue:`SERVER-54064`: Sessions on arbiters accumulate and cannot be
+  cleared out
+
+- `All JIRA issues closed in 4.4.10
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.4.10%27>`_
+
+- :ref:`4.4.10-changelog`
+
+.. _4.4.9-release-notes:
+
+4.4.9 - Sep 21, 2021
+~~~~~~~~~~~~~~~~~~~~
+
+Issues fixed:
+
+- :issue:`SERVER-57630`: Enable SSL_OP_NO_RENEGOTIATION on Ubuntu 18.04
+  when running against OpenSSL 1.1.1
+- :issue:`SERVER-34938`: Secondary slowdown or hang due to content
+  pinned in cache by single oplog batch
+- :issue:`WT-8005`: Fix a prepare commit bug that could leave the
+  history store entry unresolved
+- :issue:`WT-7995`: Fix the global visibility that it cannot go beyond
+  checkpoint visibility
+- :issue:`WT-7984`: Fix a bug that could cause a checkpoint to omit a
+  page of data
+
+- `All JIRA issues closed in 4.4.9
+  <https://jira.mongodb.org/issues/?jql=project%20in%20(SERVER%2CTOOLS%2CWT)%20AND%20resolution%3D%27Fixed%27%20and%20fixversion%3D%274.4.9%27>`_
+
+- :ref:`4.4.9-changelog`
 
 .. _4.4.8-release-notes:
 
@@ -40,12 +449,6 @@ Issues fixed:
 
 4.4.7 - Jul 16, 2021
 ~~~~~~~~~~~~~~~~~~~~
-
-.. warning::
-
-   MongoDB version 4.4.7 is not recommended for production use due to a
-   critical issue, :issue:`SERVER-58936`. The issue is fixed in version
-   4.4.8.
 
 Issues fixed:
 
@@ -91,12 +494,6 @@ Issues fixed:
 
 4.4.5 - Apr 8, 2021
 ~~~~~~~~~~~~~~~~~~~
-
-.. warning::
-
-   MongoDB version 4.4.5 is not recommended for production use due to a
-   critical issue, :issue:`WT-7426`. The issue is fixed in version
-   4.4.6.
 
 Issues fixed:
 
@@ -201,7 +598,7 @@ Issues fixed:
 - :issue:`SERVER-50140`: Initial sync cannot survive unclean restart of
   the sync source
 - :issue:`SERVER-50170`: Fix server selection failure on mongos
-- :issue:`WT-6623`: Set the connection level file id in recovery file
+- :issue:`WT-6623`: Set the connection level file ID in recovery file
   scan
 
 - `All JIRA issues closed in 4.4.1
@@ -210,6 +607,17 @@ Issues fixed:
 - :ref:`4.4.1-changelog`
 
 .. _4.4-rel-notes-agg:
+
+Full Time Diagnostic Data Capture Requirements
+----------------------------------------------
+
+Starting in version 4.4, if the :ref:`Full Time Diagnostic Data Capture
+(FTDC) <ftdc-stub>` thread in :binary:`~bin.mongod` or :binary:`~bin.mongos`
+fails, it terminates the originating process. To avoid the most common failures,
+confirm that the user running ``mongod``/``mongos`` has permissions to
+create the FTDC ``diagnostic.data`` directory within
+:setting:`storage.dbPath` (for ``mongod``) or parallel to 
+:setting:`systemLog.path` (for ``mongos``).
 
 Aggregation
 -----------
@@ -239,10 +647,11 @@ write custom JavaScript expressions instead of relying on
 
 .. note::
 
-   Even before version 4.4, various map-reduce expressions could also
-   be rewritten using :doc:`other aggregation pipeline operators
-   </meta/aggregation-quick-reference>`, such as :pipeline:`$group`,
-   :pipeline:`$merge`, etc., without requiring custom functions.
+   Even before version 4.4, various map-reduce expressions could also be
+   rewritten using :ref:`other aggregation pipeline stages
+   <aggregation-pipeline-operator-reference>`, such as
+   :pipeline:`$group`, :pipeline:`$merge`, etc., without requiring
+   custom functions.
    
 For more information, see
 :doc:`/reference/map-reduce-to-aggregation-pipeline`.
@@ -272,18 +681,10 @@ New Aggregation Operators
    * - :expression:`$bsonSize`
      - Returns the size in bytes of a given document (i.e. bsontype
        ``Object``) when encoded as :term:`BSON`.
-     
-   * - :expression:`$first`
-
-     - Returns the first element in an array.
 
    * - :expression:`$function`
 
      - Defines a custom aggregation expression.
-
-   * - :expression:`$last`
-
-     - Returns the last element in an array.
 
    * - :expression:`$isNumber`
 
@@ -293,7 +694,7 @@ New Aggregation Operators
        <Int64>`.  
        
        Returns boolean ``false`` if the expression resolves to any other
-       :doc:`BSON type </reference/mongodb-extended-json>`, ``null``, or
+       :ref:`BSON type <bson-types>`, ``null``, or
        a missing field
 
    * - :expression:`$replaceOne`
@@ -310,9 +711,19 @@ General Aggregation Improvements
 ``$out``
 ````````
 
-Starting in MongoDB 4.4, :pipeline:`$out` can output to a collection in
-a different database. In earlier versions, :pipeline:`$out` can output
-to a collection to the same database where the aggregation is run.
+Starting in MongoDB 4.4:
+
+- :pipeline:`$out` can output to a collection in
+  a different database. In earlier versions, :pipeline:`$out` can only 
+  output to a collection in the same database database where the 
+  aggregation is run.
+
+- :pipeline:`$out` can only run on replica set secondary nodes if
+  all the nodes in cluster have 
+  :ref:`featureCompatibilityVersion <view-fcv>` set to ``4.4`` or 
+  higher and the :doc:`/core/read-preference` allows secondary reads.
+  Check your :driver:`driver </>` documentation to see when your 
+  driver added support.
 
 ``$indexStats``
 ```````````````
@@ -340,6 +751,20 @@ Starting in MongoDB 4.4 (also available starting in 4.2.4),
 ``$merge``
 ``````````
 
+Starting in MongoDB 4.4:
+
+- :pipeline:`$merge` can output to a collection in
+  a different database. In earlier versions, :pipeline:`$merge` can 
+  only output to a collection in the same database where the aggregation 
+  is run.
+
+- :pipeline:`$merge` can only run on replica set secondary nodes if
+  all the nodes in cluster have 
+  :ref:`featureCompatibilityVersion <view-fcv>` set to ``4.4`` or 
+  higher and the :doc:`/core/read-preference` allows secondary reads.
+  Check your :driver:`driver </>` documentation to see 
+  when your driver added support.
+
 .. include:: /includes/fact-merge-same-collection-behavior.rst
 
 .. include:: /includes/fact-merge-same-collection-warning.rst
@@ -366,9 +791,9 @@ returns the following fields in the output:
 Starting in MongoDB 4.4, when you run the  
 :method:`db.collection.explain().aggregate() <db.collection.explain()>` 
 method in ``executionStats`` and ``allPlansExecution`` modes, each 
-:doc:`pipeline stage </aggregation>` listed in the :doc:`explain output 
-</reference/explain-results>` includes  :data:`nReturned 
-<explain.executionStats.nReturned>` and 
+:ref:`pipeline stage <aggregation-pipeline-intro>` listed in the 
+:doc:`explain output </reference/explain-results>` includes
+:data:`nReturned <explain.executionStats.nReturned>` and 
 :data:`executionTimeMillisEstimate 
 <explain.executionStats.executionStages.executionTimeMillisEstimate>`.
 
@@ -454,6 +879,19 @@ restart.
 .. seealso::
 
    :doc:`/core/replica-set-oplog`
+
+
+``slowOpSampleRate`` Affects Secondary Logs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting in MongoDB 4.4, :ref:`slow oplog application
+<slow-oplog-application>` logs on replica set secondaries are affected
+by the :setting:`~operationProfiling.slowOpSampleRate`. In previous
+versions, MongoDB logs all slow oplog entries regardless of the sample
+rate.
+
+:setting:`~operationProfiling.slowOpSampleRate` specifies the fraction
+of slow operations that should be profiled or logged.
 
 Indexes Build Simultaneously on Data-Bearing Replica Set Members
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -578,7 +1016,7 @@ Mirrored Reads Metrics
 ``````````````````````
 
 The command :dbcommand:`serverStatus` and its corresponding
-:binary:`~bin.mongo` shell method :method:`db.serverStatus()` return
+``mongo`` shell method :method:`db.serverStatus()` return
 :serverstatus:`mirroredReads` if you specify the field's inclusion
 in the operation:
 
@@ -591,16 +1029,6 @@ or
 .. code-block:: javascript
 
    db.serverStatus( { mirroredReads: 1 } )
-
-Replica Set Write Acknowledgement
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Starting in MongoDB 4.4, replica set members in the
-:replstate:`STARTUP2` state do not participate in write majorities.
-
-.. seealso::
-
-   :doc:`/core/replica-set-write-concern`
 
 Sharded Clusters
 ----------------
@@ -690,7 +1118,7 @@ Hedged Read Parameters
 
    * - :parameter:`maxTimeMSForHedgedReads`
 
-     - Specifies the maximimum time limit (in milliseconds) for the
+     - Specifies the maximum time limit (in milliseconds) for the
        additional read sent to :ref:`hedge a read operation
        <mongos-hedged-reads>`.
 
@@ -702,7 +1130,7 @@ the :ref:`read-preference-hedged-read`. To set using a MongoDB
 driver, refer to the driver :driver:`read preference API
 documentation</>`.
 
-The following :binary:`~bin.mongo` shell methods can accept hedge
+The following ``mongo`` shell methods can accept hedge
 options to enable hedged read for the specified read preference:
 
 - :method:`cursor.readPref()`
@@ -713,14 +1141,14 @@ Hedged Read Metrics
 ```````````````````
 
 The command :dbcommand:`serverStatus` and its corresponding
-:binary:`~bin.mongo` shell method :method:`db.serverStatus()` return
+``mongo`` shell method :method:`db.serverStatus()` return
 :serverstatus:`hedgingMetrics`.
 
 ``balancerCollectionStatus`` Command
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 MongoDB 4.4 provides the command :dbcommand:`balancerCollectionStatus`
-and the :binary:`~bin.mongo` shell helper method
+and the ``mongo`` shell helper method
 :method:`sh.balancerCollectionStatus()` that return information about
 whether the chunks of a sharded collection are balanced (i.e. do not
 need to be moved) as of the time the command is run or need to be
@@ -733,11 +1161,11 @@ Improved ``mongos`` Startup Procedure
 Starting with MongoDB 4.4, :binary:`~bin.mongos` adds the following new
 default startup behavior:
 
-- :binary:`~bin.mongos` will now preload a sharded cluster's routing
+- :binary:`~bin.mongos` preloads a sharded cluster's routing
   table on startup, rather than doing so on-demand for the first
   incoming client connection.
 
-- :binary:`~bin.mongos` will now prewarm its connection pool to shard
+- :binary:`~bin.mongos` prewarms its connection pool to shard
   hosts on startup, rather than doing so on-demand for incoming
   client connections.
 
@@ -855,8 +1283,8 @@ General Sharded Clusters Improvements
 Index Consistency Checks
 ````````````````````````
 
-Starting in MongoDB 4.4, the :doc:`config server
-</core/sharded-cluster-config-servers>` primary, by default, checks for
+Starting in MongoDB 4.4, the :ref:`config server
+<sharding-config-server>` primary, by default, checks for
 index inconsistencies across the shards for sharded collections. The
 command :dbcommand:`serverStatus` returns the field
 :serverstatus:`shardedIndexConsistency` to report on index
@@ -1025,7 +1453,7 @@ Transactions
 
 Starting in MongoDB 4.4 with :ref:`feature compatibility version
 (fcv) <view-fcv>` ``"4.4"``, you can create collections and indexes
-inside a :doc:`multi-document transaction </core/transactions>`
+inside a :ref:`multi-document transaction <transactions>`
 unless the transaction is a cross-shard write transaction.
 
 When creating a collection inside a transaction:
@@ -1044,7 +1472,7 @@ When creating a collection inside a transaction:
 
 - The :method:`db.createCollection()` method fails if 
   executed against a 
-  :doc:`system collection </reference/system-collections>`.
+  :ref:`system collection <metadata-system-collections>`.
 
 When :ref:`creating an index <transactions-operations-ddl-explicit>`
 inside a transaction:
@@ -1057,7 +1485,7 @@ inside a transaction:
 
 - The :method:`db.collection.createIndex()` method
   fails if executed against a 
-  :doc:`system collection </reference/system-collections>`.
+  :ref:`system collection <metadata-system-collections>`.
 
 For more details, see :ref:`transactions-create-collections-indexes`.
 
@@ -1133,7 +1561,7 @@ Starting in version 4.4, MongoDB enables, by default, the use of OCSP
 revocation. The use of OCSP eliminates the need to periodically
 download a :setting:`Certificate Revocation List (CRL)
 <net.tls.CRLFile>` and restart the
-:binary:`~bin.mongod`/:binary:`~bin.mongos` with the updated CRL.
+:binary:`mongod` / :binary:`mongos` with the updated CRL.
 
 In versions 4.0 and 4.2, the use of OCSP is available only through the
 use of :setting:`system certificate store
@@ -1166,19 +1594,18 @@ command line option:
 x.509 Certificates Nearing Expiry Trigger Warnings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting in MongoDB 4.4, :binary:`~bin.mongod`/:binary:`~bin.mongos`
+Starting in MongoDB 4.4, :binary:`mongod` / :binary:`mongos`
 logs a warning on connection if the presented x.509 certificate
 expires within ``30`` days of the ``mongod/mongos`` system clock.
 Specifically, the following connections to a ``mongod`` or ``mongos`` 
 can trigger x.509 certificate expiry warnings:
 
-- A :binary:`~bin.mongo` shell or an application using a 
+- A ``mongo`` shell or an application using a 
   :driver:`MongoDB driver </>` establishing a 
   :ref:`TLS connection <ssl-clients>` *or* performing 
   :ref:`x.509 client authentication <x509-client-authentication>` with
   a certificate expiring in less than 30 days. (i.e. 
-  the certificate specified to :option:`mongo --tlsCertificateKeyFile 
-  <mongo --tlsCertificateKeyFile>` or 
+  the certificate specified to ``--tlsCertificateKeyFile`` or 
   :urioption:`tlsCertificateKeyFile`).
 
 - A :binary:`~bin.mongod` cluster member performing 
@@ -1276,7 +1703,7 @@ powerful.
 
 For more information on structured logging, including a detailed
 examination of log entry components as well as command-line parsing
-examples, see :doc:`Log Messages </reference/log-messages>`.
+examples, see :ref:`Log Messages <log-messages-ref>`.
 
 Multiple LDAP Password Support
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1335,11 +1762,11 @@ Mongo Shell
 Mongo Shell Supports AWS IAM Credentials for Atlas Clusters
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting in MongoDB 4.4, the :binary:`~bin.mongo` shell supports
+Starting in MongoDB 4.4, the ``mongo`` shell supports
 using `AWS IAM credentials
 <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html>`__
 to authenticate to a `MongoDB Atlas
-<https://www.mongodb.com/cloud/atlas?tck=docs_server>`__ cluster that
+<https://www.mongodb.com/atlas/database?tck=docs_server>`__ cluster that
 has been configured for AWS IAM authentication.
 
 Authenticating in this manner uses the new ``MONGODB-AWS``
@@ -1347,8 +1774,7 @@ Authenticating in this manner uses the new ``MONGODB-AWS``
 you provide an AWS access key ID and a secret
 access key, which may be specified in the :ref:`connection string
 <connection-string-auth-options>` or on the command-line via the
-:option:`--username <mongo --username>` and :option:`--password
-<mongo --password>` options.
+``--username`` and ``--password`` options.
 
 Additionally, if you are using an `AWS session token
 <https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html>`__
@@ -1357,14 +1783,13 @@ for authentication with temporary credentials when using an `AssumeRole
 request, or when working with AWS resources that specify this value such
 as Lambda, you may provide that session token in the connection string
 using the  ``AWS_SESSION_TOKEN`` :urioption:`authMechanismProperties`
-value, or on the command-line via the :option:`--awsIamSessionToken
-<mongo --awsIamSessionToken>` option.
+value, or on the command-line via the ``--awsIamSessionToken`` option.
 
 Alternatively, if the AWS access key ID, secret access key, or
 session token are defined on your platform using their respective
 `AWS IAM environment variables
 <https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html#envvars-list>`__
-the :binary:`~bin.mongo` shell will use these environment
+the ``mongo`` shell uses these environment
 variable values to authenticate; you do not need to specify them in the
 connection string.
 
@@ -1380,8 +1805,7 @@ Migration to MongoDB Database Tools Project
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Starting in MongoDB 4.4, the documentation for the following
-tools have been migrated to the `MongoDB Database Tools project 
-<https://docs.mongodb.com/database-tools>`__:
+tools have been migrated to the :dbtools:`MongoDB Database Tools project </>`:
 
 - :binary:`~bin.mongoimport`
 - :binary:`~bin.mongoexport`
@@ -1447,11 +1871,9 @@ Drivers
 New Drivers
 ~~~~~~~~~~~
 
-- The official `MongoDB Rust driver
-  <https://docs.mongodb.com/drivers/rust>`__ is now available.
+- The official :driver:`MongoDB Rust driver </rust>` is now available.
 
-- The official `MongoDB Swift driver
-  <https://docs.mongodb.com/drivers/swift>`__ is now available.
+- The official :driver:`MongoDB Swift driver </swift>` is now available.
 
 .. _4.4-removed-commands:
 
@@ -1498,7 +1920,7 @@ unhidden.
 
 For details, see :doc:`/core/index-hidden`.
 
-To support :doc:`hidden indexes </core/index-hidden>`, MongoDB
+To support :ref:`Hidden indexes <index-type-hidden>`, MongoDB
 introduces:
 
 - A new index option ``hidden``. The option can be specified in the
@@ -1511,7 +1933,7 @@ introduces:
 
   - :collflag:`collMod <index>` command
 
-- New :binary:`~bin.mongo` shell helper methods to hide or unhide
+- New ``mongo`` shell helper methods to hide or unhide
   existing indexes:
 
   - :method:`db.collection.hideIndex()`
@@ -1669,7 +2091,7 @@ MongoDB 4.4 adds the following counters to the output of
 
    * - :serverstatus:`network.tcpFastOpen.accepted` 
      - Indicates the total number of accepted incoming TFO connections 
-       to the :binary:`~bin.mongod`/:binary:`~bin.mongos` since the
+       to the :binary:`mongod` / :binary:`mongos` since the
        ``mongod/mongos`` last started.
 
 A complete discussion of TFO is outside the scope of this documentation.
@@ -1852,7 +2274,7 @@ output:
 
 - Latch Metrics
 
-  - :serverstatus:`latchAnalysis`
+  - ``latchAnalysis``
 
 - Mirrored Reads Metrics
 
@@ -1892,6 +2314,15 @@ output:
   - :serverstatus:`shardedIndexConsistency`
   - :serverstatus:`shardingStatistics.rangeDeleterTasks`
   - :serverstatus:`shardingStatistics.unfinishedMigrationFromPreviousPrimary`
+  - :serverstatus:`shardingStatistics.numHostsTargeted`
+
+``serverStatus`` Sharding Statistics Output Change
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:serverstatus:`shardingStatistics.numHostsTargeted`
+reports the number of shards targeted by CRUD operations and
+aggregation commands. It increments the relevant find, insert, update,
+delete or aggregate metric with each operation on a cluster.
 
 ``replSetGetStatus`` Output Change
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1921,7 +2352,7 @@ output:
 db.auth() Can Prompt for Password
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting in MongoDB 4.4, the :binary:`~bin.mongo` shell method
+Starting in MongoDB 4.4, the ``mongo`` shell method
 :ref:`db-auth-syntax-username-password` prompts for the password if
 you do not pass in the password or the :method:`passwordPrompt()`
 method for the ``<password>``.
@@ -1935,13 +2366,9 @@ Support for ``$natural`` Sort on Views
 Support for Diagnostic Backtrace Generation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting in MongoDB 4.4, :binary:`~bin.mongod` and :binary:`~bin.mongos`
-processes running on Linux will now log a backtrace for each of their
-running threads upon receipt of a ``SIGUSR2`` signal. This backtrace can
-be analyzed for diagnostic information or provided to MongoDB support as
-needed. This functionality is currently available only on the ``x86_64``
-architecture. For more information on using this feature, see
-:ref:`sigusr2-diagnostic-backtrace`.
+.. include:: /includes/diagnostic-backtrace-generation.rst
+
+For more information, see :ref:`sigusr2-diagnostic-backtrace`.
 
 Container-aware FTDC Reporting
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1954,7 +2381,7 @@ See :ref:`ftdc-stub` for more information.
 Updated ``ulimit`` Startup Warning
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Starting in MongoDB 4.4, :binary:`~bin.mongod` will log a startup
+Starting in MongoDB 4.4, :binary:`~bin.mongod` logs a startup
 warning if a platform's configured ``ulimit`` value for number of open
 files is under ``64000``. Previously, a warning would only be
 logged if this value was under ``1000``. See
@@ -1973,13 +2400,13 @@ and :doc:`diagnostic log messages </reference/log-messages>`. The
 ``dbStats`` and ``collStats`` Output
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The :dbcommand:`dbStats` command and its :binary:`~bin.mongo` shell
+The :dbcommand:`dbStats` command and its ``mongo`` shell
 helper :method:`db.stats()` return:
 
 - :data:`~dbStats.totalSize`, which is the sum of
   :data:`~dbStats.storageSize` and :data:`~dbStats.indexSize`.
 
-The :dbcommand:`collStats` command, its :binary:`~bin.mongo` shell
+The :dbcommand:`collStats` command, its ``mongo`` shell
 helper :method:`db.collection.stats()`, and the :pipeline:`$collStats`
 aggregation stage return:
 
@@ -1996,12 +2423,12 @@ Starting in MongoDB 4.4, the following database commands can accept
 a ``hint`` argument to specify the index to use:
 
 - The :dbcommand:`delete` command and the associated
-  :binary:`~bin.mongo` shell methods
+  ``mongo`` shell methods
   :method:`db.collection.deleteOne()` and
   :method:`db.collection.deleteMany()`.
 
 - The :dbcommand:`findAndModify` command and the associated
-  :binary:`~bin.mongo` shell methods:
+  ``mongo`` shell methods:
 
   - :method:`db.collection.findAndModify()`,
   - :method:`db.collection.findOneAndDelete()`,
@@ -2157,13 +2584,13 @@ Improvements to ``explain`` Results
 
 Starting in version 4.4:
 
-- :doc:`Explain results </reference/explain-results/>` for commands run
+- :ref:`Explain results <explain-results>` for commands run
   on sharded clusters include a top-level :ref:`serverInfo <serverInfo>`
   object for the :binary:`~bin.mongos` in addition to the ``serverInfo``
   objects returned for each shard. This is also available in versions 
   4.2.2, 4.0.14, and 3.6.16.
 
-- :doc:`Explain results </reference/explain-results/>` include the
+- :ref:`Explain results <explain-results>` include the
   :ref:`serverInfo <serverInfo>` object when
   :data:`~explain.queryPlanner.optimizedPipeline` is ``true``. In
   previous versions of MongoDB, ``explain`` results would occasionally
@@ -2171,17 +2598,17 @@ Starting in version 4.4:
   :data:`~explain.queryPlanner.optimizedPipeline` was ``true``. This is 
   also available in versions 4.2.2, 4.0.14, and 3.6.16.
 
-- :doc:`Explain results </reference/explain-results/>` for aggregation include 
+- :ref:`Explain results <explain-results>` for aggregation include 
   the :data:`nReturned <explain.executionStats.nReturned>` and 
   :data:`executionTimeMillisEstimate 
   <explain.executionStats.executionStages.executionTimeMillisEstimate>` fields 
-  for each :doc:`pipeline stage </aggregation>` when you run 
+  for each :ref:`pipeline stage <aggregation>` when you run 
   :method:`db.collection.explain().aggregate() <db.collection.explain()>` 
   method in ``executionStats`` and ``allPlansExecution`` modes.
 
 .. seealso::
 
-   :doc:`Explain results </reference/explain-results/>`.
+   :ref:`Explain results <explain-results>`.
 
 ``comment`` Option Available to all Database Commands
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2268,10 +2695,21 @@ Upgrade Procedures
 
    - :doc:`/release-notes/4.4-upgrade-sharded-cluster`
 
-If you need guidance on upgrading to 4.4, `MongoDB offers major version
-upgrade services
-<https://www.mongodb.com/products/consulting?tck=docs_server>`_
-to help ensure a smooth transition without interruption to your MongoDB application.
+If you need guidance on upgrading to 4.4, `MongoDB professional services
+<https://www.mongodb.com/products/consulting?tck=docs_server>`_ offer
+major version upgrade support to help ensure a smooth transition
+without interruption to your MongoDB application.
+
+.. _4.4-downgrade-considerations:
+
+Downgrade Consideration
+-----------------------
+
+.. include:: /includes/4.4-upgrade-replacements.rst
+
+.. |downgrading| replace:: downgrading
+
+.. include:: includes/downgrade/single-version-support.rst
 
 Download
 --------
@@ -2315,7 +2753,7 @@ Known Issues
 
    * - 4.4.0
 
-     - :issue:`WT-6623`: Set the connection level file id in recovery
+     - :issue:`WT-6623`: Set the connection level file ID in recovery
        file scan.
 
      - Fixed in 4.4.1
@@ -2336,4 +2774,3 @@ of the related projects.
    /release-notes/4.4-upgrade-sharded-cluster
    /release-notes/4.4-downgrade
    /release-notes/4.4-changelog
-

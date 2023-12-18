@@ -14,8 +14,6 @@ Definition
 ----------
 
 .. pipeline:: $replaceRoot
-
-   .. versionadded:: 3.4
  
    Replaces the input document with the specified document. The
    operation replaces all existing fields in the input document,
@@ -27,8 +25,9 @@ Definition
    .. note::
 
       Starting in version 4.2, MongoDB adds a new aggregation pipeline
-      stage :pipeline:`$replaceWith` that is an alias for
-      :pipeline:`$replaceRoot`.
+      stage, :pipeline:`$replaceWith`. The :pipeline:`$replaceWith`
+      stage peforms the same action as the :pipeline:`$replaceRoot`
+      stage, but the stages have different forms.
    
    The :pipeline:`$replaceRoot` stage has the following form:
  
@@ -231,11 +230,11 @@ Create a collection named ``contacts`` with the following documents:
 
 .. code-block:: javascript
 
-   db.contacts.insert([
+   db.contacts.insertMany( [
       { "_id" : 1, name: "Fred", email: "fred@example.net" },
       { "_id" : 2, name: "Frank N. Stine", cell: "012-345-9999" },
       { "_id" : 3, name: "Gren Dell", home: "987-654-3210", email: "beo@example.net" }
-   ]);
+   ] )
 
 The following operation uses :pipeline:`$replaceRoot` with
 :expression:`$mergeObjects` to output current documents with default
@@ -243,16 +242,43 @@ values for missing fields:
 
 .. code-block:: javascript
 
-   db.contacts.aggregate([
-      { $replaceRoot: { newRoot: { $mergeObjects: [ { _id: "", name: "", email: "", cell: "", home: "" }, "$$ROOT" ] } } }
-   ])
+   db.contacts.aggregate( [
+      { $replaceRoot:
+         { newRoot:
+            { $mergeObjects: 
+                [
+                   { _id: "", name: "", email: "", cell: "", home: "" },
+                   "$$ROOT"
+                ]
+             } 
+         }
+      }
+   ] )
 
 The aggregation returns the following documents:
 
 .. code-block:: javascript
    :copyable: false
 
-   { "_id" : 1, "name" : "Fred", "email" : "fred@example.net", "cell" : "", "home" : "" }
-   { "_id" : 2, "name" : "Frank N. Stine", "email" : "", "cell" : "012-345-9999", "home" : "" }
-   { "_id" : 3, "name" : "Gren Dell", "email" : "beo@example.net", "cell" : "", "home" : "987-654-3210" }
+   {
+     _id: 1,
+     name: 'Fred',
+     email: 'fred@example.net',
+     cell: '',
+     home: ''
+   },
+   {
+     _id: 2,
+     name: 'Frank N. Stine',
+     email: '',
+     cell: '012-345-9999',
+     home: ''
+   },
+   {
+     _id: 3,
+     name: 'Gren Dell',
+     email: 'beo@example.net',
+     cell: '',
+     home: '987-654-3210'
+   }
 

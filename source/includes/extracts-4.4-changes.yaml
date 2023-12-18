@@ -18,7 +18,7 @@ content: |
 ---
 ref: 4.4-changes-removed-commands
 content: |
-   MongoDB removes the following command(s) and :binary:`~bin.mongo` shell
+   MongoDB removes the following command(s) and ``mongo`` shell
    helper(s):
 
    .. list-table::
@@ -47,7 +47,7 @@ content: |
 
         - - Use the aggregation pipeline stage :pipeline:`$planCacheStats` or
 
-          - Use the :binary:`~bin.mongo` shell helper method
+          - Use the ``mongo`` shell helper method
             :method:`PlanCache.list()`. (Available starting in version 4.4)
 
           | See also :ref:`4.4-agg-planCachesStats-changes`.
@@ -58,7 +58,7 @@ content: |
 
         - - Use the aggregation pipeline stage :pipeline:`$planCacheStats` or
  
-          - Use the :binary:`~bin.mongo` shell helper method
+          - Use the ``mongo`` shell helper method
             :method:`PlanCache.list()`. (Available starting in version 4.4)
 
           | See also :ref:`4.4-agg-planCachesStats-changes`.
@@ -99,7 +99,7 @@ content: |
      :binary:`~bin.mongos`, the :ref:`shard <plancachestats-shard>`
      field.
 
-   - :binary:`~bin.mongo` shell provides the method
+   - ``mongo`` shell provides the method
      :method:`PlanCache.list()` as a wrapper for
      :pipeline:`$planCacheStats` aggregation stage.
 
@@ -229,7 +229,7 @@ content: |
 
    Starting in MongoDB 4.4, you can specify a :operator:`$natural`
    sort when running a :dbcommand:`find` operation against a
-   :doc:`view </core/views>`.
+   :ref:`view <views-landing-page>`.
 ---
 ref: 4.4-changes-drop-in-progress-indexes
 content: |
@@ -330,8 +330,8 @@ content: |
 ---
 ref: 4.4-changes-geo-deprecation
 content: |
-   MongoDB 4.4 deprecates the :doc:`geoHaystack </core/geohaystack>` index and the
-   :dbcommand:`geoSearch` command.  Use a :doc:`2d index </core/2d>`
+   MongoDB 4.4 deprecates the :ref:`geoHaystack <index-geohaystack-index>` index and the
+   :dbcommand:`geoSearch` command.  Use a :ref:`2d index <2d-index>`
    with :pipeline:`$geoNear` or :query:`$geoWithin` instead.
 ---
 ref: 4.4-changes-index-builds-simultaneous-fcv
@@ -493,9 +493,9 @@ content: |
    is in another state, such as :replstate:`STARTUP2`, the
    operation errors.
 
-   In previous versions, the operations can also be run when the member
-   is in :replstate:`STARTUP2`. However, the operations wait
-   until the member transitions to :replstate:`RECOVERING`.
+   In previous versions, the operations also run when the member
+   is in :replstate:`STARTUP2`. The operations wait until the member 
+   transitioned to :replstate:`RECOVERING`.
 
 ---
 ref: 4.4-changes-mapreduce-ignore-verbose
@@ -525,7 +525,7 @@ content: |
   include the :dbtools:`MongoDB Database Tools <>` (``mongoimport``,
   ``mongoexport``, etc). To download and install
   the MongoDB Database Tools on Windows, see
-  :dbtools:`Installing the MongoDB Database Tools <installation>`.
+  :dbtools:`Installing the MongoDB Database Tools </installation/installation>`.
 
   If you were relying on the MongoDB 4.2 or previous MSI installer to
   install the Database Tools along with the MongoDB Server, you must

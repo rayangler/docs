@@ -98,6 +98,19 @@ Parameters
 :method:`Mongo.setReadPref()` does not support the
 :ref:`replica-set-read-preference-max-staleness` option for read
 preference.
+
+Behavior
+--------
+
+``Mongo.setReadPref()`` has the following behavior.
+
+Interaction with db.runCommand()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting in mongosh 2.0, :method:`db.runCommand()` ignores any global
+read preferences added through the connection string or by using the 
+``Mongo.setReadPref()`` method. To specify the desired read preference, 
+use the ``options`` argument when calling ``db.runCommand()``.
       
 Examples
 --------
@@ -114,6 +127,9 @@ This implicitly allows reads from secondaries.
 .. code-block:: javascript
 
    db.getMongo().setReadPref('secondary')
+
+However, if called while connected to the primary using ``mongosh``, the 
+above command does not route queries to a secondary. 
 
 Specify Read Preference Tag Set
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -161,7 +177,7 @@ Starting in MongoDB 4.4 for sharded clusters, you can enable
 preferences </core/read-preference>`. To use hedged reads, the
 :binary:`~bin.mongos` must have :parameter:`enabled support
 <readHedgingMode>` for hedged reads (the default) and the
-non-``primary`` :doc:`read preferences </core/read-preference>` must
+non-``primary`` :ref:`read preferences <read-preference>` must
 enable the use of hedged reads.
 
 To target secondaries on 4.4+ sharded cluster using hedged reads,

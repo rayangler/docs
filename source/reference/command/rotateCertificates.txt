@@ -23,32 +23,37 @@ Definition
    certificates defined in the :doc:`configuration file
    </reference/configuration-options>`.
 
-   The command takes the following form:
+Syntax
+------
 
-   .. code-block:: javascript
+The command has the following syntax:
 
-      { rotateCertificates: 1,
-        message: "<optional log message>" }
+.. code-block:: javascript
 
-   The :dbcommand:`rotateCertificates` command takes the following
-   optional argument:
+   db.runCommand(
+      { 
+        rotateCertificates: 1,
+        message: "<optional log message>" 
+      }
+   )
 
-   .. list-table::
-      :header-rows: 1
-      :widths: 20 20 80
-   
-      * - Parameter
-   
-        - Type
-   
-        - Description
-   
-      * - ``message``
-   
-        - string
-   
-        - *optional* A message logged by the server to the log file and
-          audit file.
+Command Fields
+--------------
+
+The command takes the following optional field:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 20 80
+
+   * - Parameter
+     - Type
+     - Description
+
+   * - ``message``
+     - string
+     - *optional* A message logged by the server to the log file and
+       audit file.
 
 Output
 ------
@@ -61,15 +66,11 @@ the following field:
    :widths: 20 20 80
 
    * - Field
-
      - Type
-
      - Description
 
    * - ``ok``
-
      - bool
-
      - Contains the command's execution status. ``true`` on success, or
        ``false`` if an error occurred. If ``false``, an ``errmsg`` field
        is additionally provided with a detailed error message.      
@@ -106,7 +107,7 @@ To rotate one or more of these certificates:
    rotation on.
 
 #. Run the :dbcommand:`rotateCertificates` command to rotate the
-   certificates used by the the :binary:`~bin.mongod` or
+   certificates used by the :binary:`~bin.mongod` or
    :binary:`~bin.mongos` instance.
 
 When certificate rotation takes place:
@@ -146,7 +147,7 @@ Logging
 On successful rotation, the subject names, thumbprints, and the
 validity period of the server and cluster certificate thumbprints are
 logged to the configured :ref:`log destination
-<log-message-destinations>`. If :doc:`auditing </core/auditing>` is
+<log-message-destinations>`. If :ref:`auditing <auditing>` is
 enabled, this information is also written to the audit log.
 
 On Linux and Windows platforms, if a :setting:`CRL file
@@ -174,7 +175,7 @@ information:
 
 The following performs the same as above, but also writes a custom log
 message at rotation time to the :ref:`log file
-<log-message-destinations>` and :doc:`audit file </core/auditing>`:
+<log-message-destinations>` and :ref:`audit file <auditing>`:
 
 .. code-block:: javascript
 

@@ -1,4 +1,4 @@
-
+.. _change-streams-prod-recommendations:
 
 =========================================
 Change Streams Production Recommendations
@@ -67,7 +67,9 @@ no activity for the collection, or are "cold", can negatively affect the
 response time of the change stream as the :binary:`~bin.mongos` must still check
 with those cold shards to guarantee total ordering of changes. This effect may
 be more apparent with geographically distributed shards, or workloads where
-the majority of operations occur on a subset of shards in the cluster.
+the majority of operations occur on a subset of shards in the cluster. To 
+minimize latency for cold shards, you can specify a lower
+:parameter:`periodicNoopIntervalSecs` value.
 
 If a sharded collection has high levels of activity, the :binary:`~bin.mongos`
 may not be able to keep up with the changes across all of the shards.
@@ -83,3 +85,23 @@ From the moment an unsharded collection is sharded until the time the change
 stream catches up to the first chunk migration, the ``documentKey`` in the
 change stream notification document only includes the ``_id`` of the document,
 not the full shard key.
+
+Indexes and Performance
+-----------------------
+
+Change streams cannot use indexes. MongoDB does not support creating
+indexes on the :term:`oplog` collection. Therefore, avoid opening a high
+number of :ref:`specifically-targeted <changeStreams-watch-deployment>`
+change streams as these can impact server performance.
+
+Change Stream Optimization
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. |change-streams| replace:: change streams
+
+.. include:: /includes/change-streams-optimization.rst
+
+Change Streams and Orphan Documents
+-----------------------------------
+
+.. include:: /includes/change-streams-and-orphans.rst

@@ -15,21 +15,22 @@ Definition
 
 .. dbcommand:: addShardToZone
 
-   .. versionadded:: 3.4
-
    Associates a shard with a :term:`zone`. MongoDB associates this shard with
    the given zone. Chunks that are covered by the zone are assigned to shards
    associated with the zone.
 
-   .. |command| replace:: ``addShardToZone``
+   .. |method| replace:: :method:`sh.addShardToZone` helper method
+   .. include:: /includes/fact-dbcommand-tip
 
-Syntax
-------
+   .. |command| replace:: ``addShardToZone``
 
 You can only run :dbcommand:`addShardToZone` on the ``admin`` database
 from a :binary:`~bin.mongos` instance.
+
+Syntax
+------
     
-The :dbcommand:`addShardToZone` command has the following syntax:
+The command has the following syntax:
 
 .. code-block:: javascript
 
@@ -40,8 +41,8 @@ The :dbcommand:`addShardToZone` command has the following syntax:
       }
    )
 
-Fields
-~~~~~~
+Command Fields
+~~~~~~~~~~~~~~
 
 The command takes the following fields:
 
@@ -76,7 +77,7 @@ The command takes the following fields:
 
 
 :binary:`~bin.mongosh` provides the helper method
-:method:`sh.addShardToZone()`
+:method:`sh.addShardToZone()`.
 
 Behavior
 --------

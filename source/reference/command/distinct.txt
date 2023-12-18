@@ -20,94 +20,88 @@ Definition
    an array of the distinct values. The return document also contains
    an embedded document with query statistics and the query plan.
 
-   The command takes the following form
+   .. |method| replace:: :method:`db.collection.distinct()` helper method.
+   .. include:: /includes/fact-dbcommand-tip
 
-   .. code-block:: javascript
+Syntax
+------
 
+The command has the following syntax:
+
+.. code-block:: javascript
+
+   db.runCommand(
       {
         distinct: "<collection>",
         key: "<field>",
         query: <query>,
         readConcern: <read concern document>,
         collation: <collation document>,
-        comment: <any>
+        comment: <any>,
+        hint: <string or document>
       }
+   )
 
-   The command contains the following fields:
+Command Fields
+--------------
 
+The command takes the following fields:
 
-   .. list-table::
-      :header-rows: 1
-      :widths: 20 20 80
-   
-      * - Field
-   
-        - Type
-   
-        - Description
-   
-      * - ``distinct``
-   
-        - string
-   
-        - The name of the collection to query for distinct values.
-          
-          
-   
-      * - ``key``
-   
-        - string
-   
-        - The field for which to return distinct values.
-          
-          
-   
-      * - ``query``
-   
-        - document
-   
-        - Optional. A query that specifies the documents from which to retrieve the
-          distinct values.
-          
-          
-   
-      * - ``readConcern``
-   
-        - document
-   
-        - Optional. Specifies the :term:`read concern`.
-          
-          .. include:: /includes/fact-readConcern-syntax.rst
-          
-          .. include:: /includes/fact-readConcern-option-description.rst
-          
-          
-   
-      * - ``collation``
-   
-        - document
-   
-        - Optional. 
-          
-          .. include:: /includes/extracts/collation-option.rst
-          
-      * - ``comment``
-
-        - any
-
-        - .. include:: /includes/extracts/comment-content.rst
+.. list-table::
+   :header-rows: 1
+   :widths: 20 20 80
+ 
+   * - Field
+     - Type
+     - Description
+ 
+   * - ``distinct``
+     - string
+     - The name of the collection to query for distinct values.
+ 
+   * - ``key``
+     - string
+     - The field for which to return distinct values.
        
-          .. versionadded:: 4.4
+   * - ``query``
+     - document
+     - Optional. A query that specifies the documents from which to retrieve the
+       distinct values.
+ 
+   * - ``readConcern``
+     - document
+     - Optional. Specifies the :term:`read concern`.
+       
+       .. include:: /includes/fact-readConcern-syntax.rst
+       
+       .. include:: /includes/fact-readConcern-option-description.rst
+       
+   * - ``collation``
+     - document
+     - Optional. 
+       
+       .. include:: /includes/extracts/collation-option.rst
+       
+   * - ``comment``
+     - any
+     - .. include:: /includes/extracts/comment-content.rst
+    
+       .. versionadded:: 4.4
 
-   
+   * - ``hint``
+     - string or document
+     - Optional. Specify the index name, either as a string or a document. If specified, 
+       the query planner only considers plans using the hinted index. For more details, 
+       see :ref:`Specify an Index <index-example>`. 
 
+       .. versionadded:: 7.1
 
-   .. include:: /includes/note-distinct-bson-limit-agg-alternative.rst
+.. include:: /includes/note-distinct-bson-limit-agg-alternative.rst
 
-   MongoDB also provides the shell wrapper method
-   :method:`db.collection.distinct()` for the :dbcommand:`distinct`
-   command. Additionally, many MongoDB :term:`drivers <driver>`
-   provide a wrapper method. Refer to the specific driver documentation.
+MongoDB also provides the shell wrapper method
+:method:`db.collection.distinct()` for the :dbcommand:`distinct`
+command. Additionally, many MongoDB :term:`drivers <driver>`
+provide a wrapper method. Refer to the specific driver documentation.
 
 Behavior
 --------
@@ -122,7 +116,12 @@ Array Fields
 
 .. include:: /includes/extracts/fact-distinct-command-array-field.rst
 
-For an example, see :ref:`distinct-command-array`.
+.. include:: /includes/distinct-arrays-in-collections-and-views.rst
+
+For examples, see:
+
+- :ref:`distinct-command-array`
+- :ref:`distinct-arrays-in-collections-and-views`
 
 Index Use
 ~~~~~~~~~
@@ -149,6 +148,11 @@ Replica Set Member State Restriction
 .. include:: /includes/extracts/4.4-changes-repl-state-restrictions-operation.rst
 
 .. |operations| replace:: :dbcommand:`distinct`
+
+Index Filters and Collations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/index-filters-and-collations.rst
 
 Examples
 --------
@@ -234,6 +238,61 @@ contains the distinct ``sizes`` values:
 For information on :dbcommand:`distinct` and array fields, see the
 :ref:`Behavior <distinct-command-array-behavior>` section.
 
+.. _distinct-arrays-in-collections-and-views:
+
+Arrays in Collections and Views
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/distinct-arrays-in-collections-and-views.rst
+
+The following example creates a collection named ``sensor`` with
+an array of temperature values for each document:
+
+.. code-block:: javascript
+
+   db.sensor.insertMany( [
+      { _id: 0, temperatures: [ { value: 1 }, { value: 4 } ] },
+      { _id: 1, temperatures: [ { value: 2 }, { value: 8 } ] },
+      { _id: 2, temperatures: [ { value: 3 }, { value: 12 } ] },
+      { _id: 3, temperatures: [ { value: 1 }, { value: 4 } ] }
+   ] )
+
+The following example creates a view named ``sensorView`` from the
+``sensor`` collection:
+
+.. code-block:: javascript
+
+   db.createView( "sensorView", "sensor", [] )
+
+The following example uses :dbcommand:`distinct` to return the unique
+values from the ``temperatures`` array in the ``sensor`` collection:
+
+.. code-block:: javascript
+
+   db.sensor.distinct( "temperatures.1.value" )
+
+The ``1`` in ``temperatures.1.value`` specifies the ``temperatures``
+array index.
+
+Example output:
+
+.. code-block:: javascript
+   :copyable: false
+
+   [ 4, 8, 12 ]
+
+Example for ``sensorView``:
+
+.. code-block:: javascript
+
+   db.sensorView.distinct( "temperatures.1.value" )
+
+Example output:
+
+- ``[ 4, 8, 12 ]`` starting in MongoDB 6.0 (identical to result
+  returned from the ``sensor`` collection).
+- ``[]`` in MongoDB versions earlier than 6.0.
+
 Specify Query with ``distinct``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -312,3 +371,22 @@ majority of the nodes.
    )
 
 .. include:: /includes/usage-read-concern-majority.rst
+
+.. _index-example:
+
+Specify an Index 
+~~~~~~~~~~~~~~~~
+
+You can specify an index name or pattern using the hint option.
+
+To specify a hint based on an index name:
+
+.. code-block:: javascript
+
+   db.runCommand ( { distinct: "inventory", key: "dept", hint: "sizes" } )
+
+To specify a hint based on an index pattern:
+
+.. code-block:: javascript
+
+   db.runCommand ( { distinct: "inventory", key: "dept", hint: { sizes: 1 } } )

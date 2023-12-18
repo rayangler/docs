@@ -15,7 +15,7 @@ Release Notes for MongoDB 2.4
 MongoDB 2.4 includes enhanced geospatial support, switch to V8 JavaScript
 engine, security enhancements, and text search (beta) and hashed index.
 
-Minor Releases
+Patch Releases
 --------------
 
 .. toctree::
@@ -222,17 +222,17 @@ Text Search
 ~~~~~~~~~~~
 
 Add support for text search of content in MongoDB databases as a
-*beta* feature. See :doc:`/core/index-text` for more information.
+*beta* feature. See :ref:`<index-type-text>` for more information.
 
 .. _2.4-release-geospatial:
 
 Geospatial Support Enhancements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- Add new :doc:`2dsphere index </core/2dsphere>`. The new index
+- Add new :ref:`2dsphere index <2dsphere-index>`. The new index
   supports `GeoJSON <https://tools.ietf.org/html/rfc7946>`_ objects
   ``Point``, ``LineString``, and ``Polygon``. See
-  :doc:`/core/2dsphere` and :doc:`/geospatial-queries`.
+  :ref:`2dsphere-index` and :doc:`/geospatial-queries`.
 
 - Introduce operators :query:`$geometry`, :query:`$geoWithin` and
   :query:`$geoIntersects` to work with the GeoJSON data.
@@ -281,7 +281,7 @@ Additional Limitations for Map-Reduce and ``$where`` Operations
 The :dbcommand:`mapReduce` command, :v2.4:`group </reference/command/group>` command, and
 the :query:`$where` operator expressions cannot access certain
 global functions or properties, such as ``db``, that are available
-in the :binary:`~bin.mongo` shell. See the individual command or
+in the ``mongo`` shell. See the individual command or
 operator for details.
 
 .. _2.4-release-server-status:
@@ -301,7 +301,7 @@ Security Enhancements
 
 - Introduce a role-based access control system
   :v2.4:`User Privileges </reference/user-privileges>` now use a new
-  format for :doc:`Privilege Documents </reference/privilege-documents>`.
+  format for ``Privilege Documents``.
 
 - Enforce uniqueness of the user in user privilege documents per
   database. Previous versions of MongoDB did not enforce this
@@ -311,7 +311,7 @@ Security Enhancements
   Certificate Authority. See :doc:`/tutorial/configure-ssl`.
 
 For more information on security and risk management strategies, see
-:doc:`MongoDB Security Practices and Procedures </security>`.
+:ref:`MongoDB Security Practices and Procedures <security>`.
 
 Performance Improvements
 ------------------------
@@ -411,7 +411,7 @@ for more information. For drivers that provide support for
 Kerberos authentication to MongoDB, refer to :ref:`kerberos-and-drivers`.
 
 For more information on security and risk management strategies, see
-:doc:`MongoDB Security Practices and Procedures </security>`.
+:ref:`MongoDB Security Practices and Procedures <security>`.
 
 Additional Information
 ----------------------

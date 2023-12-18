@@ -20,6 +20,8 @@ Downgrade Path
 
 .. include:: /includes/downgrade-path.rst
 
+.. include:: /includes/downgrade/single-version-support.rst
+
 .. |downgrading| replace:: downgrading
 
 
@@ -120,7 +122,7 @@ First, verify the following:
 Next, to downgrade the ``featureCompatibilityVersion`` of your sharded
 cluster:
 
-#. Connect a :binary:`~bin.mongo` shell to the |target|.
+#. Connect a ``mongo`` shell to the |target|.
 
 #. .. include:: /includes/5.0-downgrade-fcv.rst
 
@@ -162,6 +164,12 @@ cluster:
    If any member returns a ``featureCompatibilityVersion`` of |newfcv|,
    wait for the member to reflect version |oldfcv| before proceeding.
 
+.. note::
+
+  .. include:: /includes/arbiter-fcv.rst
+
+  .. include:: /includes/arbiter-fcv-version.rst
+
 For more information on the returned ``featureCompatibilityVersion``
 value, see :ref:`view-fcv`.
 
@@ -179,9 +187,12 @@ Time-series Collections
   <manual-timeseries-collection>`.
 
 Runtime Audit Filter Management
-  Disable runtime audit filter management by setting the 
-  ``auditLog.runtimeConfiguration`` configuration file setting to
-  ``false``.
+  - Disable Runtime Audit Filter Management by setting  
+    ``auditLog.runtimeConfiguration`` to ``false`` in the node's
+    configuration file.
+
+  - Update the audit filters for this :binary:`~bin.mongod` or
+    :binary:`~bin.mongos` instance in the local configuration file.
 
 7. Remove |newversion| Features
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -193,7 +204,7 @@ include but are not limited to:
   :expression:`$dateAdd` or :expression:`$sampleRate`, they must be
   removed. See :ref:`5.0-rel-notes-new-agg-operators` for the full list.
 
-.. |binary| replace:: any :binary:`~bin.mongod`/:binary:`~bin.mongos` instance
+.. |binary| replace:: any :binary:`mongod` / :binary:`mongos` instance
 
 Procedure
 ---------
@@ -210,5 +221,3 @@ Downgrade a Sharded Cluster
    features for each node before downgrading.
 
 .. include:: /includes/steps/5.0-downgrade-sharded-cluster.rst
-
-

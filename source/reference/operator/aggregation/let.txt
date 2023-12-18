@@ -15,7 +15,7 @@ Definition
 
 .. expression:: $let
 
-   Binds :doc:`variables </reference/aggregation-variables>` for use in
+   Binds :ref:`variables <aggregation-variables>` for use in
    the specified expression, and returns the result of the expression.
 
    The :expression:`$let` expression has the following syntax:
@@ -52,7 +52,7 @@ Definition
         - The :ref:`expression <aggregation-expressions>` to evaluate.
 
    To access variables in aggregation expressions, prefix the variable
-   name with double dollar signs (``$$``) and enclosed in quotes. For
+   name with double dollar signs (``$$``) and enclose in quotes. For
    more information on expressions, see
    :ref:`aggregation-expressions`. For information on use of
    variables in the aggregation pipeline, see

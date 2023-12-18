@@ -3,7 +3,9 @@ title: Create a keyfile.
 ref: deploy-repset-generate-keyfile
 level: 4
 pre: |
+
   .. include:: /includes/extracts/keyfile-intro-replica-set.rst
+
 action:
   language: sh
   code: |
@@ -77,7 +79,7 @@ action:
        mongod --keyFile <path-to-keyfile> --replSet <replicaSetName> --bind_ip localhost,<hostname(s)|ip address(es)>
     post: |
 
-       .. include:: /includes/tip-hostnames.rst
+       .. include:: /includes/important-hostnames.rst
 
        For more information on command-line options, see the
        :binary:`~bin.mongod` reference page.
@@ -114,13 +116,13 @@ action:
 
          .. include:: /includes/fact-rs-initiate-once-only.rst
 
-      .. include:: /includes/tip-hostnames.rst
+      .. include:: /includes/important-hostnames.rst
 
     language: javascript
     code: |
       rs.initiate(
         {
-          _id : <replicaSetName>,
+          _id : "myReplSet",
           members: [
             { _id : 0, host : "mongo1.example.net:27017" },
             { _id : 1, host : "mongo2.example.net:27017" },
@@ -140,7 +142,9 @@ title: Create the user administrator.
 level: 4
 ref: deploy-repset-user-admin
 pre: |
+
   .. important::
+
      After you create the first user, the :ref:`localhost exception
      <localhost-exception>` is no longer available.
 
@@ -164,6 +168,7 @@ pre: |
   :authrole:`userAdminAnyDatabase` role on the ``admin`` database.
 
   .. important::
+
      Passwords should be random, long, and complex to ensure system security
      and to prevent or delay malicious access.
 

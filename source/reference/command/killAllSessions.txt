@@ -15,8 +15,6 @@ Definition
 
 .. dbcommand:: killAllSessions
 
-   .. versionadded:: 3.6
-
    The :dbcommand:`killAllSessions` command kills all sessions for the
    specified users. [#exception]_
 
@@ -27,11 +25,21 @@ The command has the following syntax:
 
 .. code-block:: javascript
 
-   db.runCommand( { killAllSessions: [ { user: <user>, db: <dbname> }, ... ]  } )
+   db.runCommand( 
+      { 
+        killAllSessions: [ { user: <user>, db: <dbname> }, ... ]  
+      } 
+   )
+
+Command Fields
+--------------
 
 The command takes an array of documents where each document specifies
 the user and the user's authentication database. Specify an empty array
 to kill all sessions for all users in the system. [#exception]_
+
+View Existing Sesssions
+-----------------------
 
 To view existing sessions, see :pipeline:`$listSessions` operation
 or :pipeline:`$listLocalSessions`.
@@ -45,7 +53,7 @@ or :pipeline:`$listLocalSessions`.
 .. [#exception]
 
    The |command| operation ignores sessions that have
-   :doc:`transactions </core/transactions>` in prepared state.
+   :ref:`transactions <transactions>` in prepared state.
    See :ref:`killAllSessions-behavior` for details.
 
 

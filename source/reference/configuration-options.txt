@@ -6,6 +6,10 @@ Configuration File Options
 
 .. default-domain:: mongodb
 
+.. facet::
+   :name: programming_language 
+   :values: shell
+
 .. contents:: On this page
    :local:
    :backlinks: none
@@ -13,8 +17,15 @@ Configuration File Options
    :class: singlecol
 
 The following page describes the configuration options available in
-MongoDB |version|. For configuration file options for other versions of
-MongoDB, see the appropriate version of the MongoDB Manual.
+MongoDB {+latest-lts-version+}. For configuration file options for other 
+versions of MongoDB, see the appropriate version of the MongoDB Manual.
+
+.. note::
+
+   If you're using {+atlas+} to manage your MongoDB deployments in the
+   cloud, you don't need to create a configuration file. To learn how 
+   to configure settings for your {+atlas+} deployment, see 
+   :atlas:`Configure Additional Settings </cluster-additional-settings/>`.
 
 .. _conf-file:
 
@@ -52,9 +63,6 @@ settings that you may adapt to your local configuration:
       destination: file
       path: "/var/log/mongodb/mongod.log"
       logAppend: true
-   storage:
-      journal:
-         enabled: true
    processManagement:
       fork: true
    net:
@@ -146,9 +154,9 @@ the :binary:`~bin.mongod` or :binary:`~bin.mongos`. For example:
    mongos --config /etc/mongos.conf  --configExpand "rest,exec"
 
 If the configuration file includes an expansion directive and you start
-the :binary:`~bin.mongod`/:binary:`~bin.mongos` without specifying
+the :binary:`mongod` / :binary:`mongos` without specifying
 that directive in the :option:`--configExpand <mongod --configExpand>`
-option, the :binary:`~bin.mongod`/:binary:`~bin.mongos` fails to start.
+option, the :binary:`mongod` / :binary:`mongos` fails to start.
 
 For complete documentation, see :ref:`externally-sourced-values`.
 
@@ -428,8 +436,6 @@ Core Options
 
    *Default*: 0
 
-   .. versionadded:: 3.2
-   
    The log message verbosity level for components related to
    diagnostic data collection operations. See :data:`FTDC` components.
 
@@ -527,8 +533,6 @@ Core Options
 
    *Default*: 0
 
-   .. versionadded:: 3.6
-   
    The log message verbosity level for components related to
    heartbeats. See :data:`REPL_HB` components.
 
@@ -565,8 +569,6 @@ Core Options
 
    *Default*: 0
 
-   .. versionadded:: 3.6
-   
    The log message verbosity level for components related to
    rollback. See :data:`ROLLBACK` components.
 
@@ -643,7 +645,217 @@ Core Options
    recovery components.
    
    .. include:: /includes/log-verbosity-levels.rst
-   
+
+
+.. setting:: systemLog.component.storage.wt.verbosity
+
+   *Type*: integer
+
+   *Default*: -1
+
+   .. versionadded:: 5.3
+
+   The log message verbosity level for components related to the
+   :ref:`WiredTiger <storage-wiredtiger>`
+   storage engine. See :data:`WT` components.
+
+   .. include:: /includes/log-verbosity-levels.rst
+
+
+.. setting:: systemLog.component.storage.wt.wtBackup.verbosity
+
+   *Type*: integer
+
+   *Default*: -1
+
+   .. versionadded:: 5.3
+
+   The log message verbosity level for components related to backup operations
+   performed by the :ref:`WiredTiger <storage-wiredtiger>` storage engine.
+   See :data:`WTBACKUP` components.
+
+   .. include:: /includes/log-verbosity-levels.rst
+
+
+.. setting:: systemLog.component.storage.wt.wtCheckpoint.verbosity
+
+   *Type*: integer
+
+   *Default*: -1
+
+   .. versionadded:: 5.3
+
+   The log message verbosity for components related to checkpoint operations
+   performed by the :ref:`WiredTiger <storage-wiredtiger>` storage engine.
+   See :data:`WTCHKPT` components.
+
+   .. include:: /includes/log-verbosity-levels.rst
+
+
+.. setting:: systemLog.component.storage.wt.wtCompact.verbosity
+
+   *Type*: integer
+
+   *Default*: -1
+
+   .. versionadded:: 5.3
+
+   The log message verbosity for components related to compaction operations
+   performed by the :ref:`WiredTiger <storage-wiredtiger>` storage engine.
+   See :data:`WTCMPCT` components.
+
+   .. include:: /includes/log-verbosity-levels.rst
+
+
+.. setting:: systemLog.component.storage.wt.wtEviction.verbosity
+
+   *Type*: integer
+
+   *Default*: -1
+
+   .. versionadded:: 5.3
+
+   The log message verbosity for components related to eviction operations
+   performed by the :ref:`WiredTiger <storage-wiredtiger>` storage engine.
+   See :data:`WTEVICT` components.
+
+   .. include:: /includes/log-verbosity-levels.rst
+
+
+.. setting:: systemLog.component.storage.wt.wtHS.verbosity
+
+   *Type*: integer
+
+   *Default*: -1
+
+   .. versionadded:: 5.3
+
+   The log message verbosity for components related to history store operations
+   performed by the :ref:`WiredTiger <storage-wiredtiger>` storage engine.
+   See :data:`WTHS` components.
+
+   .. include:: /includes/log-verbosity-levels.rst
+
+
+.. setting:: systemLog.component.storage.wt.wtRecovery.verbosity
+
+   *Type*: integer
+
+   *Default*: -1
+
+   .. versionadded:: 5.3
+
+   The log message verbosity for components related to recovery operations
+   performed by the :ref:`WiredTiger <storage-wiredtiger>` storage engine.
+   See :data:`WTRECOV` components.
+
+   .. include:: /includes/log-verbosity-levels.rst
+
+
+.. setting:: systemLog.component.storage.wt.wtRTS.verbosity
+
+   *Type*: integer
+
+   *Default*: -1
+
+   .. versionadded:: 5.3
+
+   The log message verbosity for components related to rollback to stable
+   (RTS) operations performed by the
+   :ref:`WiredTiger <storage-wiredtiger>` storage engine.
+   See :data:`WTRTS` components.
+
+   .. include:: /includes/log-verbosity-levels.rst
+
+
+.. setting:: systemLog.component.storage.wt.wtSalvage.verbosity
+
+   *Type*: integer
+
+   *Default*: -1
+
+   .. versionadded:: 5.3
+
+   The log message verbosity for components related to salvage operations
+   performed by the :ref:`WiredTiger <storage-wiredtiger>` storage engine.
+   See :data:`WTSLVG` components.
+
+   .. include:: /includes/log-verbosity-levels.rst
+
+
+.. setting:: systemLog.component.storage.wt.wtTiered.verbosity
+
+   *Type*: integer
+
+   *Default*: -1
+
+   .. versionadded:: 5.3
+
+   The log message verbosity for components related to tiered storage
+   operations performed by the :ref:`WiredTiger <storage-wiredtiger>`
+   storage engine. See :data:`WTTIER` components.
+
+   .. include:: /includes/log-verbosity-levels.rst
+
+
+.. setting:: systemLog.component.storage.wt.wtTimestamp.verbosity
+
+   *Type*: integer
+
+   *Default*: -1
+
+   .. versionadded:: 5.3
+
+   The log message verbosity for components related to timestamps
+   used by the :ref:`WiredTiger <storage-wiredtiger>` storage engine.
+   See :data:`WTTS` components.
+
+   .. include:: /includes/log-verbosity-levels.rst
+
+
+.. setting:: systemLog.component.storage.wt.wtTransaction.verbosity
+
+   *Type*: integer
+
+   *Default*: -1
+
+   .. versionadded:: 5.3
+
+   The log message verbosity for components related to transaction operations
+   performed by the :ref:`WiredTiger <storage-wiredtiger>` storage engine.
+   See :data:`WTTXN` components.
+
+   .. include:: /includes/log-verbosity-levels.rst
+
+
+.. setting:: systemLog.component.storage.wt.wtVerify.verbosity
+
+   *Type*: integer
+
+   *Default*: -1
+
+   .. versionadded:: 5.3
+
+   The log message verbosity for components related to verification operations
+   performed by the :ref:`WiredTiger <storage-wiredtiger>` storage engine.
+   See :data:`WTVRFY` components.
+
+   .. include:: /includes/log-verbosity-levels.rst
+
+
+.. setting:: systemLog.component.storage.wt.wtWriteLog.verbosity
+
+   *Type*: integer
+
+   *Default*: -1
+
+   .. versionadded:: 5.3
+
+   The log message verbosity for components related to log write operations
+   performed by the :ref:`WiredTiger <storage-wiredtiger>` storage engine.
+   See :data:`WTWRTLOG` components.
+
+   .. include:: /includes/log-verbosity-levels.rst
 
 
 .. setting:: systemLog.component.transaction.verbosity
@@ -719,7 +931,7 @@ Core Options
       directory, or a systemd unit file registered with ``systemctl``. Only
       use the :setting:`processManagement.pidFilePath` option if you are not using one of these init
       systems. For more information, please see the respective
-      :doc:`Installation Guide </installation>` for your operating system.
+      :ref:`Installation Guide <tutorial-installation>` for your operating system.
    
    .. note:: macOS
 
@@ -727,7 +939,7 @@ Core Options
       On macOS, PID file management is generally handled by ``brew``. Only use
       the :setting:`processManagement.pidFilePath` option if you are not using ``brew`` on your macOS system. 
       For more information, please see the respective
-      :doc:`Installation Guide </installation>` for your operating system.
+      Installation Guide for your operating system.
 
 .. setting:: processManagement.timeZoneInfo
 
@@ -736,95 +948,6 @@ Core Options
    .. include:: /includes/fact-timeZoneInfo.rst
 
    .. include::  /includes/warning-timeZoneInfo.rst
-
-
-.. _free-monitoring-configuration-options:
-
-``cloud`` Options
-~~~~~~~~~~~~~~~~~
-
-.. versionadded:: 4.0
-
-.. code-block:: yaml
-
-   cloud:
-      monitoring:
-         free:
-            state: <string>
-            tags: <string>
-
-.. setting:: cloud.monitoring.free.state
-
-   *Type*: string
-
-   
-   .. versionadded:: 4.0
-   
-      Available for MongoDB Community Edition.
-   
-   Enables or disables :doc:`free MongoDB Cloud monitoring
-   </administration/free-monitoring>`. :setting:`cloud.monitoring.free.state` accepts the following
-   values:
-   
-   .. list-table::
-      :widths: 20 80
-   
-      * - ``runtime`` 
-   
-        - Default. You can enable or disable free monitoring during
-          runtime.
-   
-          To enable or disable free monitoring during runtime, see
-          :method:`db.enableFreeMonitoring()` and
-          :method:`db.disableFreeMonitoring()`.
-   
-          To enable or disable free monitoring during runtime when
-          running with access control, users must have required
-          privileges. See :method:`db.enableFreeMonitoring()` and
-          :method:`db.disableFreeMonitoring()` for details.
-   
-      * - ``on``
-   
-        - Enables free monitoring at startup; i.e. registers for free
-          monitoring. When enabled at startup, you cannot disable free
-          monitoring during runtime.
-   
-      * - ``off`` 
-   
-        - Disables free monitoring at startup, regardless of whether
-          you have previously registered for free monitoring.  When disabled at startup,
-          you cannot enable free monitoring during runtime.
-   
-   Once enabled, the free monitoring state remains enabled until
-   explicitly disabled. That is, you do not need to re-enable each time
-   you start the server.
-
-   
-   For the corresponding command-line option, see
-   :option:`--enableFreeMonitoring <mongod --enableFreeMonitoring>`.
-   
-
-
-.. setting:: cloud.monitoring.free.tags
-
-   *Type*: string
-
-   
-   .. versionadded:: 4.0
-   
-      Available for MongoDB Community Edition.
-   
-   Optional tag to describe environment context. The tag can be sent as
-   part of the :doc:`free MongoDB Cloud monitoring
-   </administration/free-monitoring>` registration at start up.
-   
-
-   
-   For the corresponding command-line option, see
-   :option:`--freeMonitoringTag <mongod --freeMonitoringTag>`.
-   
-
-
 
 ``net`` Options
 ~~~~~~~~~~~~~~~
@@ -862,12 +985,16 @@ Core Options
          clusterPassword: <string>
          CAFile: <string>
          clusterCAFile: <string>
+         clusterAuthX509:
+           attributes: <string>
+           extensionValue: <string>
          CRLFile: <string>
          allowConnectionsWithoutCertificates: <boolean>
          allowInvalidCertificates: <boolean>
          allowInvalidHostnames: <boolean>
          disabledProtocols: <string>
          FIPSMode: <boolean>
+         logVersions: <string>
       compression:
          compressors: <string>
 
@@ -888,9 +1015,9 @@ Core Options
    
    The TCP port on which the MongoDB instance listens for
    client connections.
-     
-   
 
+   .. |port-option| replace:: ``net.port`` option
+   .. include:: /includes/ports
 
 .. setting:: net.bindIp
 
@@ -898,30 +1025,31 @@ Core Options
 
    *Default*: localhost
 
-   
-   .. note::
-   
-      Starting in MongoDB 3.6, :binary:`~bin.mongos` or :binary:`~bin.mongod` bind to localhost
-      by default. See :ref:`3.6-bind-to-localhost`.
-   
    The hostnames and/or IP addresses and/or full Unix domain socket
-   paths on which :binary:`~bin.mongos` or :binary:`~bin.mongod` should listen for client connections. You
-   may attach :binary:`~bin.mongos` or :binary:`~bin.mongod` to any interface. To bind to multiple
+   paths on which :binary:`~bin.mongos` or :binary:`~bin.mongod` should
+   listen for client connections. You may attach :binary:`~bin.mongos`
+   or :binary:`~bin.mongod` to any interface. To bind to multiple
    addresses, enter a list of comma-separated values.
    
-   .. example:: ``localhost,/tmp/mongod.sock``
+   .. example::
+   
+      ``localhost,/tmp/mongod.sock``
    
    You can specify both IPv4 and IPv6 addresses, or hostnames that
    resolve to an IPv4 or IPv6 address.
    
-   .. example:: ``localhost, 2001:0DB8:e132:ba26:0d5c:2774:e7f9:d513``
+   .. example::
+   
+      ``localhost, 2001:0DB8:e132:ba26:0d5c:2774:e7f9:d513``
    
    .. note::
    
       If specifying an IPv6 address *or* a hostname that resolves to an
-      IPv6 address to :setting:`net.bindIp`, you must start :binary:`~bin.mongos` or :binary:`~bin.mongod` with 
-      :setting:`net.ipv6 : true <net.ipv6>` to enable IPv6 support. Specifying an IPv6 address
-      to :setting:`net.bindIp` does not enable IPv6 support.
+      IPv6 address to :setting:`net.bindIp`, you must start
+      :binary:`~bin.mongos` or :binary:`~bin.mongod` with
+      :setting:`net.ipv6 : true <net.ipv6>` to enable IPv6 support.
+      Specifying an IPv6 address to :setting:`net.bindIp` does not
+      enable IPv6 support.
    
    If specifying a 
    `link-local IPv6 address <https://en.wikipedia.org/wiki/Link-local_address#IPv6>`_
@@ -929,9 +1057,11 @@ Core Options
    `zone index <https://en.wikipedia.org/wiki/IPv6_address#Scoped_literal_IPv6_addresses_(with_zone_index)>`_
    to that address (i.e. ``fe80::<address>%<adapter-name>``). 
    
-   .. example:: ``localhost,fe80::a00:27ff:fee0:1fcf%enp0s3``
+   .. example::
    
-   .. include:: /includes/tip-hostnames.rst
+      ``localhost,fe80::a00:27ff:fee0:1fcf%enp0s3``
+   
+   .. include:: /includes/important-hostnames.rst
    
    .. include:: /includes/warning-bind-ip-security-considerations.rst
    
@@ -954,8 +1084,8 @@ Core Options
       
       - The command-line option ``--bind_ip`` overrides the configuration
         file setting :setting:`net.bindIp`.
-   
 
+   .. include:: /includes/fact-split-horizon-binding.rst
 
 .. setting:: net.bindIpAll
 
@@ -963,9 +1093,6 @@ Core Options
 
    *Default*: false
 
-   
-   .. versionadded:: 3.6
-   
    If true, the :binary:`~bin.mongos` or :binary:`~bin.mongod` instance binds to all IPv4
    addresses (i.e. ``0.0.0.0``). If :binary:`~bin.mongos` or :binary:`~bin.mongod` starts with
    :setting:`net.ipv6 : true <net.ipv6>`, :setting:`net.bindIpAll` also binds to all IPv6 addresses
@@ -997,7 +1124,9 @@ Core Options
 
    *Type*: integer
 
-   *Default*: 65536
+   | *Default (Windows):* 1,000,000
+   | *Default (Linux):* (`RLIMIT_NOFILE
+     <https://man7.org/linux/man-pages/man2/getrlimit.2.html>`__) * 0.8
 
    The maximum number of simultaneous connections that :binary:`~bin.mongos` or :binary:`~bin.mongod` will
    accept. This setting has no effect if it is higher than your operating
@@ -1142,6 +1271,9 @@ Core Options
          clusterCertificateSelector: <string>
          clusterFile: <string>
          clusterPassword: <string>
+         clusterAuthX509:
+           attributes: <string>
+           extensionValue: <string>
          CAFile: <string>
          clusterCAFile: <string>
          CRLFile: <string>
@@ -1150,6 +1282,7 @@ Core Options
          allowInvalidHostnames: <boolean>
          disabledProtocols: <string>
          FIPSMode: <boolean>
+         logVersions: <string>
 
 .. setting:: net.tls.mode
 
@@ -1414,6 +1547,50 @@ Core Options
    
    .. include:: /includes/extracts/tls-facts-see-more.rst
 
+
+.. setting:: net.tls.clusterAuthX509
+
+   .. versionadded:: 7.0
+
+   .. code-block:: yaml
+
+      net:
+         tls:
+           clusterAuthX509:
+             attributes: <string>
+             extensionValue: <string>
+
+
+.. setting:: net.tls.clusterAuthX509.attributes
+
+   *Type*: string
+
+   .. versionadded:: 7.0
+
+   Specifies a set of X.509 Distinguished Name (DN) attributes and values that
+   the server expects cluster member nodes to contain in their certificate
+   subject names.  This lets you use certificates that don't contain DC,
+   O, and OU values to authenticate cluster members.
+
+   When ``attributes`` is set, MongoDB matches certificates using the DN
+   and ignores extension values.
+
+
+.. setting:: net.tls.clusterAuthX509.extensionValue
+
+   *Type*: string
+
+   .. versionadded:: 7.0
+
+   Specifies an extension value that corresponds to the MongoDB cluster
+   membership extension :abbr:`OID`, 1.3.6.1.4.1.34601.2.1.2, that the server expects cluster 
+   member nodes to contain in their certificates. This allows you 
+   to use certificates that don't contain DC, O, and OU values to authenticate 
+   cluster members.
+
+   When ``extensionValue`` is set, MongoDB matches certificates using
+   certificate extension values and ignores the Distinguished Name (DN).
+
 .. setting:: net.tls.CAFile
 
    *Type*: string
@@ -1513,18 +1690,22 @@ Core Options
 
    .. versionadded:: 4.2
    
-   For clients that do not present certificates, :binary:`~bin.mongos` or :binary:`~bin.mongod` bypasses
-   TLS/SSL certificate validation when establishing the connection.
+   By default, the server bypasses client certificate validation unless 
+   the server is configured to use a CA file. If a CA file is provided, the 
+   following rules apply: 
+
+   - .. include:: /includes/TLS-SSL-certificates.rst
    
-   For clients that present a certificate, however, :binary:`~bin.mongos` or :binary:`~bin.mongod` performs
-   certificate validation using the root certificate chain specified by
-   :setting:`~net.tls.CAFile` and reject clients with invalid certificates.
+   - For clients that present a certificate, :binary:`~bin.mongos` or 
+     :binary:`~bin.mongod` performs certificate validation using the root 
+     certificate chain specified by :setting:`~net.tls.CAFile` and reject 
+     clients with invalid certificates.
    
-   Use the :setting:`net.tls.allowConnectionsWithoutCertificates` option if you have a mixed deployment that includes
-   clients that do not or cannot present certificates to the :binary:`~bin.mongos` or :binary:`~bin.mongod`.
+   Use the :setting:`net.tls.allowConnectionsWithoutCertificates` option if you 
+   have a mixed deployment that includes clients that do not or cannot present 
+   certificates to the :binary:`~bin.mongos` or :binary:`~bin.mongod`.
    
    .. include:: /includes/extracts/tls-facts-see-more.rst
-
 
 .. setting:: net.tls.allowInvalidCertificates
 
@@ -1564,32 +1745,32 @@ Core Options
 .. setting:: net.tls.disabledProtocols
 
    *Type*: string
-
-   .. versionadded:: 4.2
    
    Prevents a MongoDB server running with TLS from accepting
    incoming connections that use a specific protocol or protocols. To
-   specify multiple protocols, use a comma separated list of protocols.
+   specify multiple protocols, use a comma separated list of protocols,
+   but do not use spaces after the commas. If you include a space before
+   a protocol name, the server interprets it as an unrecognized protocol
+   and doesn't start.
     
    :setting:`net.tls.disabledProtocols` recognizes the following protocols: ``TLS1_0``, ``TLS1_1``,
-   ``TLS1_2``, and starting in version 4.0.4 (and 3.6.9), ``TLS1_3``.
+   ``TLS1_2``, and ``TLS1_3``.
    
    - On macOS, you cannot disable ``TLS1_1`` and leave both ``TLS1_0`` and
      ``TLS1_2`` enabled. You must disable at least one of the other
      two, for example, ``TLS1_0,TLS1_1``.
    
    - To list multiple protocols, specify as a comma separated list of
-     protocols. For example ``TLS1_0,TLS1_1``.
+     protocols without spaces after the commas. For example ``TLS1_0,TLS1_1``.
    
-   - Specifying an unrecognized protocol will prevent the server from
-     starting.
+   - Specifying an unrecognized protocol or including a space after a
+     comma prevents the server from starting.
    
    - The specified disabled protocols overrides any default disabled
      protocols.
    
-   Starting in version 4.0, MongoDB disables the use of TLS 1.0 if TLS
-   1.1+ is available on the system. To enable the disabled TLS 1.0,
-   specify ``none`` to :setting:`net.tls.disabledProtocols`. See :ref:`4.0-disable-tls`.
+   MongoDB disables the use of TLS 1.0 if TLS 1.1+ is available on the
+   system. To enable TLS 1.0, specify ``none`` to :setting:`net.tls.disabledProtocols`. See :ref:`4.0-disable-tls`.
    
    Members of replica sets and sharded clusters must speak at least one
    protocol in common.
@@ -1610,6 +1791,23 @@ Core Options
    compliant library to use the :setting:`net.tls.FIPSMode` option.
    
    .. include:: /includes/note-fips-is-enterprise-only.rst
+
+.. setting:: net.tls.logVersions
+
+   *Type*: string
+   
+   Instructs :binary:`~bin.mongos` or :binary:`~bin.mongod` to log a
+   message when a client connects using a specified TLS version.
+
+   Specify either a single TLS version or a comma-separated list of
+   multiple TLS versions.
+
+   .. example::
+
+      To instruct :binary:`~bin.mongos` or :binary:`~bin.mongod` to
+      log a message when a client connects using either TLS 1.2 or
+      TLS 1.3, set :setting:`net.tls.logVersions` to
+      ``"TLS1_2,TLS1_3"``.
 
 
 .. _net-ssl-conf-options:
@@ -1820,7 +2018,7 @@ Core Options
    CA certificate, the secure certificate store must contain that root
    CA certificate. If the TLS/SSL certificate was signed with an
    intermediate CA certificate, the secure certificate store must
-   contain the intermedia CA certificate *and* the root CA certificate.
+   contain the intermediate CA certificate *and* the root CA certificate.
 
 .. setting:: net.ssl.clusterCertificateSelector
 
@@ -1863,7 +2061,7 @@ Core Options
    CA certificate, the secure certificate store must contain that root
    CA certificate. If the cluster certificate was signed with an
    intermediate CA certificate, the secure certificate store must
-   contain the intermedia CA certificate *and* the root CA certificate.
+   contain the intermediate CA certificate *and* the root CA certificate.
 
 .. setting:: net.ssl.clusterFile
 
@@ -2047,9 +2245,8 @@ Core Options
       Use :setting:`net.tls.allowConnectionsWithoutCertificates`
       instead.
    
-   For clients that do not present certificates, :binary:`~bin.mongos` or :binary:`~bin.mongod` bypasses
-   TLS/SSL certificate validation when establishing the connection.
-   
+   .. include:: /includes/TLS-SSL-certificates.rst
+
    For clients that present a certificate, however, :binary:`~bin.mongos` or :binary:`~bin.mongod` performs
    certificate validation using the root certificate chain specified by
    :setting:`~net.ssl.CAFile` and reject clients with invalid certificates.
@@ -2171,9 +2368,7 @@ Core Options
 
    *Default*: snappy,zstd,zlib
 
-   
-   .. versionadded:: 3.4
-   
+
    Specifies the default compressor(s) to use for
    communication between this :binary:`~bin.mongod` or :binary:`~bin.mongos` instance and:
    
@@ -2242,7 +2437,7 @@ Core Options
             method: <string>
             saslMechanisms: <string>
             queryUser: <string>
-            queryPassword: <string>
+            queryPassword: <string | array>
             useOSDefaults: <boolean>
          transportSecurity: <string>
          timeoutMS: <int>
@@ -2350,16 +2545,13 @@ Core Options
 
    *Default*: false
 
-   .. versionadded:: 3.4
-   
-      Allows the :binary:`~bin.mongod` or :binary:`~bin.mongos` to accept and create authenticated and
-      non-authenticated connections to and from other :binary:`~bin.mongod`
-      and :binary:`~bin.mongos` instances in the deployment. Used for
-      performing rolling transition of replica sets or sharded clusters
-      from a no-auth configuration to :ref:`internal authentication
-      <inter-process-auth>`. Requires specifying a :ref:`internal
-      authentication <inter-process-auth>` mechanism such as
-      :setting:`security.keyFile`.
+   Allows the :binary:`~bin.mongod` or :binary:`~bin.mongos` to accept and 
+   create authenticated and non-authenticated connections to and from other 
+   :binary:`~bin.mongod` and :binary:`~bin.mongos` instances in the deployment. 
+   Used for performing rolling transition of replica sets or sharded clusters
+   from a no-auth configuration to :ref:`internal authentication<inter-process-auth>`.
+   Requires specifying a :ref:`internal authentication <inter-process-auth>` mechanism such as
+   :setting:`security.keyFile`.
    
    For example, if using :ref:`keyfiles <internal-auth-keyfile>` for
    :ref:`internal authentication <inter-process-auth>`, the :binary:`~bin.mongod` or :binary:`~bin.mongos` creates
@@ -2404,7 +2596,7 @@ Core Options
 
    *Type*: boolean
 
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
+   *Available in MongoDB Enterprise only.*
    
    A :binary:`~bin.mongod` or :binary:`~bin.mongos` running with :setting:`security.redactClientLogData` redacts any message accompanying a given
    log event before logging. This prevents the :binary:`~bin.mongod` or :binary:`~bin.mongos` from writing
@@ -2537,6 +2729,8 @@ Key Management Configuration Options
          serverCAFile: <string>
          connectRetries: <int>
          connectTimeoutMS: <int>
+         activateKeys: <boolean>
+         keyStatePollingSeconds: <int>
 
 .. setting:: security.enableEncryption
 
@@ -2544,11 +2738,8 @@ Key Management Configuration Options
 
    *Default*: false
 
-   
-   .. versionadded:: 3.2
-   
-    Enables encryption for the WiredTiger storage engine. You must set
-    to ``true`` to pass in encryption keys and configurations.
+   Enables encryption for the WiredTiger storage engine. You must set
+   to ``true`` to pass in encryption keys and configurations.
    
    .. include:: /includes/fact-enterprise-only-admonition.rst
    
@@ -2561,31 +2752,9 @@ Key Management Configuration Options
    *Default*: ``AES256-CBC``
 
    
-   .. versionadded:: 3.2
-   
    The cipher mode to use for encryption at rest:
    
-   .. list-table::
-      :header-rows: 1
-      :widths: 35 65
-   
-      * - Mode
-        - Description
-   
-      * - ``AES256-CBC``
-        - 256-bit Advanced Encryption Standard in Cipher Block Chaining
-          Mode
-   
-      * - ``AES256-GCM``
-   
-        - 256-bit Advanced Encryption Standard in Galois/Counter Mode
-   
-          Available only on Linux.
-   
-          .. versionchanged:: 4.0
-   
-             .. include:: /includes/fact-aes.rst
-   
+   .. include:: /includes/in-use-encryption/table-in-use-encryption-cipher-modes.rst
    
    .. include:: /includes/fact-enterprise-only-admonition.rst
    
@@ -2595,8 +2764,6 @@ Key Management Configuration Options
 
    *Type*: string
 
-   
-   .. versionadded:: 3.2
    
    The path to the local keyfile when managing keys via process *other
    than* KMIP. Only set when managing keys via process other than KMIP.
@@ -2612,8 +2779,6 @@ Key Management Configuration Options
 
    *Type*: string
 
-   
-   .. versionadded:: 3.2
    
    Unique KMIP identifier for an existing key within the KMIP server.
    Include to use the key associated with the identifier as the system
@@ -2639,8 +2804,6 @@ Key Management Configuration Options
    *Default*: false
 
    
-   .. versionadded:: 3.2
-   
    If true, rotate the master key and re-encrypt the internal
    keystore.
    
@@ -2657,8 +2820,6 @@ Key Management Configuration Options
    *Type*: string
 
    
-   .. versionadded:: 3.2
-   
    Hostname or IP address of the KMIP server to connect to. Requires
    :setting:`security.enableEncryption` to be true.
 
@@ -2670,13 +2831,7 @@ Key Management Configuration Options
    which it can successfully establish a connection. KMIP server
    selection occurs only at startup.
 
-   When connecting to a KMIP server, the :binary:`~bin.mongod`
-   verifies that the specified :setting:`security.kmip.serverName`
-   matches the Subject Alternative Name ``SAN`` (or, if ``SAN`` is not
-   present, the Common Name ``CN``) in the certificate presented by the
-   KMIP server. If ``SAN`` is present, :binary:`~bin.mongod` does not
-   match against the ``CN``. If the hostname does not match the ``SAN``
-   (or ``CN``), the :binary:`~bin.mongod` will fail to connect.
+   .. include:: /includes/reference/fact-connection-check.rst
 
    .. include:: /includes/extracts/4.2-changes-SAN-matching.rst
 
@@ -2690,8 +2845,6 @@ Key Management Configuration Options
 
    *Default*: 5696
 
-   
-   .. versionadded:: 3.2
    
    Port number to use to communicate with the KMIP server. Requires
    :setting:`security.kmip.serverName`. Requires
@@ -2710,12 +2863,12 @@ Key Management Configuration Options
 
    *Type*: string
 
+   Path to the ``.pem`` file used to authenticate MongoDB to the KMIP
+   server. The specified ``.pem`` file must contain both the TLS/SSL
+   certificate and key. 
    
-   .. versionadded:: 3.2
-   
-   String containing the path to the client certificate used for
-   authenticating MongoDB to the KMIP server. Requires that a
-   :setting:`security.kmip.serverName` be provided.
+   To use this setting, you must also specify the
+   :setting:`security.kmip.serverName` setting.
    
    .. note::
       
@@ -2730,8 +2883,6 @@ Key Management Configuration Options
 
    *Type*: string
 
-   
-   .. versionadded:: 3.2
    
    The password to decrypt the client certificate (i.e.
    :setting:`security.kmip.clientCertificateFile`), used to
@@ -2771,8 +2922,6 @@ Key Management Configuration Options
 
    *Type*: string
 
-   
-   .. versionadded:: 3.2
    
    Path to CA File. Used for validating secure client connection to
    KMIP server.
@@ -2823,6 +2972,64 @@ Key Management Configuration Options
    .. include:: /includes/fact-enterprise-only-admonition.rst
 
 
+.. setting:: security.kmip.activateKeys
+
+   *Type*: boolean
+
+   *Default*: true
+
+
+   .. versionadded:: 5.3
+
+   Activates all newly created KMIP keys upon creation and then periodically 
+   checks those keys are in an active state.  
+
+   When ``security.kmip.activateKeys`` is ``true`` and you have existing keys 
+   on a KMIP server, the key must be activated first or the :binary:`mongod` 
+   node will fail to start.
+
+   If the key being used by the mongod transitions into a non-active state, 
+   the :binary:`mongod` node will shut down unless ``kmipActivateKeys`` is 
+   false. To ensure you have an active key, rotate the KMIP master key by 
+   using :setting:`security.kmip.rotateMasterKey`.
+
+
+.. setting:: security.kmip.keyStatePollingSeconds
+
+   *Type*: int
+
+   *Default*: 900 seconds
+
+   .. versionadded:: 5.3
+
+   Frequency in seconds at which mongod polls the KMIP server for active keys. 
+
+   To disable disable polling, set the value to ``-1``. 
+
+.. setting:: security.kmip.useLegacyProtocol
+
+   *Type*: boolean
+
+   *Default*: false
+
+   .. versionadded:: 7.0 (and 6.0.6)
+
+   .. include:: /includes/reference/fact-kmip-description.rst
+
+   To use KMIP protocol version 1.0 or 1.1, substitute your local values
+   and add an entry like this to your ``mongod`` configuration file:
+
+   .. code:: bash
+      :emphasize-lines: 7
+
+      security:
+        enableEncryption: true
+        kmip:
+          serverName: "mdbhost.somecompany.com"
+          serverCAFile: "security/libs/trusted-ca.pem"
+          clientCertificateFile: "security/libs/trusted-client.pem"
+          useLegacyProtocol: true
+
 .. _security.sasl.options:
 
 ``security.sasl`` Options
@@ -2843,11 +3050,6 @@ Key Management Configuration Options
    A fully qualified server domain name for the purpose of configuring SASL
    and Kerberos authentication. The SASL hostname overrides the hostname
    only for the configuration of SASL and Kerberos.
-   
-   For :binary:`~bin.mongosh` and other MongoDB tools to connect to
-   the new :setting:`~security.sasl.hostName`, see the
-   ``gssapiHostName`` option in :binary:`~bin.mongosh` and other
-   tools.
    
 
 
@@ -2899,10 +3101,11 @@ Key Management Configuration Options
             method: <string>
             saslMechanisms: <string>
             queryUser: <string>
-            queryPassword: <string>
+            queryPassword: <string | array>
             useOSDefaults: <boolean>
          transportSecurity: <string>
          timeoutMS: <int>
+         retryCount: <int>
          userToDNMapping: <string>
          authz:
             queryTemplate: <string>
@@ -2912,7 +3115,7 @@ Key Management Configuration Options
 
    *Type*: string
 
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
+   *Available in MongoDB Enterprise only.*
    
    The LDAP server against which the :binary:`~bin.mongod` or :binary:`~bin.mongos` authenticates users or
    determines what actions a user is authorized to perform on a given
@@ -2937,7 +3140,7 @@ Key Management Configuration Options
 
    *Type*: string
 
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
+   *Available in MongoDB Enterprise only.*
    
    The identity with which :binary:`~bin.mongod` or :binary:`~bin.mongos` binds as, when connecting to or
    performing queries on an LDAP server.
@@ -2964,24 +3167,9 @@ Key Management Configuration Options
 
 .. setting:: security.ldap.bind.queryPassword
 
-   *Type*: string
-
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
-   
-   The password used to bind to an LDAP server when using
-   :setting:`~security.ldap.bind.queryUser`. You must use :setting:`~security.ldap.bind.queryPassword` with
-   :setting:`~security.ldap.bind.queryUser`.
-   
-   If unset, :binary:`~bin.mongod` or :binary:`~bin.mongos` will not attempt to bind to the LDAP server.
-   
-   This setting can be configured on a running :binary:`~bin.mongod` or :binary:`~bin.mongos` using
-   :dbcommand:`setParameter`.
-   
-   .. note::
-   
-      Windows MongoDB deployments can use :setting:`~security.ldap.bind.useOSDefaults`
-      instead of :setting:`~security.ldap.bind.queryPassword` and :setting:`~security.ldap.bind.queryPassword`. You cannot specify
-      both :setting:`~security.ldap.bind.queryPassword` and :setting:`~security.ldap.bind.useOSDefaults` at the same time.
+   .. include:: /includes/query-password.rst
+     :start-after: START-CONFIG-QUERYPASSWORD
+     :end-before: END-CONFIG-QUERYPASSWORD
 
 
 .. setting:: security.ldap.bind.useOSDefaults
@@ -2989,10 +3177,8 @@ Key Management Configuration Options
    *Type*: boolean
 
    *Default*: false
-
-   .. versionadded:: 3.4
    
-      Available in MongoDB Enterprise for the Windows platform only.
+   Available in MongoDB Enterprise for the Windows platform only.
    
    Allows :binary:`~bin.mongod` or :binary:`~bin.mongos` to authenticate, or bind, using your Windows login
    credentials when connecting to the LDAP server.
@@ -3013,7 +3199,7 @@ Key Management Configuration Options
 
    *Default*: simple
 
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
+   *Available in MongoDB Enterprise only.*
    
    The method :binary:`~bin.mongod` or :binary:`~bin.mongos` uses to authenticate to an LDAP server.
    Use with :setting:`~security.ldap.bind.queryUser` and
@@ -3037,7 +3223,7 @@ Key Management Configuration Options
 
    *Default*: DIGEST-MD5
 
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
+   *Available in MongoDB Enterprise only.*
    
    A comma-separated list of SASL mechanisms :binary:`~bin.mongod` or :binary:`~bin.mongos` can
    use when authenticating to the LDAP server. The :binary:`~bin.mongod` or :binary:`~bin.mongos` and the
@@ -3102,7 +3288,7 @@ Key Management Configuration Options
 
    *Default*: tls
 
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
+   *Available in MongoDB Enterprise only.*
    
    By default, :binary:`~bin.mongod` or :binary:`~bin.mongos` creates a TLS/SSL secured connection to the LDAP
    server.
@@ -3136,7 +3322,7 @@ Key Management Configuration Options
 
    *Default*: 10000
 
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
+   *Available in MongoDB Enterprise only.*
    
    The amount of time in milliseconds :binary:`~bin.mongod` or :binary:`~bin.mongos` should wait for an LDAP server
    to respond to a request.
@@ -3149,12 +3335,27 @@ Key Management Configuration Options
    This setting can be configured on a running :binary:`~bin.mongod` or :binary:`~bin.mongos` using
    :dbcommand:`setParameter`.
 
+.. setting:: security.ldap.retryCount
+
+   .. versionadded:: 6.1
+
+   *Type*: int
+
+   *Default*: 0
+
+   *Available in MongoDB Enterprise only.*
+   
+   Number of operation retries by the server LDAP manager after a
+   network error.
+
+   This setting can be configured on a running :binary:`~bin.mongod` or
+   :binary:`~bin.mongos` using :dbcommand:`setParameter`.
 
 .. setting:: security.ldap.userToDNMapping
 
    *Type*: string
 
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
+   *Available in MongoDB Enterprise only.*
    
    Maps the username provided to :binary:`~bin.mongod` or :binary:`~bin.mongos` for authentication to a LDAP
    Distinguished Name (DN). You may need to use :setting:`~security.ldap.userToDNMapping` to transform a
@@ -3264,7 +3465,7 @@ Key Management Configuration Options
 
    Starting in MongoDB 5.0, :setting:`~security.ldap.userToDNMapping`
    accepts an empty string ``""`` or empty array ``[ ]`` in place of a
-   mapping documnent. If providing an empty string or empty array to
+   mapping document. If providing an empty string or empty array to
    :setting:`~security.ldap.userToDNMapping`, MongoDB will map the
    authenticated username as the LDAP DN. Previously, providing an
    empty mapping document would cause mapping to fail.
@@ -3273,9 +3474,9 @@ Key Management Configuration Options
    
      The following shows two transformation documents. The first
      document matches against any string ending in ``@ENGINEERING``, placing
-     anything preceeding the suffix into a regex capture group. The
+     anything preceding the suffix into a regex capture group. The
      second document matches against any string ending in ``@DBA``, placing
-     anything preceeding the suffix into a regex capture group.
+     anything preceding the suffix into a regex capture group.
    
      .. important::  You must pass the array to :setting:`~security.ldap.userToDNMapping` as a string.
    
@@ -3317,7 +3518,7 @@ Key Management Configuration Options
 
    *Type*: string
 
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
+   *Available in MongoDB Enterprise only.*
    
    A relative LDAP query URL formatted conforming to `RFC4515
    <https://tools.ietf.org/search/rfc4515>`_ and `RFC4516
@@ -3475,6 +3676,10 @@ LDAP Parameters
 ``storage`` Options
 ~~~~~~~~~~~~~~~~~~~
 
+.. versionchanged:: 6.1 
+
+   - .. include:: /includes/journal-always-enabled-change.rst
+
 .. versionchanged:: 4.4
 
    - MongoDB removes the ``storage.indexBuildRetry`` option and the
@@ -3489,7 +3694,6 @@ LDAP Parameters
    storage:
       dbPath: <string>
       journal:
-         enabled: <boolean>
          commitIntervalMs: <num>
       directoryPerDB: <boolean>
       syncPeriodSecs: <int>
@@ -3556,23 +3760,6 @@ LDAP Parameters
             - ``/usr/local/var/mongodb``
    
       .. include:: /includes/extracts/linux-config-expectations-storage-dbpath.rst
-
-.. setting:: storage.journal.enabled
-
-   *Type*: boolean
-
-   *Default*: ``true`` on 64-bit systems, ``false`` on 32-bit systems
-
-   Enable or disable the durability :term:`journal` to ensure data files remain valid
-   and recoverable. This option applies only when you specify the
-   :setting:`storage.dbPath` setting. :binary:`~bin.mongod` enables journaling by default.
-
-   The :setting:`storage.journal.enabled` setting is available only for :binary:`~bin.mongod`.
-   
-   .. include:: /includes/not-available-for-inmemory-storage-engine.rst
-   
-   .. include:: /includes/wiredtiger-node-nojournal.rst
-
 
 .. setting:: storage.journal.commitIntervalMs
 
@@ -3666,12 +3853,9 @@ LDAP Parameters
       memory mapped files to disk.
    
    The :binary:`~bin.mongod` process writes data very quickly to the journal and
-   lazily to the data files. :setting:`storage.syncPeriodSecs` has no effect on the
-   :setting:`journal <storage.journal.enabled>` files or :doc:`journaling </core/journaling>`,
-   but if :setting:`storage.syncPeriodSecs` is set to ``0`` the journal will eventually consume
-   all available disk space. If you set :setting:`storage.syncPeriodSecs` to ``0`` for testing
-   purposes, you should also set :option:`--nojournal <mongod --nojournal>`
-   to ``true``.
+   lazily to the data files. :setting:`storage.syncPeriodSecs` has no effect on 
+   :ref:`<journaling-internals>`, but if :setting:`storage.syncPeriodSecs` is 
+   set to ``0`` the journal will eventually consume all available disk space. 
 
    The :setting:`storage.syncPeriodSecs` setting is available only for :binary:`~bin.mongod`.
    
@@ -3703,15 +3887,14 @@ LDAP Parameters
       * - ``inMemory``
    
         - To specify the :doc:`/core/inmemory`.
-   
-          .. versionadded:: 3.2
 
-             Available in MongoDB Enterprise only.
+          Available in MongoDB Enterprise only.
 
-   If you attempt to start a :binary:`~bin.mongod` with a
-   :setting:`storage.dbPath` that contains data files produced by a
-   storage engine other than the one specified by :setting:`storage.engine`, :binary:`~bin.mongod`
-   will refuse to start.
+          If you attempt to start a :binary:`~bin.mongod` with a
+          :setting:`storage.dbPath` that contains data files produced by a
+          storage engine other than the one specified by :setting:`storage.engine`, :binary:`~bin.mongod`
+          will refuse to start.
+
 
 
 .. setting:: storage.oplogMinRetentionHours
@@ -3768,6 +3951,8 @@ LDAP Parameters
    through a restart, update the value of
    :setting:`~storage.oplogMinRetentionHours`.
 
+
+.. _wiredTiger-storage-options:
 
 ``storage.wiredTiger`` Options
 ``````````````````````````````
@@ -3967,9 +4152,7 @@ LDAP Parameters
 
    *Default*: 50% of physical RAM less 1 GB
 
-   .. versionchanged:: 3.4
-   
-      Values can range from 256MB to 10TB and can be a float.
+   Values can range from 256MB to 10TB and can be a float.
    
    Maximum amount of memory to allocate for :doc:`in-memory storage
    engine </core/inmemory>` data, including indexes, oplog if the
@@ -4038,21 +4221,14 @@ LDAP Parameters
    
    .. include:: /includes/dbcommand-slowms-definition.rst
    
-
+   This setting is available for :binary:`~bin.mongod` and :binary:`~bin.mongos`.
    
-   .. versionchanged:: 4.0
+   - For :binary:`~bin.mongod` instances, the setting affects both
+     the diagnostic log and, if enabled, the profiler.
    
-      The :setting:`~operationProfiling.slowOpThresholdMs` setting is
-      available for :binary:`~bin.mongod` and :binary:`~bin.mongos`. In
-      earlier versions, :setting:`~operationProfiling.slowOpThresholdMs`
-      is available for :binary:`~bin.mongod` only.
-   
-      - For :binary:`~bin.mongod` instances, the setting affects both
-        the diagnostic log and, if enabled, the profiler.
-   
-      - For :binary:`~bin.mongos` instances, the setting affects the
-        diagnostic log only and not the profiler since profiling is not
-        available on :binary:`~bin.mongos`.
+   - For :binary:`~bin.mongos` instances, the setting affects the
+     diagnostic log only and not the profiler, since profiling is not
+     available on :binary:`~bin.mongos`.
    
 
 
@@ -4064,13 +4240,8 @@ LDAP Parameters
    *Default*: 1.0
 
    The fraction of *slow* operations that should be profiled or logged.
-   :setting:`operationProfiling.slowOpSampleRate` accepts values between 0 and 1, inclusive.
-   
-   :setting:`operationProfiling.slowOpSampleRate` does not affect the :ref:`slow oplog entry logging
-   <slow-oplog>` by the secondary members of a replica set. Secondary
-   members log all oplog entries that take longer than the slow
-   operation threshold regardless of the :setting:`operationProfiling.slowOpSampleRate`.
-
+   :setting:`operationProfiling.slowOpSampleRate` accepts values between
+   0 and 1, inclusive.
    
    .. versionchanged:: 4.0
    
@@ -4190,12 +4361,6 @@ LDAP Parameters
    
    - The setting :setting:`replication.replSetName` cannot be used in conjunction with
      ``storage.indexBuildRetry``.
-   
-   - For the WiredTiger storage engine,
-     :setting:`storage.journal.enabled: false
-     <storage.journal.enabled>` cannot be used in conjunction with
-     :setting:`replication.replSetName`.
-
 
 .. setting:: replication.enableMajorityReadConcern
 
@@ -4205,7 +4370,12 @@ LDAP Parameters
  
    Starting in MongoDB 5.0, 
    :setting:`~replication.enableMajorityReadConcern` cannot be changed 
-   and is always set to ``true``. In earlier versions of MongoDB, 
+   and is always set to ``true``. Attempting to start a storage engine 
+   that does not support majority read concern with the 
+   ``--enableMajorityReadConcern`` option will fail and return an error
+   message.
+   
+   In earlier versions of MongoDB, 
    :setting:`~replication.enableMajorityReadConcern` was configurable.
 
    .. warning::
@@ -4220,8 +4390,7 @@ LDAP Parameters
 
    sharding:
       clusterRole: <string>
-      archiveMovedChunks: <boolean>
-
+      
 .. setting:: sharding.clusterRole
 
    *Type*: string
@@ -4241,11 +4410,19 @@ LDAP Parameters
    
         - Start this instance as a :term:`config server`. The instance
           starts on port ``27019`` by default.
-   
+
+          When you configure a MongoDB instance as 
+          clusterRole ``configsvr`` you must also specify a 
+          :setting:`~replication.replSetName`.
+
       * - ``shardsvr``
    
         - Start this instance as a :term:`shard`. The instance starts
           on port ``27018`` by default.
+
+          When you configure a MongoDB instance as a 
+          a clusterRole ``shardsvr`` you must also specify a 
+          :setting:`~replication.replSetName`.
    
 
    .. note::
@@ -4262,9 +4439,7 @@ LDAP Parameters
 
    *Type*: boolean
 
-   .. versionchanged:: 3.2
-
-      Starting in 3.2, MongoDB uses ``false`` as the default.
+   *Default*: false.
    
    During chunk migration, a shard does not save documents migrated from
    the shard.
@@ -4283,11 +4458,29 @@ LDAP Parameters
       path: <string>
       filter: <string>
 
+.. |audit-compression-mode-option| replace:: :setting:`auditLog.compressionMode`
+.. |audit-encryption-key-identifier-option| replace:: :setting:`auditLog.auditEncryptionKeyIdentifier`
+.. |audit-local-keyfile-option| replace:: :setting:`auditLog.localAuditKeyFile`
+
+.. setting:: auditLog.auditEncryptionKeyIdentifier
+
+   *Type*: string
+
+   .. include:: /includes/audit-encryption-key-identifier-option.rst
+
+.. setting:: auditLog.compressionMode
+
+   *Type*: string
+
+   .. |option-1| replace:: :setting:`auditLog.compressionMode`
+
+   .. include:: /includes/audit-compression-mode-option.rst
+
 .. setting:: auditLog.destination
 
    *Type*: string
    
-   When set, :setting:`auditLog.destination` enables :doc:`auditing </core/auditing>` and
+   When set, :setting:`auditLog.destination` enables :ref:`auditing <auditing>` and
    specifies where :binary:`~bin.mongos` or :binary:`~bin.mongod` sends all audit events.
 
    :setting:`auditLog.destination` can have one of the following values:
@@ -4380,11 +4573,17 @@ LDAP Parameters
    
    .. include:: /includes/note-audit-in-enterprise-only.rst
 
+.. setting:: auditLog.localAuditKeyFile
+
+   *Type*: string
+
+   .. include:: /includes/audit-local-key-file-option.rst
+
 .. setting:: auditLog.path
 
    *Type*: string
    
-   The output file for :doc:`auditing </core/auditing>` if
+   The output file for :ref:`auditing <auditing>` if
    :setting:`~auditLog.destination` has value of ``file``. The :setting:`auditLog.path`
    option can take either a full path name or a relative path name.
 
@@ -4399,70 +4598,8 @@ LDAP Parameters
 
    .. include:: /includes/note-audit-in-enterprise-only.rst
 
-``snmp`` Options
-~~~~~~~~~~~~~~~~
-
-.. note::
-
-   .. include:: /includes/fact-macos-snmp.rst
-
-.. code-block:: yaml
-
-   snmp:
-      disabled: <boolean>
-      subagent: <boolean>
-      master: <boolean>
-
-.. setting:: snmp.disabled
-
-   *Type*: boolean
-
-   *Default*: false
-
-   
-   Disables SNMP access to :binary:`~bin.mongod`. The option is incompatible
-   with :setting:`snmp.subagent` and :setting:`snmp.master`.
-
-   Set to ``true`` to disable SNMP access.
-   
-   The :setting:`snmp.disabled` setting is available only for :binary:`~bin.mongod`.
-   
-   .. versionadded:: 4.0.6
-
-
-.. setting:: snmp.subagent
-
-   *Type*: boolean
-
-   
-   When :setting:`snmp.subagent` is ``true``, SNMP runs as a subagent. The option is incompatible with :setting:`snmp.disabled` set to ``true``.
-
-   The :setting:`snmp.subagent` setting is available only for :binary:`~bin.mongod`.
-
-
-.. setting:: snmp.master
-
-   *Type*: boolean
-
-   
-   When :setting:`snmp.master` is ``true``, SNMP runs as a master. The option is incompatible with :setting:`snmp.disabled` set to ``true``.
-
-   The :setting:`snmp.master` setting is available only for :binary:`~bin.mongod`.
-
-
-.. seealso::
-
-   - :doc:`/tutorial/monitor-with-snmp`
-   - :doc:`/tutorial/monitor-with-snmp-on-windows`
-   - :doc:`/tutorial/troubleshoot-snmp`
-   
 ``mongos``\ -only Options
 -------------------------
-
-.. versionchanged:: 3.4
-
-   MongoDB 3.4 removes ``sharding.chunkSize`` and
-   ``sharding.autoSplit`` settings.
 
 .. code-block:: yaml
 
@@ -4503,16 +4640,13 @@ LDAP Parameters
    until the :binary:`~bin.mongos` recalculates the average.
    
    See the :ref:`replica-set-read-preference-behavior-member-selection`
-   section of the :doc:`read preference </core/read-preference>`
+   section of the :ref:`read preference <read-preference>`
    documentation for more information.
 
 
 .. setting:: sharding.configDB
 
    *Type*: string
-
-   
-   .. versionchanged:: 3.2
    
    The :ref:`configuration servers <sharding-config-server>` for the
    :term:`sharded cluster`.
@@ -4617,9 +4751,9 @@ engine and the MMAPv1-specific configuration options:
 For earlier versions of MongoDB, refer to the corresponding version of
 the manual. For example:
 
-- :v4.0:`https://docs.mongodb.com/v4.0 </reference/configuration-options>`
-- :v3.6:`https://docs.mongodb.com/v3.6 </reference/configuration-options>`
-- :v3.4:`https://docs.mongodb.com/v3.4 </reference/configuration-options>`
+- :v4.0:`https://www.mongodb.com/docs/v4.0 </reference/configuration-options>`
+- :v3.6:`https://www.mongodb.com/docs/v3.6 </reference/configuration-options>`
+- :v3.4:`https://www.mongodb.com/docs/v3.4 </reference/configuration-options>`
 
 .. toctree::
    :hidden:

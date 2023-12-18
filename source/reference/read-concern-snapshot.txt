@@ -4,6 +4,8 @@
 
    .. readconcern:: "snapshot"
 
+.. _read-concern-snapshot:
+
 ===========================
 Read Concern ``"snapshot"``
 ===========================
@@ -11,9 +13,17 @@ Read Concern ``"snapshot"``
 .. meta::
    :description: read concern, snapshot read concern, read isolation, transactions, multi-document transactions
    :keywords: read concern, snapshot read concern, read isolation, transactions, multi-document transactions
+   
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 1
+   :class: singlecol
 
 .. versionadded:: 4.0
 .. versionchanged:: 5.0
+
+.. include:: /includes/fact-snapshot-read-concern.rst
 
 Read concern ``"snapshot"`` is available for :doc:`multi-document
 transactions </core/transactions>`, and starting in MongoDB 5.0, certain
@@ -33,7 +43,7 @@ read operations outside of multi-document transactions.
 
 Outside of multi-document transactions, read concern
 :readconcern:`"snapshot"` is available on primaries and secondaries for
-the following read operations :
+the following read operations:
 
 - :dbcommand:`find`
 - :dbcommand:`aggregate`
@@ -67,7 +77,7 @@ Read Concern and ``atClusterTime``
 
 .. versionadded:: 5.0
 
-Outside of multi-document transaction, reads with read concern
+Outside of multi-document transactions, reads with read concern
 :readconcern:`"snapshot"` support the optional parameter
 ``atClusterTime``. The parameter ``atClusterTime`` allows you to specify
 the timestamp for the read. To satisfy a read request with a specified
@@ -75,9 +85,8 @@ the timestamp for the read. To satisfy a read request with a specified
 based on the data available at time T.
 
 You can obtain the ``operationTime`` or ``clusterTime`` of an operation
-from the response of :doc:`db.runCommand()
-</reference/method/db.runCommand/>` or from the :method:`Session`
-object.
+from the response of :method:`db.runCommand()` or from the 
+:method:`Session` object.
 
 The following command performs a find operation with read concern
 :readconcern:`"snapshot"` and specifies that the operation should read
@@ -103,15 +112,25 @@ the client.
 Outside of transactions, :readconcern:`"snapshot"` reads are
 guaranteed to read from majority-committed data.
 
-.. note:
+``atClusterTime`` Considerations and Behavior
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   - If you perform a read operation with :readconcern:`"snapshot"`
-     against a delayed replica set member, the returned majority-committed
-     data could be stale.
+- The allowed values for ``atClusterTime`` depend on the
+  :parameter:`minSnapshotHistoryWindowInSeconds` parameter.
+  ``minSnapshotHistoryWindowInSeconds`` is the minimum time window in
+  seconds for which the storage engine keeps the snapshot history. If
+  you specify an :ref:`atClusterTime <atClusterTime>` value older than
+  the oldest snapshot retained according to
+  ``minSnapshotHistoryWindowInSeconds``, :binary:`~bin.mongod` returns
+  an error.
 
-   - It is not possible to specify ``atClusterTime`` for
-     :readconcern:`"snapshot"` inside of :ref:`causally consistent
-     sessions <sessions>`.
+- If you perform a read operation with :readconcern:`"snapshot"`
+  against a delayed replica set member, the returned majority-committed
+  data could be stale.
+
+- It is not possible to specify ``atClusterTime`` for
+  :readconcern:`"snapshot"` inside of :ref:`causally consistent
+  sessions <sessions>`.
 
 Read Concern on Capped Collections
 ----------------------------------

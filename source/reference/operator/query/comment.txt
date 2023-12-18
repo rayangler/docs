@@ -31,9 +31,9 @@ Behavior
 
 You can use the :query:`$comment` with any expression taking a query
 predicate, such as the query predicate in
-:method:`db.collection.update()` or in the :pipeline:`$match` stage of
-the :doc:`aggregation pipeline </meta/aggregation-quick-reference>`.
-For an example, see :ref:`ex-comment-agg-expression`.
+:method:`db.collection.updateOne()` or in the :pipeline:`$match` stage
+of the :ref:`aggregation pipeline <aggregation-pipeline>`. For an
+example, see :ref:`ex-comment-agg-expression`.
 
 Examples
 --------
@@ -89,7 +89,7 @@ parameters:
 
 The comment for the previous ``db.records.find()`` example
 then appears as follows in the
-:doc:`MongoDB log </reference/log-messages>`:
+:ref:`MongoDB log <log-messages-ref>`:
 
 .. code-block:: javascript
    :copyable: false
@@ -118,7 +118,3 @@ The following example uses the :query:`$comment` operator in the
       { $match: { x: { $gt: 0 }, $comment: "Don't allow negative inputs." } },
       { $group : { _id: { $mod: [ "$x", 2 ] }, total: { $sum: "$x" } } }
    ] )
-
-.. seealso::
-
-   :operator:`$comment`

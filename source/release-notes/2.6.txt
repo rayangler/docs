@@ -1,3 +1,5 @@
+.. _release-notes-2.6:
+
 =============================
 Release Notes for MongoDB 2.6
 =============================
@@ -16,7 +18,7 @@ MongoDB 2.6 is now available. Key features include aggregation
 enhancements, text-search integration, query-engine improvements, a new
 write-operation protocol, and security enhancements.
 
-Minor Releases
+Patch Releases
 --------------
 
 .. toctree::
@@ -298,8 +300,8 @@ Text search is now enabled by default, and the query system, including
 the aggregation pipeline :pipeline:`$match` stage, includes the
 :query:`$text` operator, which resolves text-search queries.
 
-MongoDB 2.6 includes an updated :doc:`text index
-</core/index-text>` format and deprecates the ``text``
+MongoDB 2.6 includes an updated :ref:`text index
+<index-type-text>` format and deprecates the ``text``
 command.
 
 .. _rel-notes-data-modification:
@@ -350,7 +352,7 @@ MongoDB 2.6 adds the write commands :dbcommand:`insert`,
 for the improved bulk insert. All officially supported MongoDB drivers
 support the new write commands.
 
-The :binary:`~bin.mongo` shell now includes
+The ``mongo`` shell now includes
 methods to perform bulk-write operations. See :method:`Bulk()` for
 more information.
 
@@ -419,9 +421,8 @@ Specifically these changes include:
 Query Engine Improvements
 -------------------------
 
-- MongoDB can now use :doc:`index intersection
-  </core/index-intersection>` to fulfill queries supported by more
-  than one index.
+- MongoDB can now use index intersection to 
+  fulfill queries supported by more than one index.
 
 - :ref:`index-filters` to limit which indexes can become the winning
   plan for a query.
@@ -510,7 +511,7 @@ Configuration Options YAML File Format
 
 MongoDB 2.6 supports a YAML-based configuration file format in addition
 to the previous configuration file format. See the documentation of
-the :doc:`Configuration File </reference/configuration-options>` for
+the :ref:`Configuration File <configuration-options>` for
 more information.
 
 Operational Changes
@@ -565,8 +566,7 @@ Networking
 Tool Improvements
 ~~~~~~~~~~~~~~~~~
 
-- :binary:`~bin.mongo` shell supports a global :ref:`/etc/mongorc.js
-  <mongo-global-mongorc-file>`.
+- ``mongo`` shell supports a global ``/etc/mongorc.js`` file.
 
 - All MongoDB :doc:`executable files </reference/program>` now support
   the ``--quiet`` option to suppress all logging output except for
@@ -608,7 +608,7 @@ MongoDB Enterprise for Windows includes OpenSSL version 1.0.1g.
 Auditing
 ~~~~~~~~
 
-MongoDB Enterprise adds :doc:`auditing </core/auditing>` capability for
+MongoDB Enterprise adds :ref:`auditing <auditing>` capability for
 :binary:`~bin.mongod` and :binary:`~bin.mongos` instances. See :ref:`auditing`
 for details.
 
@@ -656,7 +656,7 @@ Changes Affecting Compatibility
 
 Some changes in 2.6 can affect :doc:`compatibility
 </release-notes/2.6-compatibility>` and may require user actions. The
-2.6 :binary:`~bin.mongo` shell provides a
+2.6 ``mongo`` shell provides a
 :v2.6:`db.upgradeCheckAllDBs() </reference/method/db.upgradeCheckAllDBs>` method to perform a check for upgrade
 preparedness for some of these changes.
 

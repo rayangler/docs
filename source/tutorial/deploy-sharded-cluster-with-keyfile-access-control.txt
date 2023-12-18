@@ -1,3 +1,5 @@
+.. _deploy-cluster-with-keyfile-auth:
+
 ==================================================
 Deploy Sharded Cluster with Keyfile Authentication
 ==================================================
@@ -16,10 +18,10 @@ Overview
 Enforcing access control on a :term:`sharded cluster` requires configuring:
 
 - Security between components of the cluster using
-  :doc:`Internal Authentication</core/security-internal-authentication>`.
+  :ref:`Internal Authentication<replica-set-security>`.
 
 - Security between connecting clients and the cluster using
-  :doc:`User Access Controls</core/authorization>`.
+  :ref:`User Access Controls<authorization>`.
 
 For this tutorial, each member of the sharded cluster *must* use the same
 internal authentication mechanism and settings. This means enforcing internal
@@ -30,7 +32,7 @@ enable internal authentication.
 
 Enforcing internal authentication also enforces user access control. To
 connect to the replica set, clients like :binary:`~bin.mongosh` need to
-use a :doc:`user account</core/authorization>`. See
+use a :ref:`user account<authorization>`. See
 :ref:`security-shardClust-deploy-access-control`.
 
 CloudManager and OpsManager
@@ -46,12 +48,10 @@ or the :opsmgr:`Ops Manager manual
 Considerations
 --------------
 
-.. include:: /includes/tip-hostnames.rst
+.. include:: /includes/important-hostnames.rst
 
 IP Binding
 ~~~~~~~~~~~
-
-.. versionchanged:: 3.6
 
 .. include:: /includes/fact-default-bind-ip-change.rst
 
@@ -60,7 +60,7 @@ Keyfile Security
 
 Keyfiles are bare-minimum forms of security and are best suited for testing or
 development environments. For production environments we recommend using
-:doc:`x.509 certificates</core/security-x.509>`.
+:ref:`x.509 certificates<security-auth-x509>`.
 
 .. _security-shardClust-deploy-access-control:
 
@@ -84,8 +84,8 @@ Operating System
 ~~~~~~~~~~~~~~~~
 
 This tutorial uses the :binary:`~bin.mongod` and :binary:`~bin.mongos`
-programs. Windows users should use the :binary:`~bin.mongod.exe` and
-:binary:`~bin.mongos.exe` programs instead.
+programs. Windows users should use the :binary:`mongod.exe` and
+:binary:`mongos.exe` programs instead.
 
 .. _security-shard-deploy-sharded-cluster-with-access-control:
 
@@ -95,7 +95,7 @@ Deploy Sharded Cluster with Keyfile Access Control
 The following procedures involve creating a new sharded cluster that consists
 of a :binary:`~bin.mongos`, the config servers, and two shards.
 
-.. include:: /includes/tip-hostnames.rst
+.. include:: /includes/important-hostnames.rst
 
 Create the Keyfile
 ~~~~~~~~~~~~~~~~~~
@@ -183,24 +183,6 @@ point, the sharded cluster enforces access control for the cluster as
 well as for internal communications between each sharded cluster
 component.
 
-Enable Sharding for a Database
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-To proceed, you must be connected to the :binary:`~bin.mongos` and
-authenticated as the cluster administrator user for the sharded cluster.
-
-.. note::
-
-   This is the cluster administrator for the sharded cluster and *not*
-   the shard-local cluster administrator.
-
-Enabling sharding on a database makes it possible to shard collections
-within the database. Use the :method:`sh.enableSharding()` method to
-enable sharding on the target database.
-
-.. code-block:: javascript
-
-   sh.enableSharding("<database>")
 
 Shard a Collection
 ~~~~~~~~~~~~~~~~~~

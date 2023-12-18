@@ -1,10 +1,21 @@
-
+.. _gridfs:
 
 ======
 GridFS
 ======
 
 .. default-domain:: mongodb
+
+.. facet::
+   :name: programming_language
+   :values: shell
+
+.. facet::
+   :name: genre
+   :values: reference
+
+.. meta:: 
+   :description: GridFS is a specification for storing and retrieving files that exceed the BSON-document size limit of 16 MB.
 
 .. contents:: On this page
    :local:
@@ -20,7 +31,7 @@ that exceed the :term:`BSON`\-document :ref:`size limit
 
 .. note::
    
-   GridFS does not support :doc:`multi-document transactions </core/transactions>`.
+   GridFS does not support :ref:`multi-document transactions <transactions>`.
 
 
 Instead of storing a file in a single document, GridFS divides the file

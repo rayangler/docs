@@ -15,28 +15,38 @@ Definition
 
 .. dbcommand:: currentOp
 
+   .. deprecated:: 6.2
+   
+   .. include:: /includes/fact-current-op-deprecated.rst
+
    .. |command| replace:: currentOp
 
    Returns a :term:`document` that contains information on in-progress
    operations for the :binary:`~bin.mongod` instance. 
 
-   :dbcommand:`currentOp` has the following form:
+   .. include:: /includes/fact-currentOp-aggregation-stage.rst
+
+Syntax
+------
+
+The command has the following syntax:
    
-   .. code-block:: javascript
+.. code-block:: javascript
 
-      { currentOp: 1 }
+   db.adminCommand(
+      { 
+        currentOp: 1 
+      }
+   )
 
-   :binary:`~bin.mongosh` provides the :method:`db.currentOp()`
-   wrapper for the :dbcommand:`currentOp` command.
+.. note::
 
-   .. note::
-
-      .. include:: /includes/fact-currentop.rst
+  .. include:: /includes/5.0-fact-currentop.rst
 
 Behavior
 --------
 
-:dbcommand:`currentOp` must run against the ``admin`` database, and
+``currentOp`` must run against the ``admin`` database, and
 it can accept several optional fields.
 
 .. list-table::
@@ -52,10 +62,8 @@ it can accept several optional fields.
        operations only.
 
        On :binary:`~bin.mongod` instances, users are always authorized to run
-       :dbcommand:`currentOp` with ``"$ownOps": true`` to view their own
+       ``currentOp`` with ``"$ownOps": true`` to view their own
        operations. See :ref:`access control <currentOp-access-control>`.
-
-       .. versionadded:: 3.2.9
 
    * - ``"$all"``
 
@@ -76,12 +84,22 @@ it can accept several optional fields.
        .. versionadded:: 4.4
 
 
-:dbcommand:`currentOp` and the
-:doc:`database profiler</reference/database-profiler>` report the same
-basic diagnostic information for all CRUD operations, including the
-following:
+``currentOp`` and the :ref:`database profiler<profiler>` report
+the same basic diagnostic information for CRUD operations, including
+the following:
  
 .. include:: /includes/fact-diagnostic-info.rst
+
+Redaction
+~~~~~~~~~
+
+When using :ref:`Queryable Encryption <qe-manual-feature-qe>`,
+``currentOp`` operations with the ``encryptionInformation`` option
+redact certain information:
+
+* The output omits all fields after ``"command"``.
+* The output redacts ``"command"`` to include only the first element,
+  ``$comment``, and ``$db``.
 
 .. _currentOp-access-control:
 
@@ -92,7 +110,7 @@ On systems running with :setting:`~security.authorization`, the user
 must have access that includes the :authaction:`inprog` privilege
 action.
 
-Starting in 3.2.9, users can use
+Users can use
 ``$ownOps`` on :binary:`~bin.mongod` instances to view their own
 operations without the :authaction:`inprog` privilege action.
 
@@ -109,7 +127,7 @@ operations without the :authaction:`inprog` privilege action.
 Examples
 --------
 
-The following examples use the :dbcommand:`currentOp` command with
+The following examples use the ``currentOp`` command with
 various query documents to filter the output.
 
 Display All Current Operations
@@ -133,8 +151,6 @@ Write Operations Waiting for a Lock
 
 The following example returns information on all write operations that
 are waiting for a lock:
-
-.. versionchanged:: 3.6
 
 .. code-block:: javascript
 
@@ -188,8 +204,6 @@ database ``db1`` that have been running longer than 3 seconds:
 Active Indexing Operations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. versionchanged:: 3.6
-
 The following example returns information on index creation operations:
 
 .. code-block:: javascript
@@ -204,12 +218,19 @@ The following example returns information on index creation operations:
        }
    )
 
-
-
 Output Example
 --------------
 
 .. include:: /includes/currentOp-output-example.rst
+
+.. _currentOp-specific-output-examples:
+
+Specific Output Examples
+------------------------
+
+.. include:: /includes/metrics/txt-section-intro.rst
+.. include:: /includes/metrics/ex-resharding.rst
+.. include:: /includes/metrics/ex-global-index.rst
 
 .. _currentOp-output-fields:
 
@@ -217,8 +238,6 @@ Output Fields
 -------------
 
 .. data:: currentOp.type
-
-   .. versionadded:: 4.2
 
    The type of operation. Values are either:
 
@@ -266,8 +285,6 @@ Output Fields
 
    The start time of the operation.
 
-   .. versionadded:: 3.6
-
 .. data:: currentOp.effectiveUsers
 
    An array that contains a document for each user associated with the
@@ -277,8 +294,6 @@ Output Fields
    .. seealso::
 
       :data:`currentOp.runBy`
-
-   .. versionadded:: 4.2
 
 .. data:: currentOp.runBy
 
@@ -299,8 +314,6 @@ Output Fields
 
    *Only available on sharded clusters*
 
-   .. versionadded:: 4.2
-
 .. data:: currentOp.lsid
 
    The session identifier.
@@ -308,16 +321,12 @@ Output Fields
    Only present if the operation is associated with a
    session.
 
-   .. versionadded:: 3.6
-
 .. data:: currentOp.transaction
 
-   A document that contains :doc:`multi-document transaction
-   </core/transactions>` information.
+   A document that contains :ref:`multi-document transaction
+   <transactions>` information.
 
    Only present if the operation is part of a multi-document transaction.
-
-   .. versionadded:: 4.0
 
    .. data:: currentOp.transaction.parameters
 
@@ -327,15 +336,11 @@ Output Fields
       Only present if the operation is part of a multi-document
       transaction.
 
-      .. versionadded:: 4.0
-
       .. data:: currentOp.transaction.parameters.txnNumber
 
          The transaction number.
 
          Only present if the operation is part of a multi-document transaction.
-
-         .. versionadded:: 4.0
 
       .. data:: currentOp.transaction.parameters.autocommit
 
@@ -343,8 +348,6 @@ Output Fields
          transaction.
 
          Only present if the operation is part of a multi-document transaction.
-
-         .. versionadded:: 4.0.2
 
       .. data:: currentOp.transaction.parameters.readConcern
 
@@ -357,8 +360,6 @@ Output Fields
 
          Only present if the operation is part of a multi-document transaction.
 
-         .. versionadded:: 4.0.2
-
       .. data:: currentOp.transaction.readTimestamp
 
          The timestamp of the snapshot being read by the operations in
@@ -366,15 +367,11 @@ Output Fields
 
          Only present if the operation is part of a multi-document transaction.
 
-         .. versionadded:: 4.0.2
-
       .. data:: currentOp.transaction.startWallClockTime
 
          The date and time (with time zone) of the transaction start.
 
          Only present if the operation is part of a multi-document transaction.
-
-         .. versionadded:: 4.0.2
 
       .. data:: currentOp.transaction.timeOpenMicros
 
@@ -387,8 +384,6 @@ Output Fields
          :data:`~currentOp.transaction.timeOpenMicros`.
 
          Only present if the operation is part of a multi-document transaction.
-
-         .. versionadded:: 4.0.2
 
       .. data:: currentOp.transaction.timeActiveMicros
 
@@ -403,8 +398,6 @@ Output Fields
          :data:`~currentOp.transaction.timeOpenMicros`.
 
          Only present if the operation is part of a multi-document transaction.
-
-         .. versionadded:: 4.0.2
 
       .. data:: currentOp.transaction.timeInactiveMicros
 
@@ -429,12 +422,10 @@ Output Fields
          :data:`currentOp.transaction.startWallClockTime` + the
          :parameter:`transactionLifetimeLimitSeconds`.
 
-         For more information, seee :ref:`transaction-limit` for
+         For more information, see :ref:`transaction-limit` for
          transactions.
 
          Only present if the operation is part of a multi-document transaction.
-
-         .. versionadded:: 4.0.2
 
 .. data:: currentOp.twoPhaseCommitCoordinator
 
@@ -442,11 +433,11 @@ Output Fields
 
    - .. _current-op-cmd-commit-coord-metrics:
    
-     The commit coordination metrics for a :doc:`transaction whose
-     write operations span multiple shards </core/transactions>`.
+     The commit coordination metrics for a :ref:`transaction whose
+     write operations span multiple shards <transactions>`.
    
      Commit coordination is handled by a shard, and
-     :dbcommand:`currentOp` (run either on a :binary:`~bin.mongos` or a
+     ``currentOp`` (run either on a :binary:`~bin.mongos` or a
      shard member) returns a shard's coordination information only for
      those transactions currently being coordinated by that shard.
 
@@ -644,7 +635,7 @@ Output Fields
    
       A document that contains the commit/abort decision, for example:
 
-      - For a commmit decision:
+      - For a commit decision:
 
         .. code-block:: javascript
    
@@ -735,7 +726,7 @@ Output Fields
    ``"query"`` operations include read operations.
 
    ``"command"`` operations include most 
-   :doc:`commands </reference/command>` such as the
+   :ref:`commands <database-commands>` such as the
    :dbcommand:`createIndexes` and :dbcommand:`findAndModify`.
 
 .. data:: currentOp.ns
@@ -765,19 +756,13 @@ Output Fields
    While waiting, the current operation continues to hold any necessary
    locks and storage engine resources.
 
-   .. versionadded:: 4.2
-
 .. data:: currentOp.writeConflicts
 
    The number of times the current operation conflicted with
    another write operation on the same document.
 
-   .. versionadded:: 4.2
-
 
 .. data:: currentOp.cursor
-
-   .. versionadded:: 4.2
 
    A document that contains the cursor information for ``getmore``
    operations; i.e. where :data:`~currentOp.op` is ``getmore``.
@@ -788,44 +773,32 @@ Output Fields
 
    .. data:: currentOp.cursor.cursorId
 
-      .. versionadded:: 4.2
-
-      The id of the cursor.
+      The ID of the cursor.
 
    .. data:: currentOp.cursor.createdDate
-
-      .. versionadded:: 4.2
 
       The date and time when the cursor was created.
 
    .. data:: currentOp.cursor.lastAccessDate
 
-      .. versionadded:: 4.2
-
       The date and time when the cursor was last used.
 
    .. data:: currentOp.cursor.nDocsReturned
-
-      .. versionadded:: 4.2
 
       The cumulative number of documents returned by the cursor.
 
    .. data:: currentOp.cursor.nBatchesReturned
 
-      .. versionadded:: 4.2
-
-      The curmulative number of batches returned by the cursor.
+      The cumulative number of batches returned by the cursor.
 
    .. data:: currentOp.cursor.noCursorTimeout
-
-      .. versionadded:: 4.2
 
       The flag that indicates that the cursor will not timeout when idle;
       i.e. if the cursor has the ``noTimeout`` option set.
 
       - If true, the cursor does not time out when idle.
 
-      - If false, the cursor will time out when idle.
+      - If false, the cursor times out when idle.
 
       .. seealso::
 
@@ -833,10 +806,8 @@ Output Fields
 
    .. data:: currentOp.cursor.tailable
 
-      .. versionadded:: 4.2
-
-      The flag that indicates if the cursor is a :doc:`tailable cursor
-      </core/tailable-cursors>` for a capped collection. Tailable cursors
+      The flag that indicates if the cursor is a :ref:`tailable cursor
+      <tailable-cursors-landing-page>` for a capped collection. Tailable cursors
       remain open after the client exhausts the results in the initial
       cursor.
 
@@ -848,10 +819,8 @@ Output Fields
 
    .. data:: currentOp.cursor.awaitData
 
-      .. versionadded:: 4.2
-
-      The flag that indicates whether the :doc:`tailable cursor
-      </core/tailable-cursors>` should temporarily block a
+      The flag that indicates whether the :ref:`tailable cursor
+      <tailable-cursors-landing-page>` should temporarily block a
       :dbcommand:`getMore` command on the cursor while waiting for new
       data rather than returning no data.
 
@@ -865,23 +834,11 @@ Output Fields
 
    .. data:: currentOp.cursor.originatingCommand
 
-      .. versionadded:: 4.2
-
       The ``originatingCommand`` field contains the full command object
       (e.g. ``find`` or ``aggregate``) which originally created the
       cursor.
 
-      .. note::
-
-         Starting in version 4.2, MongoDB now returns
-         ``originatingCommand`` field as a nested field in the new
-         ``cursor`` field. In previous versions, the
-         ``originatingCommand`` was a top-level field for the associated
-         ``"getmore"`` document.
-
    .. data:: currentOp.cursor.planSummary
-
-      .. versionadded:: 4.2
 
       Specifies whether the cursor uses a collection scan
       (``COLLSCAN``) or an index scan (``IXSCAN { ... }``).
@@ -891,43 +848,9 @@ Output Fields
 
    .. data:: currentOp.cursor.operationUsingCursorId
 
-      .. versionadded:: 4.2
-
       The ``opid`` of the operation using the cursor.
 
       Only present if the cursor is not idle.
-
-.. data:: currentOp.waitingForLatch
-
-   The :data:`~currentOp.waitingForLatch` document is only
-   available if the operation is waiting to acquire an internal locking
-   primitive (a.k.a. a latch) or for an internal condition to be met.
-
-   For example,
-   
-   .. code-block:: javascript
-
-      "waitingForLatch" : {
-         "timestamp" : ISODate("2020-03-19T23:25:58.412Z"),
-         "captureName" : "FutureResolution",
-      },
-
-   .. list-table::
-      :header-rows: 1
-      :widths: 20 80
-
-      * - Output Field
-        - Description
-
-      * - timestamp
-
-        - The date and time at which the operation started to wait.
-
-      * - captureName
-
-        - The internal name of the section where the operation is currently blocked.
-
-   .. versionadded:: 4.2.2
 
 .. data:: currentOp.locks
 
@@ -940,6 +863,44 @@ Output Fields
    The possible modes are as follows:
 
    .. include:: /includes/fact-lock-modes.rst
+
+.. data:: currentOp.admissionPriority
+
+   For internal use. The value is the priority an operation has when it
+   tries to acquire a ticket in order to perform a storage engine
+   action.
+
+   Possible values are: "low", "normal", and "immediate". Only
+   operations with a "low" value are reported.
+
+   Sample ``currentOp`` output: 
+
+   .. code-block:: javascript
+      :emphasize-lines: 12
+
+      {
+         type: 'op',
+         host: 'ip-10-122-5-147:27017',
+         desc: 'JournalFlusher',
+         active: true,
+         currentOpTime: '2022-10-11T12:45:52.053+00:00',
+         opid: 201,
+         op: 'none',
+         ns: '',
+         command: {},
+         numYields: 0,
+         admissionPriority: 'low',
+         locks: {},
+         waitingForLock: false,
+         lockStats: {},
+         waitingForFlowControl: false,
+         flowControlStats: {}
+      }
+
+   The ``admissionPriority`` value is also reported in the :ref:`slow
+   log <log-message-slow-ops>`.
+
+   .. versionadded:: 6.3
 
 .. data:: currentOp.waitingForLock
 
@@ -1082,33 +1043,23 @@ Output Fields
    A boolean that indicates if the operation is in the process of waiting for
    :ref:`flow control <replication-flow-control>`.
 
-   .. versionadded:: 4.2
-
 .. data:: currentOp.flowControlStats
 
    The flow control statistics for this operation.
-
-   .. versionadded:: 4.2
 
    .. data:: currentOp.flowControlStats.acquireCount
    
       The number of times this operation acquired a ticket.
 
-      .. versionadded:: 4.2
-
    .. data:: currentOp.flowControlStats.acquireWaitCount
 
-      The number of times this operation waited to aqcuire a ticket.
-
-      .. versionadded:: 4.2
+      The number of times this operation waited to acquire a ticket.
 
    .. data:: currentOp.flowControlStats.timeAcquiringMicros
 
       The total time this operation has waited to acquire a ticket.
 
-      .. versionadded:: 4.2
-
-.. data:: currentOp.totalOperationTimeElapsed
+.. data:: currentOp.totalOperationTimeElapsedSecs
 
    The total time elapsed, in seconds, for the current :ref:`resharding
    operation <sharding-resharding>`. The time is set to 0 when a new
@@ -1118,15 +1069,43 @@ Output Fields
 
    .. versionadded:: 5.0
 
-.. data:: currentOp.remainingOperationTimeEstimated
+   Starting in MongoDB 6.1, this metric is also available on the
+   coordinator during resharding.
 
-   The estimated time remaining in seconds for the current
-   :ref:`resharding operation <sharding-resharding>`. The time is set to
-   -1 when a new resharding operation starts.
+.. data:: currentOp.updatesApplied
 
-   Only present when a resharding operation is taking place.
+   The number of updates applied.
+
+   Only present on a recipient shard when a resharding operation is
+   taking place.
+
+   .. versionadded:: 6.1
+
+.. data:: currentOp.remainingOperationTimeEstimatedSecs
+
+   .. include:: /includes/remainingOperationTimeEstimatedSecs-details.rst
 
    .. versionadded:: 5.0
+
+.. data:: currentOp.allShardsLowestRemainingOperationTimeEstimatedSecs
+
+   Calculated across all shards, the lowest estimate of the number of
+   seconds remaining. 
+
+   Only present on a coordinator when a resharding operation is
+   taking place.
+
+   .. versionadded:: 6.1
+
+.. data:: currentOp.allShardsHighestRemainingOperationTimeEstimatedSecs
+
+   Calculated across all shards, the highest estimate of the number of
+   seconds remaining. 
+
+   Only present on a coordinator when a resharding operation is
+   taking place.
+
+   .. versionadded:: 6.1
 
 .. data:: currentOp.approxDocumentsToCopy
 
@@ -1186,7 +1165,57 @@ Output Fields
 
    .. versionadded:: 5.0
 
-.. data:: currentOp.totalCopyTimeElapsed
+.. data:: currentOp.countWritesToStashCollections
+
+   The number of writes to the recipient :term:`stash collections
+   <stash collection>`.
+
+   Only present on a recipient shard when a resharding operation is
+   taking place.
+
+   .. versionadded:: 6.1
+
+.. data:: currentOp.countWritesDuringCriticalSection
+
+   The number of writes attempted during the donor's critical
+   section.
+
+   Only present on a donor shard when a resharding operation is
+   taking place.
+
+   .. versionadded:: 6.1
+
+.. data:: currentOp.countReadsDuringCriticalSection
+
+   The number of reads attempted during the donor's critical
+   section.
+
+   Only present on a donor shard when a resharding operation is
+   taking place.
+
+   .. versionadded:: 6.1
+
+.. data:: currentOp.deletesApplied
+
+   The number of deletes applied to the temporary resharding collection.
+   Each oplog entry that involves a delete increments the counter by 1.
+
+   Only present on a recipient shard when a resharding operation is
+   taking place.
+
+   .. versionadded:: 6.1
+
+.. data:: currentOp.insertsApplied
+
+   The number of inserts applied to the temporary resharding collection.
+   Each oplog entry that involves an insert increments the counter by 1.
+
+   Only present on a recipient shard when a resharding operation is
+   taking place.
+
+   .. versionadded:: 6.1
+
+.. data:: currentOp.totalCopyTimeElapsedSecs
 
    The total elapsed time, in seconds, for ongoing data copy tasks from
    donor shards to recipient shards for the current :ref:`resharding
@@ -1197,6 +1226,9 @@ Output Fields
    taking place.
 
    .. versionadded:: 5.0
+
+   Starting in MongoDB 6.1, this metric is also available on the
+   coordinator during resharding.
 
 .. data:: currentOp.oplogEntriesFetched
 
@@ -1220,7 +1252,7 @@ Output Fields
 
    .. versionadded:: 5.0
 
-.. data:: currentOp.totalApplyTimeElapsed
+.. data:: currentOp.totalApplyTimeElapsedSecs
 
    The total elapsed time, in seconds, for the apply step of the
    current :ref:`resharding operation <sharding-resharding>`. In the
@@ -1233,9 +1265,12 @@ Output Fields
 
    .. versionadded:: 5.0
 
+   Starting in MongoDB 6.1, this metric is also available on the
+   coordinator during resharding.
+
 .. data:: currentOp.countWritesDuringCriticalSection
 
-   The number of writes perfomed in the critical section for the current
+   The number of writes performed in the critical section for the current
    :ref:`resharding operation <sharding-resharding>`. The critical
    section prevents new incoming writes to the collection currently
    being resharded. The number is set to 0 when a new resharding
@@ -1246,7 +1281,7 @@ Output Fields
 
    .. versionadded:: 5.0
 
-.. data:: currentOp.totalCriticalSectionTimeElapsed
+.. data:: currentOp.totalCriticalSectionTimeElapsedSecs
 
    The total elapsed time, in seconds, for the critical section of the
    current :ref:`resharding operation <sharding-resharding>`. The
@@ -1258,6 +1293,9 @@ Output Fields
    place.
 
    .. versionadded:: 5.0
+
+   Starting in MongoDB 6.1, this metric is also available on the
+   coordinator during resharding.
 
 .. data:: currentOp.donorState
 
@@ -1360,8 +1398,8 @@ Output Fields
 
    The state of the resharding coordinator for the current
    :ref:`resharding operation <sharding-resharding>`. The resharding
-   coordinator is an operation that runs on the :doc:`config server
-   </core/sharded-cluster-config-servers>` primary. The state is set to
+   coordinator is an operation that runs on the :ref:`config server
+   <sharding-config-server>` primary. The state is set to
    ``unused`` when a new resharding operation starts.
 
    Only present on the coordinating config server.
@@ -1430,30 +1468,86 @@ Output Fields
 
 .. data:: currentOp.opStatus
 
-   The current state of a :ref:`resharding operation
-   <sharding-resharding>`.
+   This metric is removed in version 6.1. For a list of new metrics that
+   replace and expand the reporting ``currentOp.opStatus`` provided,
+   see the :ref:`release notes <6.1-rel-notes-currentOp>`.
 
-   Only present if a resharding operation is taking place. Once the
-   operation has completed, the operation is removed from ``currentOp``
-   output.
+   .. versionchanged:: 6.1
 
-   .. list-table::
-      :widths: 20 80
-      :header-rows: 1
+.. _currentOp-query-sampling-metrics:
 
-      * - State
-        - Description
+.. data:: currentOp.collUuid
 
-      * - ``actively running``
-        - The resharding operation is actively running.
+   The UUID of the :ref:`sampled collection <configureQueryAnalyzer>`.
+   
+   This field only appears on documents related to query sampling.
+   For details, see :ref:`<sampled-queries-currentOp-stage>`.
+   
+   .. versionadded:: 7.0
 
-      * - ``success``
-        - The resharding operation has succeeded.
+.. data:: currentOp.startTime
 
-      * - ``failure``
-        - The resharding operation has failed.
+   The time at which query sampling began.
+   
+   This field only appears on documents related to query sampling.
+   For details, see :ref:`<sampled-queries-currentOp-stage>`.
 
-      * - ``canceled``
-        - The resharding operation was canceled.
+   .. versionadded:: 7.0
 
-   .. versionadded:: 5.0
+.. data:: currentOp.samplesPerSecond
+
+   The maximum number of queries to sample per second.
+   
+   On a sharded cluster, this is reported on ``mongos`` instead of 
+   ``mongod``. On a replica set, this is reported on ``mongod``.
+   
+   This field only appears on documents related to query sampling.
+   For details, see :ref:`<sampled-queries-currentOp-stage>`.
+   
+   .. versionadded:: 7.0
+   
+.. data:: currentOp.sampledReadsCount
+
+   The number of sampled read queries.
+   
+   This field only appears on documents related to query sampling.
+   For details, see :ref:`<sampled-queries-currentOp-stage>`.
+
+   .. versionadded:: 7.0
+
+.. data:: currentOp.sampledWritesCount
+
+   The number of sampled write queries.
+   
+   This field only appears on documents related to query sampling.
+   For details, see :ref:`<sampled-queries-currentOp-stage>`.
+   
+   .. versionadded:: 7.0
+
+.. data:: currentOp.sampledReadsBytes
+
+   The size of the sampled read queries, in bytes.
+  
+   On a replica set, this is reported on every ``mongod``.
+
+   On a sharded cluster, this only reported on ``mongod`` with 
+   ``--shardsvr``.
+   
+   This field only appears on documents related to query sampling.
+   For details, see :ref:`<sampled-queries-currentOp-stage>`.
+   
+   .. versionadded:: 7.0
+
+.. data:: currentOp.sampledWritesBytes
+   
+   The size of the sampled write queries, in bytes.
+   
+   On a replica set, this is reported on every ``mongod``.
+
+   On a sharded cluster, this only reported on ``mongod`` with 
+   ``--shardsvr``.
+   
+   This field only appears on documents related to query sampling.
+   For details, see :ref:`<sampled-queries-currentOp-stage>`.
+   
+   .. versionadded:: 7.0

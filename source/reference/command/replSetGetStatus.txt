@@ -10,6 +10,9 @@ replSetGetStatus
    :depth: 1
    :class: singlecol
 
+.. |fcbis-only| replace:: This field only appears when using file copy based initial sync.
+.. |logical-or-fcbis| replace:: This field appears when using either logical or file copy based initial sync. 
+
 Definition
 ----------
 
@@ -17,7 +20,7 @@ Definition
 
    The ``replSetGetStatus`` command returns the status of the replica
    set from the point of view of the server that processed the command.
-   ``replSetGetStatus`` must be run against the :term:`admin database`.
+   ``replSetGetStatus`` must be run on the :term:`admin database`.
 
    The :binary:`~bin.mongod` instance must be a replica set member for
    :dbcommand:`replSetGetStatus` to return successfully.
@@ -27,6 +30,10 @@ Definition
    Because of the frequency of heartbeats, these data can be several
    seconds out of date.
 
+   .. |method| replace:: :method:`rs.status` helper method
+   .. include:: /includes/fact-dbcommand-tip
+
+
 Syntax
 ------
 
@@ -34,7 +41,11 @@ The command has the following syntax:
 
 .. code-block:: javascript
 
-   db.adminCommand( { replSetGetStatus: 1 } )
+   db.adminCommand( 
+      { 
+        replSetGetStatus: 1 
+      } 
+   )
 
 - Starting in MongoDB 4.2.1
       If you run :dbcommand:`replSetGetStatus` or the
@@ -43,11 +54,12 @@ The command has the following syntax:
       (i.e. :replstate:`STARTUP2` state), the command returns
       :data:`replSetGetStatus.initialSyncStatus` metrics.
       
-      Once the member finishes its initial sync and transitions to
-      another state, the :data:`replSetGetStatus.initialSyncStatus`
-      metrics are no longer available.
+      After the member completes the initial synchronization and
+      transitions to another state, the
+      :data:`replSetGetStatus.initialSyncStatus` metrics are no longer
+      available.
 
-- In earlier versions (3.4.x-4.2.0)
+- In earlier versions (3.6.x-4.2.0)
       To return :ref:`initial sync <replica-set-initial-sync>` status
       information, include ``initialSync: 1`` in the command on a
       secondary member or a member in :replstate:`STARTUP2` state:
@@ -56,7 +68,7 @@ The command has the following syntax:
 
          db.adminCommand( { replSetGetStatus: 1, initialSync: 1 } )
 
-      The :data:`replSetGetStatus.initialSyncStatus` metrics remains
+      The :data:`replSetGetStatus.initialSyncStatus` metrics remain
       available after the member completes its initial sync. That is,
       you can run the :dbcommand:`replSetGetStatus` command with the
       ``initialSync: 1`` on the secondary member to return its initial
@@ -84,7 +96,7 @@ Example
 
           .. code-block:: javascript
 
-             db.adminCommand( { replSetGetStatus : 1 } )
+             db.adminCommand( { replSetGetStatus: 1 } )
 
           The command returns the following output for an example
           replica set primary:
@@ -175,6 +187,8 @@ Example
                          "t" : NumberLong(3)
                       },
                       "optimeDate" : ISODate("2020-03-05T05:24:38Z"),
+                      "lastAppliedWallTime": ISODate("2020-03-05T05:24:38Z"),
+                      "lastDurableWallTime": ISODate("2020-03-05T05:24:38Z"),
                       "syncSourceHost" : "",
                       "syncSourceId" : -1,
                       "infoMessage" : "",
@@ -202,6 +216,8 @@ Example
                       },
                       "optimeDate" : ISODate("2020-03-05T05:24:38Z"),
                       "optimeDurableDate" : ISODate("2020-03-05T05:24:38Z"),
+                      "lastAppliedWallTime": ISODate("2020-03-05T05:24:38Z"),
+                      "lastDurableWallTime": ISODate("2020-03-05T05:24:38Z"),
                       "lastHeartbeat" : ISODate("2020-03-05T05:24:44.114Z"),
                       "lastHeartbeatRecv" : ISODate("2020-03-05T05:24:43.999Z"),
                       "pingMs" : NumberLong(0),
@@ -228,6 +244,8 @@ Example
                       },
                       "optimeDate" : ISODate("2020-03-05T05:24:38Z"),
                       "optimeDurableDate" : ISODate("2020-03-05T05:24:38Z"),
+                      "lastAppliedWallTime": ISODate("2020-03-05T05:24:38Z"),
+                      "lastDurableWallTime": ISODate("2020-03-05T05:24:38Z"),
                       "lastHeartbeat" : ISODate("2020-03-05T05:24:44.114Z"),
                       "lastHeartbeatRecv" : ISODate("2020-03-05T05:24:43.998Z"),
                       "pingMs" : NumberLong(0),
@@ -255,11 +273,11 @@ Example
 
           The following example runs the :dbcommand:`replSetGetStatus`
           command on the :term:`admin database` of the replica set
-          secondary.
+          secondary:
 
           .. code-block:: javascript
 
-             db.adminCommand( { replSetGetStatus : 1 } )
+             db.adminCommand( { replSetGetStatus: 1 } )
 
           The command returns the following output for an example replica set secondary:
 
@@ -336,6 +354,8 @@ Example
                       },
                       "optimeDate" : ISODate("2020-03-05T05:26:58Z"),
                       "optimeDurableDate" : ISODate("2020-03-05T05:26:58Z"),
+                      "lastAppliedWallTime": ISODate("2020-03-05T05:26:58Z"),
+                      "lastDurableWallTime": ISODate("2020-03-05T05:26:58Z"),
                       "lastHeartbeat" : ISODate("2020-03-05T05:27:06.165Z"),
                       "lastHeartbeatRecv" : ISODate("2020-03-05T05:27:06.329Z"),
                       "pingMs" : NumberLong(0),
@@ -359,6 +379,8 @@ Example
                          "t" : NumberLong(3)
                       },
                       "optimeDate" : ISODate("2020-03-05T05:26:58Z"),
+                      "lastAppliedWallTime": ISODate("2020-03-05T05:26:58Z"),
+                      "lastDurableWallTime": ISODate("2020-03-05T05:26:58Z"),
                       "syncSourceHost" : "m3.example.net:27017",
                       "syncSourceId" : 2,
                       "infoMessage" : "",
@@ -384,6 +406,8 @@ Example
                       },
                       "optimeDate" : ISODate("2020-03-05T05:26:58Z"),
                       "optimeDurableDate" : ISODate("2020-03-05T05:26:58Z"),
+                      "lastAppliedWallTime": ISODate("2020-03-05T05:26:58Z"),
+                      "lastDurableWallTime": ISODate("2020-03-05T05:26:58Z"),
                       "lastHeartbeat" : ISODate("2020-03-05T05:27:06.165Z"),
                       "lastHeartbeatRecv" : ISODate("2020-03-05T05:27:06.165Z"),
                       "pingMs" : NumberLong(0),
@@ -405,7 +429,7 @@ Example
                 "operationTime" : Timestamp(1583386018, 1)
              }
 
-          In earlier versions (3.4.x-4.2.0)
+          In earlier versions (3.6.x-4.2.0)
              You can include the optional ``initialSync: 1`` to include
              the :data:`replSetGetStatus.initialSyncStatus` in the
              output (you can omit if you do not want to return the
@@ -413,11 +437,19 @@ Example
       
              .. code-block:: javascript
 
-                db.adminCommand( { replSetGetStatus : 1, initialSync: 1} )
+                db.adminCommand( { replSetGetStatus: 1, initialSync: 1 } )
           
       - id: startup2
         name: Include Initial Sync Metrics
         content: |
+
+          Starting in MongoDB 5.2, 
+             the :data:`replSetGetStatus.initialSyncStatus` document
+             contains :ref:`additional fields 
+             <fcbis-initial-sync-fields>` when using a
+             :ref:`file copy based initial sync 
+             <replica-set-initial-sync-file-copy-based>`.
+
 
           Starting in MongoDB 4.2.1, 
              If you run :dbcommand:`replSetGetStatus` on a member
@@ -426,13 +458,14 @@ Example
           
              .. code-block:: javascript
 
-                db.adminCommand( { replSetGetStatus : 1} )
+                db.adminCommand( { replSetGetStatus: 1 } )
              
-             Once the member finishes its initial sync and transitions to
-             another state,the :data:`replSetGetStatus.initialSyncStatus`
-             metrics is no longer available.
+             After the member completes the initial synchronization and
+             transitions to another state, the
+             :data:`replSetGetStatus.initialSyncStatus` metrics are no
+             longer available.
 
-          In earlier versions (3.4.x-4.2.0)
+          In earlier versions (3.6.x-4.2.0)
              You can include the optional ``initialSync: 1`` to include
              the :data:`replSetGetStatus.initialSyncStatus` in the
              output (you can omit if you do not want to return the
@@ -440,9 +473,9 @@ Example
       
              .. code-block:: javascript
 
-                db.adminCommand( { replSetGetStatus : 1, initialSync: 1} )
+                db.adminCommand( { replSetGetStatus: 1, initialSync: 1 } )
              
-             For 3.4.x-4.2.0 replica sets,
+             For 3.6.x-4.2.0 replica sets,
              :data:`replSetGetStatus.initialSyncStatus` metrics remains
              available after the member completes its initial sync.
              That is, you can run the :dbcommand:`replSetGetStatus`
@@ -608,6 +641,8 @@ Example
                       },
                       "optimeDate" : ISODate("1970-01-01T00:00:00Z"),
                       "optimeDurableDate" : ISODate("1970-01-01T00:00:00Z"),
+                      "lastAppliedWallTime": ISODate("1970-01-01T00:00:00Z"),
+                      "lastDurableWallTime": ISODate("1970-01-01T00:00:00Z""),
                       "lastHeartbeat" : ISODate("2020-03-05T18:04:23.827Z"),
                       "lastHeartbeatRecv" : ISODate("2020-03-05T18:04:15.062Z"),
                       "pingMs" : NumberLong(0),
@@ -629,6 +664,8 @@ Example
                          "t" : NumberLong(-1)
                       },
                       "optimeDate" : ISODate("1970-01-01T00:00:00Z"),
+                      "lastAppliedWallTime": ISODate("1970-01-01T00:00:00Z"),
+                      "lastDurableWallTime": ISODate("1970-01-01T00:00:00Z""),
                       "syncSourceHost" : "m1.example.net:27017",
                       "syncSourceId" : 0,
                       "infoMessage" : "",
@@ -655,7 +692,7 @@ following fields:
 
 .. data:: replSetGetStatus.date
 
-   An :term:`ISODate` formatted date and time that reflects the current
+   An :term:`ISODate` formatted date and time that contains the current
    time according to the server that processed the
    :command:`replSetGetStatus` command. Compare this to the values of
    :data:`replSetGetStatus.members[n].lastHeartbeat` to find the
@@ -669,8 +706,6 @@ following fields:
 
 .. data:: replSetGetStatus.term
 
-   .. versionadded:: 3.2
-
    The election count for the replica set, as known to this replica set
    member. The :data:`~replSetGetStatus.term` is used by the
    distributed consensus algorithm to ensure correctness.
@@ -683,8 +718,6 @@ following fields:
 
 .. data:: replSetGetStatus.syncSourceHost
 
-   .. versionadded:: 4.0, 3.6.6, 3.4.16
-
    The :data:`~replSetGetStatus.syncSourceHost` field holds the
    hostname of the member from which this instance syncs.
 
@@ -694,11 +727,9 @@ following fields:
 
 .. data:: replSetGetStatus.syncSourceId
 
-   .. versionadded:: 4.0, 3.6.6, 3.4.16
-
    The :data:`~replSetGetStatus.syncSourceId` field holds the
    :data:`replSetGetStatus.members[n]._id` of the member from which
-   this instance syncs.
+   this instance synchronizes.
 
    If this instance is a primary,
    :data:`~replSetGetStatus.syncSourceHost` is an empty string and
@@ -706,15 +737,13 @@ following fields:
 
 .. data:: replSetGetStatus.heartbeatIntervalMillis
 
-   .. versionadded:: 3.2
-
    The frequency in milliseconds of the heartbeats.
 
 .. data:: replSetGetStatus.majorityVoteCount
 
    .. versionadded:: 4.2.1
 
-   The number that corresponds to the majority votes needed to elect a
+   The number of majority votes needed to elect a
    new primary in an election.
 
 .. data:: replSetGetStatus.writeMajorityCount
@@ -740,11 +769,9 @@ following fields:
    .. versionadded:: 4.4
 
    The number of *data-bearing* members configured with :rsconf:`votes:
-   1 <members[n].votes>`; that is, the count does not include arbiters.
+   1 <members[n].votes>` (this does not include arbiters).
 
 .. data:: replSetGetStatus.optimes
-
-   .. versionadded:: 3.4
 
    The ``optimes`` field holds a document that contains :term:`optimes
    <optime>` used to inspect replication progress. Starting in MongoDB
@@ -767,9 +794,9 @@ following fields:
       :data:`~replSetGetStatus.optimes.lastCommittedOpTime`.
 
       The :data:`~replSetGetStatus.optimes.lastCommittedWallTime` may
-      not accurately reflect
+      not accurately represent the
       :data:`~replSetGetStatus.optimes.lastCommittedOpTime` if all
-      members are not on MongoDB 4.2 or greater since the
+      members are not on MongoDB 4.2 or greater because the
       :data:`~replSetGetStatus.optimes.lastCommittedWallTime`
       requires communication with other members of the deployment.
 
@@ -792,9 +819,9 @@ following fields:
       :data:`~replSetGetStatus.optimes.readConcernMajorityOpTime`.
       
       The :data:`~replSetGetStatus.optimes.readConcernMajorityWallTime`
-      may not accurately reflect
+      may not accurately represent the
       :data:`~replSetGetStatus.optimes.readConcernMajorityOpTime` if
-      all members are not on MongoDB 4.2 or greater since the
+      all members are not on MongoDB 4.2 or greater because the
       :data:`~replSetGetStatus.optimes.readConcernMajorityWallTime`
       requires communication with other members of the deployment.
 
@@ -840,8 +867,6 @@ following fields:
 
    A ``null`` value indicates that no stable checkpoint exists.
 
-   .. versionadded:: 4.0
-
 .. data:: replSetGetStatus.lastStableRecoveryTimestamp
 
    .. versionadded:: 4.2
@@ -855,7 +880,7 @@ following fields:
    Metrics related to the election of the current primary.
    :data:`~replSetGetStatus.electionCandidateMetrics` is only available
    on the primary or a candidate for election. For a candidate, the
-   metrics becomes unavailable once the candidate loses the election.
+   metrics are unavailable after the candidate loses the election.
 
    .. data:: replSetGetStatus.electionCandidateMetrics.lastElectionReason
 
@@ -876,7 +901,7 @@ following fields:
          In v4.2.1, ``electionTerm`` was named ``electionTerm``.
 
       The member's election count (i.e. :data:`~replSetGetStatus.term`)
-      at the time it called for the new election.
+      at the time it called the new election.
 
    .. data:: replSetGetStatus.electionCandidateMetrics.lastCommittedOpTimeAtElection
 
@@ -884,7 +909,7 @@ following fields:
 
       The most recent :data:`majority-committed optime
       <replSetGetStatus.optimes.lastCommittedOpTime>`, as seen by this
-      member, at the time it called for the new election.
+      member, at the time it called the new election.
 
    .. data:: replSetGetStatus.electionCandidateMetrics.lastSeenOpTimeAtElection
 
@@ -892,7 +917,7 @@ following fields:
 
       The member's most recent :data:`applied optime
       <replSetGetStatus.optimes.appliedOpTime>` at the time it called
-      for the new election.
+      the new election.
 
    .. data:: replSetGetStatus.electionCandidateMetrics.numVotesNeeded
 
@@ -952,7 +977,7 @@ following fields:
 
       The date and time at which the write concern
       :writeconcern:`"majority"` became available after the election
-      for the replica set(i.e. the date and time at which the ``new
+      for the replica set (the date and time when the ``new
       term`` oplog entry was majority committed).
 
 .. data:: replSetGetStatus.electionParticipantMetrics
@@ -979,14 +1004,15 @@ following fields:
 
    .. data:: replSetGetStatus.electionParticipantMetrics.lastVoteDate
 
-      An :term:`ISODate` formatted date string that reflects when the
+      An :term:`ISODate` formatted date string that records when the
       participant voted.
 
       .. versionadded:: 4.2.2
 
    .. data:: replSetGetStatus.electionParticipantMetrics.electionCandidateMemberId
 
-      The :rsconf:`members[n]._id` of the candidate calling the election.
+      The :rsconf:`members[n]._id` of the candidate calling the
+      election.
 
       .. versionadded:: 4.2.2
 
@@ -1045,64 +1071,40 @@ following fields:
 
 .. data:: replSetGetStatus.initialSyncStatus
 
-   .. versionadded:: 3.4
-
-   A document provides information on the progress and status of
+   A document that provides information on the progress and status of
    :ref:`initial sync <replica-set-initial-sync>` on this member.
 
    .. include:: /includes/fact-rs-status-init-sync-availability.rst
 
    .. data:: replSetGetStatus.initialSyncStatus.failedInitialSyncAttempts
 
-      .. versionadded:: 3.4
-
       The number of times the :ref:`initial sync
       <replica-set-initial-sync>` failed and had to restart on this
       member.
 
-      .. include:: /includes/fact-rs-status-init-sync-availability.rst
-
    .. data:: replSetGetStatus.initialSyncStatus.maxFailedInitialSyncAttempts
-
-      .. versionadded:: 3.4
 
       The maximum number of times the :ref:`initial sync
       <replica-set-initial-sync>` can restart on this member before
       the member shuts down.
 
-      .. include:: /includes/fact-rs-status-init-sync-availability.rst
-
    .. data:: replSetGetStatus.initialSyncStatus.initialSyncStart
-
-      .. versionadded:: 3.4
 
       The start timestamp of the :ref:`initial sync
       <replica-set-initial-sync>` for this member.
 
-      .. include:: /includes/fact-rs-status-init-sync-availability.rst
-
    .. data:: replSetGetStatus.initialSyncStatus.initialSyncEnd
-
-      .. versionadded:: 3.4
 
       The end timestamp of the :ref:`initial sync
       <replica-set-initial-sync>` for this member.
 
-      .. include:: /includes/fact-rs-status-init-sync-availability.rst
-
    .. data:: replSetGetStatus.initialSyncStatus.initialSyncElapsedMillis
-
-      .. versionadded:: 3.4
 
       The number of milliseconds between
       :data:`~replSetGetStatus.initialSyncStatus.initialSyncStart` and
       :data:`~replSetGetStatus.initialSyncStatus.initialSyncEnd`.
 
-      .. include:: /includes/fact-rs-status-init-sync-availability.rst
-
    .. data:: replSetGetStatus.initialSyncStatus.initialSyncAttempts
-
-      .. versionadded:: 3.4
 
       Array of documents where each document corresponds to a single
       :ref:`initial sync <replica-set-initial-sync>` attempt. For example:
@@ -1142,7 +1144,11 @@ following fields:
          * - rollBackId
 
            - The sync source's rollback identifier at the start of the
-             initial sync attempt.
+             initial sync attempt. 
+             
+             ``rollBackId`` does not appear when using 
+             :ref:`file copy based initial sync 
+             <replica-set-initial-sync-file-copy-based>`.
 
              .. versionadded:: 4.4
 
@@ -1161,11 +1167,7 @@ following fields:
       See also
       :data:`~replSetGetStatus.initialSyncStatus.failedInitialSyncAttempts`.
             
-      .. include:: /includes/fact-rs-status-init-sync-availability.rst
-
    .. data:: replSetGetStatus.initialSyncStatus.appliedOps
-
-      .. versionadded:: 3.4
 
       The number of ops that occurred after the :ref:`initial sync
       <replica-set-initial-sync>` started and were applied after cloning
@@ -1175,11 +1177,7 @@ following fields:
       to update its data set to reflect the current state of the
       replica set.
 
-      .. include:: /includes/fact-rs-status-init-sync-availability.rst
-
    .. data:: replSetGetStatus.initialSyncStatus.initialSyncOplogStart
-
-      .. versionadded:: 3.4
 
       The start timestamp of the oplog application stage of the
       :ref:`initial sync <replica-set-initial-sync>` where the
@@ -1190,11 +1188,7 @@ following fields:
       to update its data set to reflect the current state of the
       replica set.
 
-      .. include:: /includes/fact-rs-status-init-sync-availability.rst
-   
    .. data:: replSetGetStatus.initialSyncStatus.initialSyncOplogEnd 
-
-      .. versionadded:: 3.4
 
       The end timestamp of the oplog application stage of the
       :ref:`initial sync <replica-set-initial-sync>` where the
@@ -1205,16 +1199,12 @@ following fields:
       to update its data set to reflect the current state of the
       replica set.
 
-      .. include:: /includes/fact-rs-status-init-sync-availability.rst
-
    .. data:: replSetGetStatus.initialSyncStatus.syncSourceUnreachableSince
 
       The date and time at which the sync source became unreachable. 
 
       Only present if the if sync source is unavailable during the
       current initial sync.
-
-      .. include:: /includes/fact-rs-status-init-sync-availability.rst
 
       .. versionadded:: 4.4
 
@@ -1225,8 +1215,6 @@ following fields:
       Only present if the if sync source is unavailable during the
       current initial sync.
 
-      .. include:: /includes/fact-rs-status-init-sync-availability.rst
-
       .. versionadded:: 4.4
 
    .. data:: replSetGetStatus.initialSyncStatus.totalTimeUnreachableMillis
@@ -1234,31 +1222,19 @@ following fields:
       The total time in milliseconds that the member has been
       unavailable during the current initial sync.
 
-      .. include:: /includes/fact-rs-status-init-sync-availability.rst
-
       .. versionadded:: 4.4
 
    .. data:: replSetGetStatus.initialSyncStatus.databases
 
-      .. versionadded:: 3.4
-
       Detail on the databases cloned during :ref:`initial sync
       <replica-set-initial-sync>`.
 
-      .. include:: /includes/fact-rs-status-init-sync-availability.rst
-
    .. data:: replSetGetStatus.initialSyncStatus.databases.databasesCloned
-
-      .. versionadded:: 3.4
 
       Number of databases cloned during :ref:`initial sync
       <replica-set-initial-sync>`.
 
-      .. include:: /includes/fact-rs-status-init-sync-availability.rst
-
    .. data:: replSetGetStatus.initialSyncStatus.databases.<dbname>
-
-      .. versionadded:: 3.4
 
       For each database, a document that returns information regarding
       the progress of the cloning of that database.
@@ -1283,8 +1259,120 @@ following fields:
             }
          }
 
-      .. include:: /includes/fact-rs-status-init-sync-availability.rst
+.. _fcbis-initial-sync-fields:
 
+.. data:: replSetGetStatus.initialSyncStatus.method
+
+   .. versionadded:: 5.2
+
+   The method used for the :ref:`initial sync 
+   <replica-set-initial-sync>`.
+   
+   If set to ``logical``, the sync is a :ref:`logical initial sync 
+   <replica-set-initial-sync-logical>`. If set to ``fileCopyBased``, the
+   sync is a :ref:`file copy based initial sync                                   
+   <replica-set-initial-sync-file-copy-based>`.  
+
+.. data:: replSetGetStatus.initialSyncStatus.approxTotalDataSize
+
+   The approximate size (in bytes) of all files to be synced. 
+ 
+   |logical-or-fcbis|
+   
+.. data:: replSetGetStatus.initialSyncStatus.approxTotalBytesCopied
+
+   The total bytes already copied.
+   
+   |logical-or-fcbis|
+
+.. data:: replSetGetStatus.initialSyncStatus.totalInitialSyncElapsedMillis
+   
+   The total time elapsed for the sync attempt in progress.
+
+   |logical-or-fcbis|
+
+.. data:: replSetGetStatus.initialSyncStatus.remainingInitialSyncEstimatedMillis
+
+   The expected time remaining for the sync attempt in progress.
+
+   |logical-or-fcbis|
+   
+.. data:: replSetGetStatus.initialSyncStatus.initialBackupDataSize
+   
+   The total size (in bytes) of the initial set of files to be synced.
+
+   |fcbis-only|
+
+.. data:: replSetGetStatus.initialSyncStatus.previousOplogEnd
+
+   The :term:`optime` available in the previous :term:`backup cursor`. 
+
+   |fcbis-only|
+
+.. data:: replSetGetStatus.initialSyncStatus.currentOplogEnd
+
+   The last :term:`optime` guaranteed to be available in the current 
+   :term:`backup cursor`. 
+   
+   |fcbis-only|
+
+.. data:: replSetGetStatus.initialSyncStatus.syncSourceLastApplied
+
+   The :term:`optime` of the last update applied at the sync source 
+   prior to the start of this :term:`backup cursor`. 
+   
+   |fcbis-only|
+
+.. _fcbis-extension:
+
+.. data:: replSetGetStatus.initialSyncStatus.numExtensions
+
+   The number of times the sync has started a new :term:`backup cursor`.
+
+   This field does not appear if a backup cursor has not started.
+   
+   |fcbis-only|
+
+.. data:: replSetGetStatus.initialSyncStatus.extensionDataSize
+
+   The total bytes in the current :ref:`extension <fcbis-extension>`. 
+
+   This field does not appear if there is no extension in progress.
+
+   |fcbis-only|
+   
+.. data:: replSetGetStatus.initialSyncStatus.files
+
+   An array of files to be synced during :ref:`file copy based initial 
+   sync <replica-set-initial-sync-file-copy-based>`.
+   
+   |fcbis-only|
+
+.. data:: replSetGetStatus.initialSyncStatus.files[n].filePath
+
+   The path of the file relative to the root of the 
+   :term:`backup cursor`.
+
+   |fcbis-only|
+
+.. data:: replSetGetStatus.initialSyncStatus.files[n].fileSize
+
+   The size of the file as reported by the :term:`backup cursor`.
+   
+   |fcbis-only|
+
+.. data:: replSetGetStatus.initialSyncStatus.files[n].bytesCopied
+
+   The number of bytes copied so far.
+   
+   |fcbis-only|
+
+.. data:: replSetGetStatus.initialSyncStatus.files[n].extensionNumber
+
+   The number of the :ref:`extension <fcbis-extension>` the file belongs 
+   to if this file is part of an extension.
+   
+   |fcbis-only|
 
 .. data:: replSetGetStatus.members
 
@@ -1320,8 +1408,8 @@ following fields:
 
    .. data:: replSetGetStatus.members[n].health
 
-      A number that indicates if the member is up (i.e. ``1``) or down
-      (i.e. ``0``).
+      A number that indicates if the member is up (``1``) or down
+      (``0``).
 
    .. data:: replSetGetStatus.members[n].state
 
@@ -1334,19 +1422,19 @@ following fields:
 
    .. data:: replSetGetStatus.members[n].uptime
 
-      The :data:`~replSetGetStatus.members[n].uptime` field holds a value
-      that reflects the number of seconds that this member has been
-      online.
-
-      This value does not appear for the member that returns the
-      :method:`rs.status()` data.
+      For the member on which the :dbcommand:`replSetGetStatus` command
+      is run, :data:`~replSetGetStatus.members[n].uptime` is the 
+      the number of seconds the member has been online.
+      
+      For the other members, :data:`~replSetGetStatus.members[n].uptime`
+      is the number of seconds the member has been in continuous
+      communication with the member on which the
+      :dbcommand:`replSetGetStatus` command was run.
 
    .. data:: replSetGetStatus.members[n].optime
 
       Information regarding the last operation from the operation log that
       this member has applied.
-
-      .. versionchanged:: 3.2
 
       ``optime`` returns a document that contains:
 
@@ -1358,8 +1446,6 @@ following fields:
         applied operation was originally generated on the primary.
 
    .. data:: replSetGetStatus.members[n].optimeDurable
-
-      .. versionadded:: 3.4
 
       Information regarding the last operation from the operation log
       that this member has applied to its journal.
@@ -1374,21 +1460,31 @@ following fields:
 
    .. data:: replSetGetStatus.members[n].optimeDate
 
-      An :term:`ISODate` formatted date string that reflects the last
+      An :term:`ISODate` formatted date string that contains the last
       entry from the :term:`oplog` that this member applied. If this
       differs significantly from
       :data:`~replSetGetStatus.members[n].lastHeartbeat` this member is
       either experiencing "replication lag" *or* there have not been any
-      new operations since the last update. Compare
+      new operations after the last update. Compare
       ``members.optimeDate`` between all of the members of the set.
 
    .. data:: replSetGetStatus.members[n].optimeDurableDate
 
-      .. versionadded:: 3.4
-
-      An :term:`ISODate` formatted date string that reflects the last
+      An :term:`ISODate` formatted date string that contains the last
       entry from the :term:`oplog` that this member applied to its
       journal.
+
+   .. data:: replSetGetStatus.members[n].lastAppliedWallTime
+
+      An :term:`ISODate` formatted date string reflecting the wall clock
+      time at which the last operation applied by this member of the 
+      replica set was applied on the primary node.
+
+   .. data:: replSetGetStatus.members[n].lastDurableWallTime
+
+      An :term:`ISODate` formatted date string reflecting the wall clock
+      time at which the last operation written to this member's journal 
+      was first applied on the primary node.
 
    .. data:: replSetGetStatus.members[n].electionTime
 
@@ -1400,13 +1496,13 @@ following fields:
    .. data:: replSetGetStatus.members[n].electionDate
 
       For the current primary, an :term:`ISODate` formatted date string
-      that reflects the election date. See
+      that contains the election date. See
       :doc:`/core/replica-set-high-availability` for more information about
       elections.
 
    .. data:: replSetGetStatus.members[n].lastHeartbeat
 
-      An :term:`ISODate` formatted date and time that reflects the last
+      An :term:`ISODate` formatted date and time that contains the last
       time the server that processed the :command:`replSetGetStatus`
       command received a response from a heartbeat that it sent to this
       member (``members[n]``).
@@ -1418,7 +1514,7 @@ following fields:
 
    .. data:: replSetGetStatus.members[n].lastHeartbeatRecv
 
-      An :term:`ISODate` formatted date and time that reflects the last
+      An :term:`ISODate` formatted date and time that contains the last
       time the server that processed the :command:`replSetGetStatus`
       command received a heartbeat request from this member
       (``members[n]``).
@@ -1452,8 +1548,6 @@ following fields:
 
    .. data:: replSetGetStatus.members[n].syncSourceHost
 
-      .. versionadded:: 4.0, 3.6.6, 3.4.16
-
       The :data:`~replSetGetStatus.members[n].syncSourceHost` field
       holds the hostname of the member from which this instance syncs.
 
@@ -1463,8 +1557,6 @@ following fields:
       ``-1``.
 
    .. data:: replSetGetStatus.members[n].syncSourceId
-
-      .. versionadded:: 4.0, 3.6.6, 3.4.16
 
       The :data:`~replSetGetStatus.members[n].syncSourceId` field holds
       the :data:`replSetGetStatus.members[n]._id` value of the

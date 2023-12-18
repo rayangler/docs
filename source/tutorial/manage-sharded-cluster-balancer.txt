@@ -1,5 +1,4 @@
-
-
+.. _sharded-cluster-balancer:
 
 ===============================
 Manage Sharded Cluster Balancer
@@ -13,22 +12,23 @@ Manage Sharded Cluster Balancer
    :depth: 1
    :class: singlecol
 
-.. versionchanged:: 3.4
-
-   The balancer process has moved from the :binary:`~bin.mongos` instances
-   to the primary member of the config server replica set.
+.. versionchanged:: 6.1
 
 This page describes common administrative procedures related
 to balancing. For an introduction to balancing, see
 :ref:`sharding-balancing`. For lower level information on balancing, see
 :ref:`sharding-balancing-internals`.
 
+The balancer process has moved from the :binary:`~bin.mongos` instances
+to the primary member of the config server replica set.
+
 Check the Balancer State
 ------------------------
 
-:method:`sh.getBalancerState()` checks if the balancer is enabled (i.e. that the
-balancer is permitted to run). :method:`sh.getBalancerState()` does not check if the balancer
-is actively balancing chunks.
+:method:`sh.getBalancerState()` checks if the balancer is enabled 
+(i.e. that the balancer is permitted to run). 
+:method:`sh.getBalancerState()` does not check if the balancer is 
+actively migrating data.
 
 To see if the balancer is enabled in your :term:`sharded cluster`,
 issue the following command, which returns a boolean:
@@ -52,7 +52,7 @@ To see if the balancer process is active in your :term:`cluster
 <sharded cluster>`:
 
 #. Connect to any :binary:`~bin.mongos` in the cluster using the
-   :binary:`~bin.mongo` shell.
+   :binary:`~bin.mongosh` shell.
 
 #. Use the following operation to determine if the balancer is running:
 
@@ -61,20 +61,23 @@ To see if the balancer process is active in your :term:`cluster
       sh.isBalancerRunning()
 
 .. _sharded-cluster-config-default-chunk-size:
+.. _sharded-cluster-config-default-range-size:
 
-Configure Default Chunk Size
+Configure Default Range Size
 ----------------------------
 
-The default chunk size for a sharded cluster is 64 megabytes. In most
+The default range size for a sharded cluster is 128 megabytes. In most
 situations, the default size is appropriate for splitting and migrating
-chunks. For information on how chunk size affects deployments, see
-details, see :ref:`sharding-chunk-size`.
+chunks. For information on how range size affects deployments, see
+details, see :ref:`sharding-range-size`.
 
-Changing the default chunk size affects chunks that are processes during
-migrations and auto-splits but does not retroactively affect all chunks.
+Changing the default range size affects ranges that are processes during
+migrations and auto-splits but does not retroactively affect all ranges.
 
-To configure default chunk size, see
-:doc:`modify-chunk-size-in-sharded-cluster`.
+.. include:: /includes/autosplit-no-operation.rst
+
+To configure default range size, see 
+:ref:`tutorial-modifying-chunk-size`.
 
 
 .. _sharding-schedule-balancing-window:
@@ -105,7 +108,7 @@ the ``activeWindow``, as in the following:
 .. code-block:: javascript
 
    use config
-   db.settings.update({ _id : "balancer" }, { $unset : { activeWindow : true } })
+   db.settings.updateOne( { _id : "balancer" }, { $unset : { activeWindow : true } } )
 
 .. _sharding-balancing-disable-temporally:
 .. _sharding-balancing-disable-temporarily:
@@ -118,7 +121,7 @@ needed. To disable the balancer for a short period of time and prevent
 all migration, use the following procedure:
 
 #. Connect to any :binary:`~bin.mongos` in the cluster using the
-   :binary:`~bin.mongo` shell.
+   :binary:`~bin.mongosh` shell.
 
 #. Issue the following operation to disable the balancer:
 
@@ -139,7 +142,7 @@ all migration, use the following procedure:
       sh.getBalancerState()
 
    Optionally, to verify no migrations are in progress after disabling,
-   issue the following operation in the :binary:`~bin.mongo` shell:
+   issue the following operation in the :binary:`~bin.mongosh` shell:
 
    .. code-block:: javascript
 
@@ -169,11 +172,11 @@ Use this procedure if you have disabled the balancer and are ready to
 re-enable it:
 
 #. Connect to any :binary:`~bin.mongos` in the cluster using the
-   :binary:`~bin.mongo` shell.
+   :binary:`~bin.mongosh` shell.
 
 #. Issue one of the following operations to enable the balancer:
 
-   From the :binary:`~bin.mongo` shell, issue:
+   From the :binary:`~bin.mongosh` shell, issue:
 
    .. code-block:: javascript
 
@@ -192,6 +195,8 @@ re-enable it:
 
 Disable Balancing During Backups
 --------------------------------
+
+.. include:: /includes/fact-backup-shard
 
 If MongoDB migrates a :term:`chunk` during a :doc:`backup
 </core/backups>`, you can end with an inconsistent snapshot
@@ -233,7 +238,7 @@ When you disable balancing on a collection, MongoDB will not interrupt in
 progress migrations.
 
 To disable balancing on a collection, connect to a :binary:`~bin.mongos`
-with the :binary:`~bin.mongo` shell and call the
+with the :binary:`~bin.mongosh` shell and call the
 :method:`sh.disableBalancing()` method.
 
 For example:
@@ -257,7 +262,7 @@ not balanced, MongoDB will be able to begin distributing the data more
 evenly.
 
 To enable balancing on a collection, connect to a :binary:`~bin.mongos`
-with the :binary:`~bin.mongo` shell and call the
+with the :binary:`~bin.mongosh` shell and call the
 :method:`sh.enableBalancing()` method.
 
 For example:
@@ -331,20 +336,19 @@ In the :data:`config.settings` collection:
   does not wait for replication to a secondary and instead continues
   with the next document.
   
-  Default behavior for :ref:`WiredTiger <storage-wiredtiger>` starting
-  in MongoDB 3.4.
+  This is the default behavior for :ref:`WiredTiger <storage-wiredtiger>`. 
 
 To change the ``_secondaryThrottle`` setting, connect to a
 :binary:`~bin.mongos` instance and directly update the
 ``_secondaryThrottle`` value in the :data:`~config.settings` collection
 of the :ref:`config database <config-database>`. For example, from a
-:binary:`~bin.mongo` shell connected to a :binary:`~bin.mongos`, issue
+:binary:`~bin.mongosh` shell connected to a :binary:`~bin.mongos`, issue
 the following command:
 
 .. code-block:: javascript
 
    use config
-   db.settings.update(
+   db.settings.updateOne(
       { "_id" : "balancer" },
       { $set : { "_secondaryThrottle" : { "w": "majority" }  } },
       { upsert : true }
@@ -357,10 +361,13 @@ to enable the selected value of ``_secondaryThrottle``.
 For more information on the replication behavior during various steps
 of chunk migration, see :ref:`chunk-migration-replication`.
 
-For the :dbcommand:`moveChunk` command, you can use the command's
-``_secondaryThrottle`` and ``writeConcern`` options to specify the
-behavior during the command. For details, see :dbcommand:`moveChunk`
-command.
+- Use the :dbcommand:`moveRange` command's ``secondaryThrottle`` and 
+  ``writeConcern`` options to specify the behavior during the command. 
+
+- Use the :dbcommand:`moveChunk` command's ``_secondaryThrottle`` and 
+  ``writeConcern`` options to specify the behavior during the command. 
+
+For details, see :dbcommand:`moveRange` and :dbcommand:`moveChunk`.
 
 .. _wait-for-delete-setting:
 
@@ -369,11 +376,13 @@ Wait for Delete
 
 The ``_waitForDelete`` setting of the balancer and the
 :dbcommand:`moveChunk` command affects how the balancer migrates
-multiple chunks from a shard. By default, the balancer does not wait
-for the on-going migration's delete phase to complete before starting
-the next chunk migration. To have the delete phase **block** the start
-of the next chunk migration, you can set the ``_waitForDelete`` to
-true.
+multiple chunks from a shard. Similarly, the ``_waitForDelete`` setting 
+of the balancer and the :dbcommand:`moveRange` command also affect how 
+the balancer migrates multiple chunks from a shard. By default, the 
+balancer does not wait for the on-going migration's delete phase to 
+complete before starting the next chunk migration. To have the delete 
+phase **block** the start of the next chunk migration, you can set the 
+``_waitForDelete`` to true.
 
 For details on chunk migration, see :ref:`sharding-chunk-migration`.
 For details on the chunk migration queuing behavior, see
@@ -391,7 +400,7 @@ change the balancer's ``_waitForDelete`` value:
    .. code-block:: javascript
 
       use config
-      db.settings.update(
+      db.settings.updateOne(
          { "_id" : "balancer" },
          { $set : { "_waitForDelete" : true } },
          { upsert : true }
@@ -408,30 +417,30 @@ Once set to ``true``, to revert to the default behavior:
    .. code-block:: javascript
 
       use config
-      db.settings.update(
+      db.settings.updateOne(
          { "_id" : "balancer", "_waitForDelete": true },
          { $unset : { "_waitForDelete" : "" } }
       )
 
 .. _balance-chunks-that-exceed-size-limit:
 
-Balance Chunks that Exceed Size Limit
+Balance Ranges that Exceed Size Limit
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-By default, MongoDB cannot move a chunk if the number of documents in
-the chunk is greater than 1.3 times the result of dividing the
-configured :ref:`chunk size<sharding-chunk-size>` by the average
+By default, MongoDB cannot move a range if the number of documents in
+the range is greater than 2 times the result of dividing the
+configured :ref:`range size<sharding-range-size>` by the average
 document size.
 
 Starting in MongoDB 4.4, by specifying the balancer setting
 ``attemptToBalanceJumboChunks`` to ``true``, the balancer can migrate
-these large chunks as long as they have not been labeled as
+these large ranges as long as they have not been labeled as
 :ref:`jumbo <jumbo-chunk>`. 
 
 To set the balancer's ``attemptToBalanceJumboChunks`` setting, connect
 to a :binary:`~bin.mongos` instance and directly update the
 :data:`config.settings` collection. For example, from a
-:binary:`~bin.mongo` shell connected to a :binary:`~bin.mongos`
+:binary:`~bin.mongosh` shell connected to a :binary:`~bin.mongos`
 instance, issue the following command:
 
 .. code-block:: javascript
@@ -442,67 +451,35 @@ instance, issue the following command:
       { upsert: true }
    )
 
-When the balancer attempts to move the chunk, if the queue of writes
-that modify any documents being migrated surpasses 500MB of memory the
-migration will fail. For details on the migration procedure, see
-:ref:`chunk-migration-procedure`.
-
-If the chunk you want to move is labeled ``jumbo``, you can
+If the range you want to move is labeled ``jumbo``, you can
 :ref:`manually clear the jumbo flag <clear-jumbo-flag-manually>` to
-have the balancer attempt to migrate the chunk.
+have the balancer attempt to migrate the range.
 
-Alternatively, you can use the :dbcommand:`moveChunk` command with
-:ref:`forceJumbo: true <movechunk-forceJumbo>` to manually migrate
-chunks that exceed the size limit (with or without the ``jumbo``
-label). However, when you run :dbcommand:`moveChunk` with
-:ref:`forceJumbo: true <movechunk-forceJumbo>`, write operations to the
-collection may block for a long period of time during the migration.
+You can also manually migrate ranges that exceed the size limit 
+(with or without the ``jumbo`` label) using either:
+
+- the :dbcommand:`moveRange` command with the 
+  :ref:`forceJumbo: true <moverange-forceJumbo>` option
+- the :dbcommand:`moveChunk` command with the
+  :ref:`forceJumbo: true <moverange-forceJumbo>` option
+
+However, when you run :dbcommand:`moveRange` or :dbcommand:`moveChunk`
+with ``forceJumbo: true``, write operations to the collection may block 
+for a long period of time during the migration.
 
 .. _sharded-cluster-config-max-shard-size:
 
 Change the Maximum Storage Size for a Given Shard
 -------------------------------------------------
 
-By default shards have no constraints in storage size. However, you can set a
-maximum storage size for a given shard in the sharded cluster. When 
-selecting potential destination shards, the balancer ignores shards 
-where a migration would exceed the configured maximum storage size.
+Changing a shard's maximum storage size is deprecated. Starting in
+version 4.2, MongoDB uses the :ref:`storage-wiredtiger` to manage 
+how data is stored. WiredTiger compresses data to minimize storage 
+use. To learn more, see :ref:`storage-wiredtiger-compression`.
 
-The :data:`~config.shards` collection in the :ref:`config
-database<config-database>` stores configuration data related to shards. 
+For MongoDB versions 6.1 and earlier, you can still set a
+maximum storage size for a given shard in the sharded cluster by
+using the ``maxSize`` field. You can find configuration 
+data related to shards in the :data:`config.shards` collection.
 
-.. code-block:: javascript
-
-   { "_id" : "shard0000", "host" : "shard1.example.com:27100" }
-   { "_id" : "shard0001", "host" : "shard2.example.com:27200" }
-   
-To limit the storage size for a given shard, use the
-:method:`db.collection.updateOne()` method with the :update:`$set` operator to
-create the ``maxSize`` field and assign it an ``integer`` value. The
-``maxSize`` field represents the maximum storage size for the shard in
-``megabytes``.
-
-The following operation sets a maximum size on a shard of ``1024 megabytes``:
-
-.. code-block:: javascript
-
-   config = db.getSiblingDB("config")
-   config.shards.updateOne( { "_id" : "<shard>"}, { $set : { "maxSize" : 1024 } } )
-
-This value includes the mapped size of *all* data files on the
-shard, including the ``local`` and ``admin`` databases.
-
-By default, ``maxSize`` is not specified, allowing shards to consume the
-total amount of available space on their machines if necessary.
-
-You can also set ``maxSize`` when adding a shard.
-
-To set ``maxSize`` when adding a shard, set the :dbcommand:`addShard`
-command's ``maxSize`` parameter to the maximum size in ``megabytes``. The
-following command run in the :binary:`~bin.mongo` shell adds a shard with a
-maximum size of 125 megabytes:
-
-.. code-block:: javascript
-
-   config = db.getSiblingDB("config")
-   config.runCommand( { addshard : "example.net:34008", maxSize : 125 } )
+.. include:: /includes/fact-remove-maxSize-addShard.rst

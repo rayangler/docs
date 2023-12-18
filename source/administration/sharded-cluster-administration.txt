@@ -1,3 +1,5 @@
+.. _sharded-cluster-admin:
+
 ==============================
 Sharded Cluster Administration
 ==============================
@@ -20,12 +22,12 @@ Sharded Cluster Administration
    /tutorial/restart-sharded-cluster
    /tutorial/migrate-sharded-cluster-to-new-hardware
    /tutorial/add-shards-to-shard-cluster
+   /tutorial/add-member-to-shard
    /tutorial/remove-shards-from-cluster
    /tutorial/clear-jumbo-flag
    /tutorial/backup-sharded-cluster-metadata
    /tutorial/convert-sharded-cluster-to-replica-set
    /tutorial/convert-replica-set-to-replicated-shard-cluster
-   /tutorial/convert-shard-standalone-to-shard-replica-set
 
 :doc:`Config Server Administration </administration/sharded-cluster-config-servers>`
    This section contains articles and tutorials related to sharded
@@ -45,6 +47,9 @@ Sharded Cluster Administration
 :doc:`/tutorial/add-shards-to-shard-cluster`
    Add a shard to add capacity to a sharded cluster.
 
+:doc:`/tutorial/add-member-to-shard`
+   Add a member to a shard in a sharded cluster.
+
 :doc:`/tutorial/remove-shards-from-cluster`
    Migrate a single shard's data and remove the shard.
 
@@ -61,7 +66,4 @@ Sharded Cluster Administration
 :doc:`/tutorial/convert-replica-set-to-replicated-shard-cluster`
    Convert a replica set to a sharded cluster in which each shard is
    its own replica set.
-
-:doc:`/tutorial/convert-shard-standalone-to-shard-replica-set`
-   Convert a shard standalone instance to a shard replica set.
 

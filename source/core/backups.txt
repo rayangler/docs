@@ -1,10 +1,18 @@
+.. _backup-methods:
+
 ======================
 MongoDB Backup Methods
 ======================
 
 .. default-domain:: mongodb
 
+.. facet::
+   :name: genre 
+   :values: reference
 
+.. meta:: 
+   :description: Options for backing up your MongoDB database.
+   :keywords: database backup, server backup, atlas
 
 .. contents:: On this page
    :local:

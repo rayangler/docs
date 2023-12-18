@@ -15,12 +15,21 @@ Definition
 
 .. dbcommand:: revokeRolesFromRole
 
-   Removes the specified inherited roles from a role. The
-   :dbcommand:`revokeRolesFromRole` command has the following syntax:
+   Removes the specified inherited roles from a role. 
 
-   .. code-block:: javascript
+   .. |method| replace:: :method:`db.revokeRolesFromRole` helper method
+   .. include:: /includes/fact-dbcommand-tip
 
-      { revokeRolesFromRole: "<role>",
+Syntax
+------
+
+The command has the following syntax:
+
+.. code-block:: javascript
+  
+   db.runCommand(
+      {  
+        revokeRolesFromRole: "<role>",
         roles: [
           { role: "<role>", db: "<database>" } | "<role>",
           ...
@@ -28,56 +37,41 @@ Definition
         writeConcern: { <write concern> },
         comment: <any>
       }
+   )
 
-   The command has the following fields:
+Command Fields
+--------------
 
+The command has the following fields:
 
-   .. list-table::
-      :header-rows: 1
-      :widths: 20 20 80
-   
-      * - Field
-   
-        - Type
-   
-        - Description
-   
-      * - ``revokeRolesFromRole``
-   
-        - string
-   
-        - The role from which to remove inherited roles.
-          
-          
-   
-      * - ``roles``
-   
-        - array
-   
-        - The inherited roles to remove.
-          
-          
-   
-      * - ``writeConcern``
-   
-        - document
-   
-        - Optional. The level of :doc:`write concern </reference/write-concern>` to apply
-          to this operation. The ``writeConcern`` document uses the same fields
-          as the :dbcommand:`getLastError` command.
-          
-          
-      * - ``comment``
+.. list-table::
+   :header-rows: 1
+   :widths: 20 20 80
+ 
+   * - Field
+     - Type
+     - Description
 
-        - any
+   * - ``revokeRolesFromRole``
+     - string
+     - The role from which to remove inherited roles.
 
-        - .. include:: /includes/extracts/comment-content.rst
-       
-          .. versionadded:: 4.4
+   * - ``roles``
+     - array
+     - The inherited roles to remove.
 
+   * - ``writeConcern``
+     - document
+     - .. include:: /includes/fact-write-concern-spec-link.rst
 
-   .. |local-cmd-name| replace:: :dbcommand:`revokeRolesFromRole`
-   .. include:: /includes/fact-roles-array-contents.rst
+   * - ``comment``
+     - any
+     - .. include:: /includes/extracts/comment-content.rst
+       .. versionadded:: 4.4
+ 
+
+.. |local-cmd-name| replace:: :dbcommand:`revokeRolesFromRole`
+.. include:: /includes/fact-roles-array-contents.rst
 
 Required Access
 ---------------

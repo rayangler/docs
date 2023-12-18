@@ -15,73 +15,51 @@ Definition
 
 .. method:: db.collection.watch( pipeline, options )
 
-
-   .. include:: /includes/fact-mongosh-shell-method.rst
-
+   .. |dbcommand| replace:: :dbcommand:`aggregate` command with the
+      :pipeline:`$changeStream` aggregation stage 
+   .. include:: /includes/fact-mongosh-shell-method-alt
 
    *For replica sets and sharded clusters only*
 
    Opens a :ref:`change stream cursor <changeStreams>` on the 
    collection. 
 
-
    .. list-table::
       :header-rows: 1
       :widths: 20 20 80
    
       * - Parameter
-   
         - Type
-   
         - Description
-   
+
       * - ``pipeline``
-   
         - array
-   
-        - :doc:`Aggregation pipeline </core/aggregation-pipeline>` consisting
-          of one or more of the following aggregation stages:
-          
+        - Optional. An :ref:`aggregation-pipeline` consisting of one
+          or more of the following aggregation stages:
+
           .. include:: /includes/extracts/changestream-available-pipeline-stages.rst
-          
+
           Specify a pipeline to filter/modify the change events output.
-          
+
           .. include:: /includes/extracts/4.2-changes-change-stream-modification-error.rst
-          
-          
-   
+
       * - ``options``
-   
         - document
-   
         - Optional. Additional options that modify the behavior of
           :method:`~db.collection.watch()`.
-          
-          You must pass an empty array ``[]`` to the ``pipeline`` parameter if
-          you are not specifying a pipeline but are passing the ``options``
-          document.
-          
-          
-   
-
 
    The ``options`` document can contain the following fields and values:
-
 
    .. list-table::
       :header-rows: 1
       :widths: 20 20 80
    
       * - Field
-   
         - Type
-   
         - Description
    
       * - ``resumeAfter``
-   
         - document
-   
         - Optional. Directs :method:`~db.collection.watch` to attempt resuming
           notifications starting after the operation specified in the resume
           token. 
@@ -98,7 +76,6 @@ Definition
       * - ``startAfter``
    
         - document
-   
         - Optional. Directs :method:`~db.collection.watch` to attempt starting a new
           change stream after the operation specified in the resume token.
           Allows notifications to resume after an invalidate event.
@@ -117,7 +94,6 @@ Definition
       * - ``fullDocument``
    
         - string
-   
         - Optional. By default, :method:`~db.collection.watch()` returns the delta of
           those fields modified by an update operation, instead of the entire
           updated document.
@@ -128,12 +104,20 @@ Definition
           :method:`~db.collection.watch()` returns a ``fullDocument`` field with
           the document lookup in addition to the ``updateDescription`` delta.
           
-          
-   
+          .. include:: /includes/change-stream-pre-and-post-images-full-document.rst
+
+
+      * - ``fullDocumentBeforeChange``   
+
+        - string
+        - Optional.
+
+          .. include:: /includes/change-stream-pre-and-post-images-full-document-before-change.rst
+
+
       * - ``batchSize``
    
         - int
-   
         - Optional. Specifies the maximum number of change events to return in each
           batch of the response from the MongoDB cluster. 
           
@@ -144,7 +128,6 @@ Definition
       * - ``maxAwaitTimeMS``
    
         - int
-   
         - Optional. The maximum amount of time in milliseconds the server waits for new
           data changes to report to the change stream cursor before returning an
           empty batch.
@@ -156,21 +139,30 @@ Definition
       * - ``collation``
    
         - document
-   
         - Optional. Pass a :ref:`collation document <collation-document-fields>`
-          to specify a :doc:`collation </reference/collation>` for the 
-          change stream cursor.
+          to specify a collation for the change stream cursor.
           
           Starting in MongoDB 4.2, defaults to ``simple`` binary comparison if
           omitted. In earlier versions, change streams opened on a single
           collection would inherit the collection's default collation.
           
           
-   
+      * - ``showExpandedEvents``
+
+        - boolean 
+        - Optional. Starting in MongoDB 6.0, change streams support change 
+          notifications for DDL events, like the :ref:`createIndexes <change-event-createIndexes>` 
+          and :ref:`dropIndexes <change-event-dropIndexes>` events. To include 
+          expanded events in a change stream, create the change stream cursor 
+          using the ``showExpandedEvents`` option.
+
+          .. versionadded:: 6.0
+
+
+
       * - ``startAtOperationTime``
    
         - Timestamp
-   
         - Optional. The starting point for the change stream. If the specified starting
           point is in the past, it must be in the time range of the oplog. To
           check the time range of the oplog, see
@@ -178,15 +170,6 @@ Definition
           
           ``startAtOperationTime`` is mutually exclusive with ``resumeAfter``
           and ``startAfter``.
-          
-          
-          
-          .. versionadded:: 4.0
-          
-          
-          
-   
-
 
    :returns:
       A :term:`cursor` that remains open as long as a connection to the
@@ -197,7 +180,6 @@ Definition
    .. seealso::
       
       :method:`db.watch()` and :method:`Mongo.watch()`
-
 
 Availability
 ------------
@@ -238,11 +220,7 @@ Resumability
 
 .. include:: /includes/extracts/changestream-resume.rst
 
-.. note:: Resume Token
-
-   .. include:: /includes/extracts/changestream-resume-token-versions-4.2-greater.rst
-
-   .. include:: /includes/extracts/changestream-resume-token-hex-change.rst
+.. include:: /includes/change-stream/resume-after
 
 .. |watchmethod| replace:: :method:`db.collection.watch()`
 
@@ -269,6 +247,11 @@ have a :ref:`role <roles>` that grants the following :ref:`privilege
 The built-in :authrole:`read` role provides the appropriate
 privileges.
 
+Cursor Iteration
+----------------
+
+.. include:: /includes/fact-multiple-cursor-monitors.rst
+
 Examples
 --------
 
@@ -283,20 +266,24 @@ The following operation opens a change stream cursor against the
    watchCursor = db.getSiblingDB("data").sensors.watch()
 
 Iterate the cursor to check for new events. Use the
-:method:`cursor.isExhausted()` method to ensure the loop only exits
-if the change stream cursor is closed *and* there are no objects
-remaining in the latest batch:
+:method:`cursor.isClosed()` method with the :method:`cursor.tryNext()`
+method to ensure the loop only exits if the change stream cursor is
+closed *and* there are no objects remaining in the latest batch:
 
 .. code-block:: javascript
 
-   while (!watchCursor.isExhausted()){
-      if (watchCursor.hasNext()){
-         printjson(watchCursor.next());
-      }
+   while (!watchCursor.isClosed()) {
+     let next = watchCursor.tryNext()
+     while (next !== null) {
+       printjson(next);
+       next = watchCursor.tryNext()
+     }
    }
 
 For complete documentation on change stream output, see
 :ref:`change-stream-output`.
+
+.. include:: /includes/isExhausted-no-change-streams.rst
 
 Change Stream with Full Document Update Lookup
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -317,16 +304,18 @@ the ``data.sensors`` collection using the
    )
 
 Iterate the cursor to check for new events. Use the
-:method:`cursor.isExhausted()` method to ensure the loop only exits
-if the change stream cursor is closed *and* there are no objects
-remaining in the latest batch:
+:method:`cursor.isClosed()` method with the :method:`cursor.tryNext()`
+method to ensure the loop only exits if the change stream cursor is
+closed *and* there are no objects remaining in the latest batch:
 
 .. code-block:: javascript
 
-   while (!watchCursor.isExhausted()){
-      if (watchCursor.hasNext()){
-         printjson(watchCursor.next());
-      }
+   while (!watchCursor.isClosed()) {
+     let next = watchCursor.tryNext()
+     while (next !== null) {
+       printjson(next);
+       next = watchCursor.tryNext()
+     }
    }
 
 For any update operation, the change event returns the result of the
@@ -337,6 +326,202 @@ stream update event <change-streams-update-event>`.
 
 For complete documentation on change stream output, see
 :ref:`change-stream-output`.
+
+.. _db.collection.watch-change-streams-pre-and-post-images-example:
+
+Change Streams with Document Pre- and Post-Images
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/change-stream-pre-and-post-images-introduction.rst
+
+.. include:: /includes/change-stream-pre-and-post-images-additional-information.rst
+
+Create Collection
+`````````````````
+
+Create a ``temperatureSensor`` collection that has
+:ref:`changeStreamPreAndPostImages
+<db.createCollection.changeStreamPreAndPostImages>` enabled:
+
+.. code-block:: javascript
+
+   db.createCollection(
+      "temperatureSensor",
+      { changeStreamPreAndPostImages: { enabled: true } }
+   )
+
+Populate the ``temperatureSensor`` collection with temperature readings:
+
+.. code-block:: javascript
+
+   db.temperatureSensor.insertMany( [
+      { "_id" : 0, "reading" : 26.1 },
+      { "_id" : 1, "reading" : 25.9 },
+      { "_id" : 2, "reading" : 24.3 },
+      { "_id" : 3, "reading" : 22.4 },
+      { "_id" : 4, "reading" : 24.6 }
+   ] )
+
+The following sections show change stream examples for document pre- and
+post-images that use the ``temperatureSensor`` collection.
+
+Change Stream with Document Pre-Image
+`````````````````````````````````````
+
+You use the ``fullDocumentBeforeChange: "whenAvailable"`` setting to
+output the document pre-image, if available. The pre-image is the
+document before it was replaced, updated, or deleted. There is no
+pre-image for an inserted document.
+
+The following example creates a change stream cursor for the
+``temperatureSensor`` collection using ``fullDocumentBeforeChange:
+"whenAvailable"``:
+
+.. code-block:: javascript
+
+   watchCursorFullDocumentBeforeChange = db.temperatureSensor.watch(
+      [],
+      { fullDocumentBeforeChange: "whenAvailable" }
+   )
+
+The following example uses the cursor to check for new change stream
+events:
+
+.. code-block:: javascript
+
+   while ( !watchCursorFullDocumentBeforeChange.isClosed() ) {
+      if ( watchCursorFullDocumentBeforeChange.hasNext() ) {
+         printjson( watchCursorFullDocumentBeforeChange.next() );
+      }
+   }
+
+.. include:: /includes/change-stream-pre-and-post-images-example-cursor-methods.rst
+
+The following example updates the ``reading`` field for a
+``temperatureSensor`` document:
+
+.. code-block:: javascript
+
+   db.temperatureSensor.updateOne(
+      { _id: 2 },
+      { $set: { reading: 22.1 } }
+   )
+
+After the ``temperatureSensor`` document is updated, the change event
+outputs the document pre-image in the ``fullDocumentBeforeChange``
+field. The pre-image contains the ``temperatureSensor`` document
+``reading`` field before it was updated. For example:
+
+.. code-block:: javascript
+   :copyable: false
+
+   {
+      "_id" : {
+         "_data" : "82624B21...",
+         "_typeBits" : BinData(0,"QA==")
+      },
+      "operationType" : "update",
+      "clusterTime" : Timestamp(1649090957, 1),
+      "ns" : {
+         "db" : "test",
+         "coll" : "temperatureSensor"
+      },
+      "documentKey" : {
+         "_id" : 2
+      },
+      "updateDescription" : {
+         "updatedFields" : {
+            "reading" : 22.1
+         },
+         "removedFields" : [ ],
+         "truncatedArrays" : [ ]
+      },
+      "fullDocumentBeforeChange" : {
+         "_id" : 2,
+         "reading" : 24.3
+      }
+   }
+
+.. include:: /includes/change-stream-pre-and-post-images-output.rst
+
+Change Stream with Document Post-Image
+``````````````````````````````````````
+
+You use the ``fullDocument: "whenAvailable"`` setting to output the
+document post-image, if available. The post-image is the document after
+it was inserted, replaced, or updated. There is no post-image for a
+deleted document.
+
+The following example creates a change stream cursor for the
+``temperatureSensor`` collection using ``fullDocument:
+"whenAvailable"``:
+
+.. code-block:: javascript
+
+   watchCursorFullDocument = db.temperatureSensor.watch(
+      [],
+      { fullDocument: "whenAvailable" }
+   )
+
+The following example uses the cursor to check for new change stream
+events:
+
+.. code-block:: javascript
+
+   while ( !watchCursorFullDocument.isClosed() ) {
+      if ( watchCursorFullDocument.hasNext() ) {
+         printjson( watchCursorFullDocument.next() );
+      }
+   }
+
+.. include:: /includes/change-stream-pre-and-post-images-example-cursor-methods.rst
+
+The following example updates the ``reading`` field for a
+``temperatureSensor`` document:
+
+.. code-block:: javascript
+
+   db.temperatureSensor.updateOne(
+      { _id: 1 },
+      { $set: { reading: 29.5 } }
+   )
+
+After the ``temperatureSensor`` document is updated, the change event
+outputs the document post-image in the ``fullDocument`` field. The
+post-image contains the ``temperatureSensor`` document ``reading`` field
+after it was updated. For example:
+
+.. code-block:: javascript
+   :copyable: false
+
+   {
+      "_id" : {
+         "_data" : "8262474D...",
+         "_typeBits" : BinData(0,"QA==")
+      },
+      "operationType" : "update",
+      "clusterTime" : Timestamp(1648840090, 1),
+      "fullDocument" : {
+         "_id" : 1,
+         "reading" : 29.5
+      },
+      "ns" : {
+         "db" : "test",
+         "coll" : "temperatureSensor"
+      },
+      "documentKey" : {
+         "_id" : 1
+      },
+      "updateDescription" : {
+         "updatedFields" : {
+            "reading" : 29.5
+         },
+         "removedFields" : [ ],
+         "truncatedArrays" : [ ]
+      }
+   }
+
+.. include:: /includes/change-stream-pre-and-post-images-output.rst
 
 Change Stream with Aggregation Pipeline Filter
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -358,13 +543,13 @@ filter only ``insert`` events:
    )
 
 Iterate the cursor to check for new events. Use the
-:method:`cursor.isExhausted()` method to ensure the loop only exits
-if the change stream cursor is closed *and* there are no objects
-remaining in the latest batch:
+:method:`cursor.isClosed()` method with the :method:`cursor.hasNext()`
+method to ensure the loop only exits if the change stream cursor is
+closed *and* there are no objects remaining in the latest batch:
 
 .. code-block:: javascript
 
-   while (!watchCursor.isExhausted()){
+   while (!watchCursor.isClosed()){
       if (watchCursor.hasNext()){
          printjson(watchCursor.next());
       }
@@ -393,7 +578,7 @@ rolled off the cluster's oplog.
    let watchCursor = db.getSiblingDB("data").sensors.watch();
    let firstChange;
 
-   while (!watchCursor.isExhausted()) {
+   while (!watchCursor.isClosed()) {
       if (watchCursor.hasNext()) {
         firstChange = watchCursor.next();
         break;
@@ -410,15 +595,16 @@ rolled off the cluster's oplog.
    )
 
 Iterate the cursor to check for new events. Use the
-:method:`cursor.isExhausted()` method to ensure the loop only exits
-if the change stream cursor is closed *and* there are no objects
-remaining in the latest batch:
+:method:`cursor.isClosed()` method with the :method:`cursor.hasNext()`
+method to ensure the loop only exits if the change stream cursor is
+closed *and* there are no objects remaining in the latest batch:
+
 
 .. code-block:: javascript
 
-   while (!resumedWatchCursor.isExhausted()){
+   while (!resumedWatchCursor.isClosed()){
       if (resumedWatchCursor.hasNext()){
-         printjson(watchCursor.next());
+         print(resumedWatchCursor.next());
       }
    }
 

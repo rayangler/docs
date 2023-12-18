@@ -7,6 +7,10 @@ WiredTiger Storage Engine
 
 .. default-domain:: mongodb
 
+.. facet::
+   :name: genre
+   :values: reference
+
 .. contents:: On this page
    :local:
    :backlinks: none
@@ -19,6 +23,39 @@ storage engine. For existing deployments, if you do not specify the
 version 3.2+ :binary:`~bin.mongod` instance can automatically determine
 the storage engine used to create the data files in the ``--dbpath`` or
 :setting:`storage.dbPath`. See :ref:`3.2-storage-engine-compatibility`.
+
+Deployments hosted in the following environments can use the WiredTiger
+storage engine:
+
+.. include:: /includes/fact-environments-atlas-only.rst
+
+.. note::
+
+   All {+atlas+} deployments use the WiredTiger storage engine.
+
+.. include:: /includes/fact-environments-onprem-only.rst
+
+.. |link-topic-ing| replace:: WiredTiger memory use
+
+.. |atlas-url| replace:: :atlas:`Memory </sizing-tier-selection/#memory>`
+
+.. include:: /includes/fact-atlas-link.rst
+
+Operation and Limitations
+-------------------------
+
+The following operational notes and limitations apply to the WiredTiger
+engine:
+
+- You can't pin documents to the WiredTiger cache.
+- WiredTiger doesn't reserve a portion of the cache for reads and 
+  another for writes.
+- A heavy write workload can affect performance, but WiredTiger
+  prioritizes index caching in such cases.
+- WiredTiger allocates its cache to the entire :binary:`~bin.mongod`
+  instance. 
+  WiredTiger doesn't allocate cache on a per-database or per-collection
+  level.
 
 Document Level Concurrency
 --------------------------
@@ -57,18 +94,23 @@ metadata table is atomically updated to reference the new checkpoint.
 Once the new checkpoint is accessible, WiredTiger frees pages from the
 old checkpoints.
 
+.. _storage-snapshot-history:
+
+Snapshot History Retention
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Starting in MongoDB 5.0, you can use the
-:parameter:`minSnapshotHistoryWindowInSeconds` parameter to control how
+:parameter:`minSnapshotHistoryWindowInSeconds` parameter to specify how
 long WiredTiger keeps the snapshot history.
 
-Using WiredTiger, even without :ref:`journaling
-<storage-wiredtiger-journal>`, MongoDB can recover from the last
-checkpoint; however, to recover changes made after the last checkpoint,
-run with :ref:`journaling <storage-wiredtiger-journal>`.
+Increasing the value of :parameter:`minSnapshotHistoryWindowInSeconds`
+increases disk usage because the server must maintain the history of
+older modified values within the specified time window. The amount of
+disk space used depends on your workload, with higher volume workloads
+requiring more disk space.
 
-.. note::
-
-   .. include:: /includes/wiredtiger-node-nojournal.rst
+MongoDB maintains the snapshot history in the ``WiredTigerHS.wt`` file,
+located in your specified :setting:`~storage.dbPath`.
 
 .. _storage-wiredtiger-journal:
 
@@ -95,16 +137,6 @@ For details on changing the journal compressor, see
 .. note::
 
    .. include:: /includes/extracts/wt-log-compression-limit.rst
-
-You can disable journaling for standalone instances by setting
-:setting:`storage.journal.enabled` to ``false``, which can reduce the
-overhead of maintaining the journal. For :term:`standalone` instances,
-not using the journal means that, when MongoDB exits unexpectedly, you
-will lose all data modifications prior to the last checkpoint.
-
-.. note::
-
-   .. include:: /includes/wiredtiger-node-nojournal.rst
 
 .. seealso::
 

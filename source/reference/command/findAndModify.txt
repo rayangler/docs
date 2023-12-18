@@ -1,3 +1,5 @@
+.. _find-and-modify:
+
 =============
 findAndModify
 =============
@@ -24,12 +26,19 @@ Definition
    modifications made on the update. To return the document with the
    modifications made on the update, use the ``new`` option.
 
+   .. |method| replace:: :method:`db.collection.findAndModify()` helper method
+   .. include:: /includes/fact-dbcommand-tip
+
    .. versionchanged:: 5.0
 
-   The command has the following syntax:
+Syntax
+------
 
-   .. code-block:: none
+The command has the following syntax:
 
+.. code-block:: javascript
+   
+   db.runCommand(
       {
         findAndModify: <collection-name>,
         query: <document>,
@@ -40,241 +49,184 @@ Definition
         fields: <document>,
         upsert: <boolean>,
         bypassDocumentValidation: <boolean>,
-        writeConcern: <document>, 
+        writeConcern: <document>,
+        maxTimeMS: <integer>, 
         collation: <document>,
         arrayFilters: <array>,
         hint: <document|string>,
         comment: <any>,
         let: <document> // Added in MongoDB 5.0
-      }
+      } 
+   )
 
-   The :dbcommand:`findAndModify` command takes the following
-   fields:
+Command Fields
+--------------
 
-   .. |operation| replace:: :dbcommand:`findAndModify`
+The command takes the following fields:
+
+.. |operation| replace:: :dbcommand:`findAndModify`
 
 
-   .. list-table::
-      :header-rows: 1
-      :widths: 20 20 80
-   
-      * - Field
-   
-        - Type
-   
-        - Description
-   
-      * - ``query``
-   
-        - document
-   
-        - Optional. The selection criteria for the modification. The ``query`` field
-          employs the same :ref:`query selectors <query-selectors>` as used in
-          the :method:`db.collection.find()` method. Although the query may
-          match multiple documents, |operation|
-          **will only select one document to modify**.
-          
-          If unspecified, defaults to an empty document.
-          
-          Starting in MongoDB 4.2 (and 4.0.12+, 3.6.14+, and 3.4.23+), the operation
-          errors if the query argument is not a document.
-          
-          
-   
-      * - .. _findandmodify-command-consistent-sorting:
-
-          ``sort``
-   
-        - document
-   
-        - Optional. Determines which document the operation modifies if the query selects
-          multiple documents. |operation| modifies
-          the first document in the sort order specified by this argument.
-          
-          Starting in MongoDB 4.2 (and 4.0.12+, 3.6.14+, and 3.4.23+), the operation
-          errors if the sort argument is not a document.
-
-          .. include:: /includes/fact-sort-consistency.rst
-
-          See :ref:`sort-cursor-consistent-sorting` for more information.
-          
-          
-   
-      * - ``remove``
-   
-        - boolean
-   
-        - Must specify either the ``remove`` or the ``update`` field. Removes
-          the document specified in the ``query`` field. Set this to ``true``
-          to remove the selected document . The default is ``false``.
-          
-          
-   
-      * - ``update``
-   
-        - document or array
-   
-        - Must specify either the ``remove`` or the ``update`` field. Performs
-          an update of the selected document. 
-          
-          - If passed a document with :ref:`update operator expressions
-            <update-operators>`, |operation| performs the specified
-            modification.
-          
-          - If passed a replacement document ``{ <field1>: <value1>, ...}``,
-            the |operation| performs a replacement.
-          
-          - Starting in MongoDB 4.2, if passed an :doc:`aggregation pipeline
-            </core/aggregation-pipeline>` ``[ <stage1>, <stage2>, ... ]``,
-            |operation| modifies the document per the pipeline. The pipeline
-            can consist of the following stages:
-          
-            .. include:: /includes/list-update-agg-stages.rst
-          
-          
-   
-      * - ``new``
-   
-        - boolean
-   
-        - Optional. When ``true``, returns the modified document rather than the original.
-          The |operation| method ignores the
-          ``new`` option for ``remove`` operations. The default is ``false``.
-          
-          
-   
-      * - ``fields``
-   
-        - document
-   
-        - Optional. A subset of fields to return. The ``fields`` document specifies an
-          inclusion of a field with ``1``, as in: ``fields: { <field1>: 1,
-          <field2>: 1, ... }``. See :ref:`find-projection`.
-          
-          Starting in MongoDB 4.2 (and 4.0.12+, 3.6.14+, and 3.4.23+), the operation
-          errors if the fields argument is not a document.
-          
-          
-   
-      * - ``upsert``
-   
-        - boolean
-   
-        - .. include:: /includes/extracts/findAndModify-behavior-command.rst
-          
-          
-   
-      * - ``bypassDocumentValidation``
-   
-        - boolean
-   
-        - Optional. Enables :dbcommand:`findAndModify` to bypass document validation
-          during the operation. This lets you update documents that do not
-          meet the validation requirements.
-          
-          .. versionadded:: 3.2
-          
-          
-   
-      * - ``writeConcern``
-   
-        - document
-   
-        - Optional. A document expressing the :doc:`write concern </reference/write-concern>`.
-          Omit to use the default write concern.
-          
-          .. include:: /includes/extracts/transactions-operations-write-concern.rst
-          
-          .. versionadded:: 3.2
-          
-          
-   
-      * - ``maxTimeMS``
-   
-        - integer
-   
-        - Optional. Specifies a time limit in milliseconds for processing the operation.
-          
-          
-   
-      * - ``findAndModify``
-   
-        - string
-   
-        - The collection against which to run the command.
-          
-          
-   
-      * - ``collation``
-   
-        - document
-   
-        - Optional. 
-          
-          .. include:: /includes/extracts/collation-option.rst
-          
-          
-   
-      * - ``arrayFilters``
-   
-        - array
-   
-        - Optional. An array of filter documents that determine which array elements to
-          modify for an update operation on an array field.
-          
-          .. include::  /includes/extracts/arrayFilters-details.rst
-          
-          
-          For examples, see :ref:`findAndModify-command-arrayFilters`.
-          
-          .. note::
-          
-             .. include:: /includes/extracts/arrayFilters-update-aggregation-restriction.rst
-          
-             
-          .. versionadded:: 3.6
-
-      * - ``hint``
-
-        - document or string
-
-        - Optional. A document or string that specifies the
-          :doc:`index </indexes>` to use to support the ``query``.
-          
-          The option can take an index specification document or the
-          index name string.
-
-          If you specify an index that does not exist, the operation
-          errors.
-
-          For an example, see :ref:`ex-findAndModify-hint`.
-
-          .. versionadded:: 4.4
-
-      * - ``comment``
-
-        - any
-
-        - .. include:: /includes/extracts/comment-content.rst
+.. list-table::
+   :header-rows: 1
+   :widths: 20 20 80
+ 
+   * - Field
+     - Type
+     - Description
+ 
+   * - ``query``
+     - document
+     - Optional. The selection criteria for the modification. The ``query`` field
+       employs the same :ref:`query selectors <query-selectors>` as used in
+       the :method:`db.collection.find()` method. Although the query may
+       match multiple documents, |operation|
+       **will only select one document to modify**.
        
-          .. versionadded:: 4.4
+       If unspecified, defaults to an empty document.
+       
+       Starting in MongoDB 4.2 (and 4.0.12+, 3.6.14+, and 3.4.23+), the operation
+       errors if the query argument is not a document.
+       
+   * - .. _findandmodify-command-consistent-sorting:
+ 
+       ``sort``
+ 
+     - document
+     - Optional. Determines which document the operation modifies if the query selects
+       multiple documents. |operation| modifies
+       the first document in the sort order specified by this argument.
+       
+       Starting in MongoDB 4.2 (and 4.0.12+, 3.6.14+, and 3.4.23+), the operation
+       errors if the sort argument is not a document.
+ 
+       .. include:: /includes/fact-sort-consistency.rst
+ 
+       See :ref:`sort-cursor-consistent-sorting` for more information.
+       
+   * - ``remove``
+     - boolean
+     - Must specify either the ``remove`` or the ``update`` field. Removes
+       the document specified in the ``query`` field. Set this to ``true``
+       to remove the selected document . The default is ``false``.
+       
+   * - ``update``
+     - document or array
+     - Must specify either the ``remove`` or the ``update`` field. Performs
+       an update of the selected document. 
+       
+       - If passed a document with :ref:`update operator expressions
+         <update-operators>`, |operation| performs the specified
+         modification.
+       
+       - If passed a replacement document ``{ <field1>: <value1>, ...}``,
+         the |operation| performs a replacement.
+       
+       - Starting in MongoDB 4.2, if passed an :ref:`aggregation pipeline
+         <aggregation-pipeline>` ``[ <stage1>, <stage2>, ... ]``,
+         |operation| modifies the document per the pipeline. The pipeline
+         can consist of the following stages:
+       
+         .. include:: /includes/list-update-agg-stages.rst
+       
+   * - ``new``
+     - boolean
+     - Optional. When ``true``, returns the modified document rather than the original.
+       The default is ``false``.
+       
+   * - ``fields``
+     - document
+     - Optional. A subset of fields to return. The ``fields`` document specifies an
+       inclusion of a field with ``1``, as in: ``fields: { <field1>: 1,
+       <field2>: 1, ... }``. See :ref:`find-projection`.
+       
+       Starting in MongoDB 4.2 (and 4.0.12+, 3.6.14+, and 3.4.23+), the operation
+       errors if the fields argument is not a document.
+ 
+   * - ``upsert``
+     - boolean
+     - .. include:: /includes/extracts/findAndModify-behavior-command.rst
+       
+   * - ``bypassDocumentValidation``
+     - boolean
+     - Optional. Enables :dbcommand:`findAndModify` to bypass document validation
+       during the operation. This lets you update documents that do not
+       meet the validation requirements.
+       
+   * - ``writeConcern``
+     - document
+     - Optional. A document expressing the :ref:`write concern <write-concern>`.
+       Omit to use the default write concern.
+       
+       .. include:: /includes/extracts/transactions-operations-write-concern.rst
+       
+   * - ``maxTimeMS``
+     - non-negative integer
+     - Optional.
 
-      * - :ref:`let <findAndModify-let-syntax>`
-
-        - document
-        
-        - .. _findAndModify-let-syntax:
-          
-          Optional.
-     
-          .. include:: /includes/let-variables-syntax.rst
-
-          .. include:: /includes/let-variables-syntax-note.rst
-
-          For a complete MQL example using ``let`` and variables, see
-          :ref:`findAndModify-let-example`.
-
-          .. versionadded:: 5.0
+       .. include:: /includes/maxTimeMS-description.rst
+       
+ 
+ 
+   * - ``findAndModify``
+     - string
+     - The collection against which to run the command.
+       
+   * - ``collation``
+     - document
+     - Optional. 
+       
+       .. include:: /includes/extracts/collation-option.rst
+       
+   * - ``arrayFilters``
+     - array
+     - Optional. An array of filter documents that determine which array elements to
+       modify for an update operation on an array field.
+       
+       .. include::  /includes/extracts/arrayFilters-details.rst
+       
+       
+       For examples, see :ref:`findAndModify-command-arrayFilters`.
+       
+       .. note::
+       
+          .. include:: /includes/extracts/arrayFilters-update-aggregation-restriction.rst
+ 
+   * - ``hint``
+     - document or string
+     - Optional. A document or string that specifies the
+       :ref:`index <indexes>` to use to support the ``query``.
+       
+       The option can take an index specification document or the
+       index name string.
+ 
+       If you specify an index that does not exist, the operation
+       errors.
+ 
+       For an example, see :ref:`ex-findAndModify-hint`.
+ 
+       .. versionadded:: 4.4
+ 
+   * - ``comment``
+     - any
+     - .. include:: /includes/extracts/comment-content.rst
+    
+       .. versionadded:: 4.4
+ 
+   * - :ref:`let <findAndModify-let-syntax>`
+     - document
+     - .. _findAndModify-let-syntax:
+       
+       Optional.
+  
+       .. include:: /includes/let-variables-syntax.rst
+ 
+       .. include:: /includes/let-variables-syntax-note.rst
+ 
+       For a complete example using ``let`` and variables, 
+       see :ref:`findAndModify-let-example`.
+ 
+       .. versionadded:: 5.0
 
 Output
 ------
@@ -288,39 +240,24 @@ following fields:
    :widths: 20 20 80
 
    * - Field
-
      - Type
-
      - Description
 
    * - ``value``
-
      - document
-
      - Contains the command's returned value. See :ref:`findandmodify-value-field`
        for details.
-       
-       
 
    * - ``lastErrorObject``
-
      - document
-
      - Contains information about updated documents. See
        :ref:`findandmodify-lastErrorObject` for details.
        
-       
-
    * - ``ok``
-
      - number
-
      - Contains the command's execution status. ``1`` on success, or ``0`` if an
        error occurred.
        
-       
-
-
 
 .. _findandmodify-lastErrorObject:
 
@@ -344,7 +281,11 @@ The ``lastErrorObject`` embedded document contains the following fields:
 
      - boolean
 
-     - Contains ``true`` if an ``update`` operation modified an existing document.
+     - Contains ``true`` if an ``update`` operation:
+
+       - Modified an existing document.
+       - Found the document, but it was already in the
+         desired destination state so no update actually occurred.
        
        
 
@@ -388,8 +329,11 @@ Upsert with Unique Index
 Sharded Collections
 ~~~~~~~~~~~~~~~~~~~
 
-To use :dbcommand:`findAndModify` on a sharded collection, the query
-filter must include an equality condition on the shard key.
+To use :dbcommand:`findAndModify` on a sharded collection:
+
+- If you only target one shard, you can use a partial shard key in the ``query`` field or,
+
+- You can provide an equality condition on a full shard key in the ``query`` field. 
 
 .. include:: /includes/extracts/missing-shard-key-equality-condition-findAndModify.rst
 
@@ -784,11 +728,11 @@ Create a collection ``students`` with the following documents:
 
 .. code-block:: javascript
 
-   db.students.insert([
+   db.students.insertMany( [
       { "_id" : 1, "grades" : [ 95, 92, 90 ] },
       { "_id" : 2, "grades" : [ 98, 100, 102 ] },
       { "_id" : 3, "grades" : [ 95, 110, 100 ] }
-   ])
+   ] )
 
 To modify all elements that are greater than or equal to ``100`` in the
 ``grades`` array, use the positional :update:`$[\<identifier\>]`
@@ -826,7 +770,7 @@ Create a collection ``students2`` with the following documents:
 
 .. code-block:: javascript
 
-   db.students2.insert([
+   db.students2.insertMany( [
       {
          "_id" : 1,
          "grades" : [
@@ -843,7 +787,7 @@ Create a collection ``students2`` with the following documents:
             { "grade" : 85, "mean" : 85, "std" : 4 }
          ]
       }
-   ])
+   ] )
 
 The following operation finds a document where the ``_id`` field equals
 ``1`` and uses the filtered positional operator :update:`$[\<identifier\>]` with
@@ -904,7 +848,7 @@ documents:
 
 .. code-block:: javascript
 
-   db.students2.insert([
+   db.students2.insertMany( [
       {
          "_id" : 1,
          "grades" : [
@@ -921,7 +865,7 @@ documents:
             { "grade" : 85, "mean" : 85, "std" : 4 }
          ]
       }
-   ])
+   ] )
 
 The following operation finds a document where the ``_id`` field equals
 ``1`` and uses an aggregation pipeline to calculate a new field
@@ -970,14 +914,14 @@ with the following documents:
 
 .. code-block:: javascript
 
-   db.members.insertMany([
+   db.members.insertMany( [
       { "_id" : 1, "member" : "abc123", "status" : "P", "points" :  0,  "misc1" : null, "misc2" : null },
       { "_id" : 2, "member" : "xyz123", "status" : "A", "points" : 60,  "misc1" : "reminder: ping me at 100pts", "misc2" : "Some random comment" },
       { "_id" : 3, "member" : "lmn123", "status" : "P", "points" :  0,  "misc1" : null, "misc2" : null },
       { "_id" : 4, "member" : "pqr123", "status" : "D", "points" : 20,  "misc1" : "Deactivated", "misc2" : null },
       { "_id" : 5, "member" : "ijk123", "status" : "P", "points" :  0,  "misc1" : null, "misc2" : null },
       { "_id" : 6, "member" : "cde123", "status" : "A", "points" : 86,  "misc1" : "reminder: ping me at 100pts", "misc2" : "Some random comment" }
-   ])
+   ] )
 
 Create the following indexes on the collection:
 

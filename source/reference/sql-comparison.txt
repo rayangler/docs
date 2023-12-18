@@ -1,8 +1,14 @@
+.. _sql-to-mongodb-mapping:
+
 ============================
 SQL to MongoDB Mapping Chart
 ============================
 
 .. default-domain:: mongodb
+
+.. facet::
+   :name: programming_language
+   :values: shell
 
 .. contents:: On this page
    :local:
@@ -73,7 +79,7 @@ and the corresponding MongoDB terminology and concepts.
 
    * - transactions
 
-     - :doc:`transactions </core/transactions>`
+     - :ref:`transactions <transactions>`
 
        .. tip::
 
@@ -307,10 +313,10 @@ For more information on the methods and operators used, see:
 
 .. seealso::
 
-   - :doc:`/core/databases-and-collections`
-   - :doc:`/core/document`
-   - :doc:`Indexes </indexes>`
-   - :doc:`/core/data-models`.
+   - :ref:`databases-and-collections`
+   - :ref:`bson-document-format`
+   - :ref:`Indexes <indexes>`
+   - :ref:`data-modeling-concepts`.
 
 Insert
 ~~~~~~
@@ -350,10 +356,11 @@ For more information, see :method:`db.collection.insertOne()`.
 
 .. seealso::
 
-   - :doc:`/tutorial/insert-documents`
+   - :ref:`write-op-insert`
    - :method:`db.collection.insertMany()`
-   - :doc:`/core/databases-and-collections`
-   - :doc:`/core/document`
+   - :ref:`databases-and-collections`
+   - :ref:`bson-document-format`
+
 
 Select
 ~~~~~~

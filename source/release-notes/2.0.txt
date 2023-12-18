@@ -1,3 +1,5 @@
+.. _release-notes-2.0:
+
 =============================
 Release Notes for MongoDB 2.0
 =============================
@@ -31,10 +33,10 @@ for handling CSV input/output. This may break existing import/export
 workflows that relied on the previous behavior. For more information see
 :issue:`SERVER-1097`.
 
-:doc:`Journaling </core/journaling/>` is **enabled by default** in 2.0 for 64-bit builds.
+:ref:`<journaling-internals>` is **enabled by default** in 2.0 for 64-bit builds.
 If you still prefer to run without journaling, start :binary:`~bin.mongod`
-with the :option:`--nojournal <mongod --nojournal>` run-time option.
-Otherwise, MongoDB creates journal files during startup. The first time you start :binary:`~bin.mongod` with
+with the ``--nojournal`` run-time option. Otherwise, MongoDB creates journal 
+files during startup. The first time you start :binary:`~bin.mongod` with
 journaling, you will see a delay as :binary:`~bin.mongod` creates new files.
 In addition, you may see reduced write throughput.
 
@@ -312,10 +314,10 @@ Journaling Enhancements
   specifying your own group commit interval. The default settings do
   not change.
 
-- A new :dbcommand:`{ getLastError: { j: true } } <getLastError>` option is
-  available to wait for the group commit. The group commit will happen
-  sooner when a client is waiting on ``{j: true}``. If journaling is
-  disabled, ``{j: true}`` is a no-op.
+- A new ``{ getLastError: { j: true } }`` option is available to wait
+  for the group commit. The group commit will happen sooner when a
+  client is waiting on ``{j: true}``. If journaling is disabled,
+  ``{j: true}`` is a no-op.
 
 New ``ContinueOnError`` Option for Bulk Insert
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -323,10 +325,10 @@ New ``ContinueOnError`` Option for Bulk Insert
 Set the ``continueOnError`` option for bulk inserts, in the
 :driver:`driver </>`, so that bulk insert will
 continue to insert any remaining documents even if an insert fails, as
-is the case with  duplicate key exceptions or network interruptions. The :dbcommand:`getLastError`
+is the case with  duplicate key exceptions or network interruptions. The ``getLastError``
 command will report whether any inserts have failed, not just the
 last one. If multiple errors occur, the client will only receive the
-most recent :dbcommand:`getLastError` results.
+most recent ``getLastError`` results.
 
 .. include:: /includes/note-bulk-inserts-on-sharded-clusters.rst
 
@@ -386,10 +388,9 @@ Shell Features
 Custom Prompt
 `````````````
 
-You can define a custom prompt for the :binary:`~bin.mongo` shell. You can
+You can define a custom prompt for the ``mongo`` shell. You can
 change the prompt at any time by setting the prompt variable to a string
-or a custom JavaScript function returning a string. For examples, see
-:ref:`shell-use-a-custom-prompt`.
+or a custom JavaScript function returning a string. 
 
 Default Shell Init Script
 `````````````````````````
@@ -399,9 +400,9 @@ user's home directory. The shell will execute this file after connecting
 to the database and before displaying the prompt.
 
 If you would like the shell not to run the ``.mongorc.js`` file
-automatically, start the shell with :option:`--norc <mongo --norc>`.
+automatically, start the shell with ``--norc``.
 
-For more information, see the :binary:`~bin.mongo` reference.
+For more information, see the ``mongo`` reference.
 
 Most Commands Require Authentication
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -414,7 +415,7 @@ commands.
 
 - :dbcommand:`authenticate`
 
-- :dbcommand:`getnonce`
+- ``getnonce``
 
 - :dbcommand:`buildInfo`
 

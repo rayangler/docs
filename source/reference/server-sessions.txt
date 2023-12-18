@@ -1,3 +1,5 @@
+.. _server-sessions:
+
 ===============
 Server Sessions
 ===============
@@ -9,8 +11,6 @@ Server Sessions
    :backlinks: none
    :depth: 1
    :class: singlecol
-
-.. versionadded:: 3.6
 
 Overview
 --------

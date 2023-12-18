@@ -70,6 +70,7 @@ Sharding
 - :doc:`/tutorial/convert-replica-set-to-replicated-shard-cluster`
 - :doc:`/tutorial/add-shards-to-shard-cluster`
 - :doc:`/tutorial/remove-shards-from-cluster`
+- :doc:`/tutorial/migrate-chunks-in-sharded-cluster`
 - :doc:`/tutorial/replace-config-server`
 - :doc:`/tutorial/migrate-sharded-cluster-to-new-hardware`
 - :doc:`/tutorial/backup-sharded-cluster-metadata`
@@ -116,7 +117,7 @@ Development Patterns
 - :doc:`/tutorial/troubleshoot-map-function`
 - :doc:`/tutorial/troubleshoot-reduce-function`
 - :doc:`/tutorial/store-javascript-function-on-server`
-
+- :doc:`/tutorial/connection-pool-performance-tuning`
 
 
 .. _tutorials-text-search:
@@ -125,10 +126,8 @@ Development Patterns
 Text Search Patterns
 --------------------
 
-- :doc:`/tutorial/specify-language-for-text-index`
-- :doc:`/tutorial/avoid-text-index-name-limit`
-- :doc:`/tutorial/control-results-of-text-search`
-- :doc:`/tutorial/limit-number-of-items-scanned-for-text-search`
+- :doc:`/core/indexes/index-types/index-text/specify-text-index-language`
+- :ref:`limit-entries-scanned`
 
 Data Modeling Patterns
 ----------------------

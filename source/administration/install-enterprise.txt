@@ -1,3 +1,12 @@
+.. _install-mdb-enterprise:
+
+.. This page is hidden from the TOC and search indexing.
+
+:orphan:
+
+.. meta::
+   :robots: noindex, nosnippet
+
 ==========================
 Install MongoDB Enterprise
 ==========================
@@ -10,31 +19,9 @@ Install MongoDB Enterprise
    :depth: 1
    :class: singlecol
 
-These documents provide instructions to install MongoDB Enterprise.
+.. include:: /includes/unicode-checkmark.rst
 
-MongoDB Enterprise is available for MongoDB Enterprise subscribers
-and includes several additional features including support for SNMP
-monitoring, LDAP authentication, Kerberos authentication, and System
-Event Auditing.
-
-.. note::
-
-   .. include:: /includes/fact-macos-snmp.rst
-
-:doc:`Install on Linux </administration/install-enterprise-linux>`
-   Install the official builds of MongoDB Enterprise on Linux-based
-   systems.
-
-:doc:`Install on macOS </tutorial/install-mongodb-enterprise-on-os-x>`
-   Install the official build of MongoDB Enterprise on macOS
-
-:doc:`Install on Windows </tutorial/install-mongodb-enterprise-on-windows>`
-   Install MongoDB Enterprise on Windows using the ``.msi``
-   installer.
-
-:doc:`Install with Docker </tutorial/install-mongodb-enterprise-with-docker>`
-   Install a MongoDB Enterprise Docker container.
-
+.. include:: /includes/rapid-release.rst
 
 .. toctree::
    :titlesonly: 

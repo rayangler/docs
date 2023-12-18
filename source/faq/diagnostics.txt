@@ -76,6 +76,46 @@ Adjusting the TCP keepalive value:
 You will need to restart :binary:`~bin.mongod` and :binary:`~bin.mongos`
 processes for new system-wide keepalive settings to take effect.
 
+.. _faq-tcp_retries2:
+
+Do TCP Retransmission Timeouts affect MongoDB Deployments?
+----------------------------------------------------------
+
+If you experience long stalls (stalls greater than two minutes) followed
+by network timeouts or socket errors between clients and server
+or between members of a sharded cluster or replica set, 
+check the ``tcp_retries2`` value for the affected systems.
+
+Most Linux operating systems set this value to ``15`` by default, while
+Windows sets it to ``5``.  For MongoDB, you experience better results
+with a lower ``tcp_retries2`` value, on the order of ``5`` (12 seconds)
+or lower.
+
+If your MongoDB deployment experiences TCP retransmission timeout-related 
+issues, change the ``tcp_retries2`` value (``TcpMaxDataRetransmission`` 
+on Windows) for *all* affected systems. This includes all machines running 
+:binary:`~bin.mongod` or :binary:`~bin.mongos` processes and 
+all machines hosting client processes that connect to MongoDB.
+
+Adjust the TCP Retransmission Timeout
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. tabs::
+
+   .. tab:: Linux
+      :tabid: linux
+
+      .. include:: /includes/fact-tcp-retries-linux.rst
+
+   .. tab:: Windows 
+      :tabid: windows
+
+      .. include:: /includes/fact-tcp-retries-windows.rst
+
+
+
+
+
 Why does MongoDB log so many "Connection Accepted" events?
 ----------------------------------------------------------
 
@@ -93,20 +133,6 @@ log.
 
 What tools are available for monitoring MongoDB?
 ------------------------------------------------
-
-Starting in version 4.0, MongoDB offers :doc:`free Cloud monitoring
-</administration/free-monitoring>` for standalones and replica sets.
-Free monitoring provides information about your deployment, including:
-
-- Operation Execution Times
-
-- Memory Usage
-
-- CPU Usage
-
-- Operation Counts
-
-For more information, see :doc:`/administration/free-monitoring`.
 
 .. include:: /includes/replacement-mms.rst
 
@@ -151,7 +177,7 @@ The two most important factors in maintaining a successful sharded cluster are:
 
 While you can :ref:`change your shard key <change-a-shard-key>` later,
 it is important to carefully consider your shard key choice to avoid
-scalability and perfomance issues. Continue reading for specific issues
+scalability and performance issues. Continue reading for specific issues
 you may encounter in a production environment.
 
 .. _sharding-troubleshooting-not-splitting:
@@ -163,7 +189,7 @@ Your cluster must have sufficient data for sharding to make
 sense. Sharding works by migrating chunks between the shards until
 each shard has roughly the same number of chunks.
 
-The default chunk size is 64 megabytes. MongoDB will not begin
+The default chunk size is 128 megabytes. MongoDB will not begin
 migrations until the imbalance of chunks in the cluster exceeds the
 :ref:`migration threshold <sharding-migration-thresholds>`. This
 behavior helps prevent unnecessary chunk migrations, which can degrade
@@ -171,7 +197,7 @@ the performance of your cluster as a whole.
 
 If you have just deployed a sharded cluster, make sure that you have
 enough data to make sharding effective. If you do not have sufficient
-data to create more than eight 64 megabyte chunks, then all data will
+data to create more than eight 128 megabyte chunks, then all data will
 remain on one shard. Either lower the :ref:`chunk size
 <sharding-chunk-size>` setting, or add more data to the cluster.
 
@@ -179,7 +205,7 @@ As a related problem, the system will split chunks only on
 inserts or updates, which means that if you configure sharding and do not
 continue to issue insert and update operations, the database will not
 create any chunks. You can either wait until your application inserts
-data *or* :doc:`split chunks manually </tutorial/split-chunks-in-sharded-cluster>`.
+data *or* :ref:`split chunks manually <split-chunks-sharded-cluster>`.
 
 Finally, if your shard key has a low :ref:`cardinality
 <sharding-shard-key-cardinality>`, MongoDB may not be able to create

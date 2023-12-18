@@ -1,8 +1,29 @@
+.. _databases-and-collections:
+
 =========================
 Databases and Collections
 =========================
 
 .. default-domain:: mongodb
+
+.. facet::
+   :name: genre 
+   :values: reference
+
+.. facet::
+   :name: programming_language
+   :values: shell 
+
+.. meta:: 
+   :keywords: drivers, table
+
+.. facet::
+   :name: genre 
+   :values: reference
+
+.. meta:: 
+   :description: Overview of what databases and collections (tables) are in MongoDB.
+   :keywords: atlas
 
 .. contents:: On this page
    :local:
@@ -16,6 +37,14 @@ MongoDB stores data records as :term:`documents <document>`
 (specifically :ref:`BSON documents <bson-document-format>`) which are
 gathered together in :term:`collections <collection>`.  A
 :term:`database <database>` stores one or more collections of documents.
+
+.. |page-topic| replace:: manage MongoDB :atlas:`databases </atlas-ui/databases>` and :atlas:`collections </atlas-ui/collections>` in the UI
+
+.. cta-banner::
+   :url: https://www.mongodb.com/docs/atlas/atlas-ui/databases/
+   :icon: Cloud
+
+   .. include:: /includes/fact-atlas-compatible.rst
 
 
 Databases
@@ -88,8 +117,6 @@ To modify these collection options, see :dbcommand:`collMod`.
 Document Validation
 ~~~~~~~~~~~~~~~~~~~
 
-.. versionadded:: 3.2
-
 By default, a collection does not require its documents to have the
 same schema; i.e. the documents in a single collection do not need to
 have the same set of fields and the data type for a field can differ
@@ -99,6 +126,12 @@ Starting in MongoDB 3.2, however, you can enforce :doc:`document
 validation rules </core/schema-validation>` for a collection during
 update and insert operations. See :doc:`/core/schema-validation` for
 details.
+
+For deployments hosted in {+atlas+}, the :atlas:`Performance Advisor 
+</performance-advisor>` and the {+atlas+} UI detect common schema
+design issues and suggest modifications that follow MongoDB best
+practices. To learn more, see :atlas:`Schema Suggestions 
+</performance-advisor/schema-suggestions/#schema-suggestions>`.
 
 Modifying Document Structure
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -112,13 +145,6 @@ type, update the documents to the new structure.
 
 Unique Identifiers
 ~~~~~~~~~~~~~~~~~~
-
-.. versionadded:: 3.6
-
-.. note::
-
-   The ``featureCompatibilityVersion`` must be set to ``"3.6"`` or greater. For
-   more information, see :ref:`view-fcv`.
 
 Collections are assigned an immutable :abbr:`UUID (Universally unique
 identifier)`. The
@@ -136,4 +162,4 @@ or the :method:`db.getCollectionInfos()` method.
    /core/views
    /core/materialized-views
    /core/capped-collections
-   /core/timeseries-collections
+   /core/clustered-collections

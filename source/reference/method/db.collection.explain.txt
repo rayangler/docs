@@ -16,28 +16,25 @@ Description
 .. method:: db.collection.explain()
 
 
-   .. include:: /includes/fact-mongosh-shell-method.rst
+   .. |dbcommand| replace:: :dbcommand:`explain` command
+   .. include:: /includes/fact-mongosh-shell-method-alt.rst
 
 
    Returns information on the query plan for the following methods:
 
-   .. list-table::
-      :class: border-table
-      :header-rows: 1
-      
-      * - Starting in MongoDB 3.0
-        - Starting in MongoDB 3.2
-        - Starting in MongoDB 4.4
-      * - - :method:`~db.collection.aggregate()`
-          - :method:`~db.collection.count()`
-          - :method:`~db.collection.find()`
-          - :method:`~db.collection.remove()`
-          - :method:`~db.collection.update()`
+   .. hlist::
+      :columns: 3
 
-        - - :method:`~db.collection.distinct()` 
-          - :method:`~db.collection.findAndModify()`
+      - :method:`~db.collection.aggregate()`
+      - :method:`~db.collection.count()`
+      - :method:`~db.collection.find()`
+      - :method:`~db.collection.remove()`
+      - :method:`~db.collection.distinct()` 
+      - :method:`~db.collection.findAndModify()`
 
-        - - :method:`~db.collection.mapReduce()`
+   .. versionadded:: 4.4
+
+      Returns information on :method:`~db.collection.mapReduce()`.
 
    To use :method:`db.collection.explain()`, append one of the
    aforementioned methods to :method:`db.collection.explain()`:
@@ -236,11 +233,11 @@ specified :method:`~db.collection.find()` operation:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The following example runs :method:`db.collection.explain()` in
-``"allPlansExecution"`` verbosity mode. The
+``"allPlansExecution"`` verbosity mode.
 :method:`db.collection.explain()` returns the
 :data:`~explain.queryPlanner` and :data:`~explain.executionStats` for
 all considered plans for the specified
-:method:`~db.collection.update()` operation:
+:method:`~db.collection.findAndModify()` operation:
 
 .. note::
 
@@ -251,10 +248,11 @@ all considered plans for the specified
 
 .. code-block:: javascript
 
-   db.products.explain("allPlansExecution").update(
-      { quantity: { $lt: 1000}, category: "apparel" },
-      { $set: { reorder: true } }
-   )
+   db.products.explain( "allPlansExecution" ).findAndModify( {
+      query: { name: "Tom", state: "active", rating: { $gt: 10 } },
+      sort: { rating: 1 },
+      update: { $inc: { score: 1 } }
+   } )
 
 .. _explain-find-modifiers:
 

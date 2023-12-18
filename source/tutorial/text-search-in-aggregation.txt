@@ -1,3 +1,5 @@
+.. _text-agg:
+
 =======================================
 Text Search in the Aggregation Pipeline
 =======================================
@@ -9,6 +11,8 @@ Text Search in the Aggregation Pipeline
    :backlinks: none
    :depth: 1
    :class: singlecol
+
+.. include:: /includes/extracts/fact-text-search-legacy-atlas.rst
 
 .. _text-agg-expression-behavior:
 

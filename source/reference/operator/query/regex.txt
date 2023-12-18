@@ -4,6 +4,10 @@ $regex
 
 .. default-domain:: mongodb
 
+.. facet::
+   :name: programming_language
+   :values: perl
+
 .. contents:: On this page
    :local:
    :backlinks: none
@@ -11,8 +15,17 @@ $regex
    :class: singlecol
 
 .. meta::
-   :description: pattern matching on strings in MongoDB |version|
-   :keywords: regex, regular expressions, LIKE queries, wildcard matches, pattern matches, MongoDB |version|, version |version| 
+   :description: pattern matching on strings in MongoDB {+latest-lts-version+}
+   :keywords: regex, regular expressions, LIKE queries, wildcard matches, pattern matches, MongoDB {+latest-lts-version+}, version {+latest-lts-version+}
+
+.. note::
+
+   This page describes regular expression search capabilities for
+   self-managed (non-Atlas) deployments. For data hosted on MongoDB
+   Atlas, MongoDB offers an improved full-text search solution,
+   :atlas:`Atlas Search </atlas-search/>`, which has its own ``$regex``
+   operator. To learn more, see :atlas:`$regex </atlas-search/regex/>`
+   in the Atlas Search documentation.
 
 Definition
 ----------
@@ -20,93 +33,115 @@ Definition
 .. query:: $regex
 
    Provides regular expression capabilities for pattern matching
-   *strings* in queries. MongoDB uses Perl compatible regular
-   expressions (i.e. "PCRE" ) version 8.42 with UTF-8 support.
+   *strings* in queries.
 
-   To use :query:`$regex`, use one of the following syntaxes:
+Compatibility
+-------------
 
-   .. code-block:: javascript
+.. |operator-method| replace:: ``$regex``
 
-      { <field>: { $regex: /pattern/, $options: '<options>' } }
-      { <field>: { $regex: 'pattern', $options: '<options>' } }
-      { <field>: { $regex: /pattern/<options> } }
+.. include:: /includes/fact-compatibility.rst
 
-   In MongoDB, you can also use regular expression objects (i.e.
-   ``/pattern/``) to specify regular expressions:
+Syntax
+------
 
-   .. code-block:: javascript
+To use ``$regex``, use one of the following syntaxes:
 
-      { <field>: /pattern/<options> }
+.. code-block:: javascript
 
-   For restrictions on particular syntax use, see
-   :ref:`syntax-restrictions`.
+   { <field>: { $regex: /pattern/, $options: '<options>' } }
+   { "<field>": { "$regex": "pattern", "$options": "<options>" } }
+   { <field>: { $regex: /pattern/<options> } }
 
-   .. _regex-query-options:
+.. note:: 
 
-   .. query:: $options
+   To use ``$regex`` with :binary:`~bin.mongodump`, you must enclose the query 
+   document in single quotes ('{ ... }') to ensure that it does not interact 
+   with your shell environment. 
+   
+   The query document must be in :ref:`Extended JSON v2 
+   <mongodb-extended-json-v2>` format (either relaxed or canonical/strict mode), 
+   which includes enclosing the field names and operators in quotes. For 
+   example:
 
-   The following ``<options>`` are available for use with regular
-   expression.
+   .. code-block:: sh
 
-   .. list-table::
-      :header-rows: 1
-      :widths: 10 60 30
+      mongodump -d=sample_mflix -c=movies  -q='{"year": {"$regex": "20"}}'
 
-      * - Option
-        - Description
-        - Syntax Restrictions
+In MongoDB, you can also use regular expression objects (i.e.
+``/pattern/``) to specify regular expressions:
 
-      * - ``i``
-        - Case insensitivity to match upper and lower cases.
+.. code-block:: javascript
+
+   { <field>: /pattern/<options> }
+
+For restrictions on particular syntax use, see
+:ref:`syntax-restrictions`.
+
+.. _regex-query-options:
+
+.. query:: $options
+
+The following ``<options>`` are available for use with regular
+expression.
+
+.. list-table::
+   :header-rows: 1
+   :widths: 10 60 30
+
+   * - Option
+     - Description
+     - Syntax Restrictions
+
+   * - ``i``
+     - Case insensitivity to match upper and lower cases.
           For an example, see :ref:`regex-case-insensitive`.
-        -
+     -
 
-      * - ``m``
+   * - ``m``
 
-        - For patterns that include anchors (i.e. ``^`` for the start,
-          ``$`` for the end), match at the beginning or end of each
-          line for strings with multiline values. Without this option,
-          these anchors match at beginning or end of the string. For an
-          example, see :ref:`regex-multiline-match`.
+     - For patterns that include anchors (i.e. ``^`` for the start,
+       ``$`` for the end), match at the beginning or end of each
+       line for strings with multiline values. Without this option,
+       these anchors match at beginning or end of the string. For an
+       example, see :ref:`regex-multiline-match`.
 
-          If the pattern contains no anchors or if the string value has
-          no newline characters (e.g. ``\n``), the ``m`` option has no
-          effect.
+       If the pattern contains no anchors or if the string value has
+       no newline characters (e.g. ``\n``), the ``m`` option has no
+       effect.
 
-        -
+     -
 
-      * - ``x``
+   * - ``x``
 
-        - "Extended" capability to ignore all white space characters in
-          the :query:`$regex` pattern unless escaped or included in a
-          character class.
+     - "Extended" capability to ignore all white space characters in
+       the ``$regex`` pattern unless escaped or included in a
+       character class.
 
-          Additionally, it ignores characters in-between and including
-          an un-escaped hash/pound (``#``) character and the next new
-          line, so that you may include comments in complicated
-          patterns. This only applies to data characters; white space
-          characters may never appear within special character
-          sequences in a pattern.
+       Additionally, it ignores characters in-between and including
+       an un-escaped hash/pound (``#``) character and the next new
+       line, so that you may include comments in complicated
+       patterns. This only applies to data characters; white space
+       characters may never appear within special character
+       sequences in a pattern.
 
-          The ``x`` option does not affect the handling of the VT
-          character (i.e. code 11).
+       The ``x`` option does not affect the handling of the VT
+       character (i.e. code 11).
 
-        - Requires ``$regex`` with ``$options`` syntax
+     - Requires ``$regex`` with ``$options`` syntax
 
-      * - ``s``
+   * - ``s``
 
-        - Allows the dot character (i.e. ``.``) to match all
-          characters *including* newline characters. For an example,
-          see :ref:`regex-dot-new-line`.
+     - Allows the dot character (i.e. ``.``) to match all
+       characters *including* newline characters. For an example,
+       see :ref:`regex-dot-new-line`.
 
-        - Requires ``$regex`` with ``$options`` syntax
+     - Requires ``$regex`` with ``$options`` syntax
 
+.. note:: 
 
-   .. note:: 
-
-      The :query:`$regex` operator does not support the global search
-      modifier ``g``.
-
+   The ``$regex`` operator does not support the global search
+   modifier ``g``.
 
 Behavior
 --------
@@ -127,14 +162,14 @@ only use JavaScript regular expression objects (i.e. ``/pattern/``
 
    { name: { $in: [ /^acme/i, /^ack/ ] } }
 
-You *cannot* use :query:`$regex` operator expressions inside an
-:query:`$in`.
+You *cannot* use ``$regex`` operator expressions inside an
+:query:`$in` operator.
 
 Implicit ``AND`` Conditions for the Field
 `````````````````````````````````````````
 
 To include a regular expression in a comma-separated list of query
-conditions for the field, use the :query:`$regex` operator. For example:
+conditions for the field, use the ``$regex`` operator. For example:
 
 .. code-block:: javascript
 
@@ -146,7 +181,7 @@ conditions for the field, use the :query:`$regex` operator. For example:
 ```````````````````````
 
 To use either the ``x`` option or ``s`` options, you must use the
-:query:`$regex` operator expression *with* the :query:`$options`
+``$regex`` operator expression *with* the :query:`$options`
 operator. For example, to specify the ``i`` and the ``s`` options, you
 must use :query:`$options` for both:
 
@@ -155,27 +190,45 @@ must use :query:`$options` for both:
    { name: { $regex: /acme.*corp/, $options: "si" } }
    { name: { $regex: 'acme.*corp', $options: "si" } }
 
-PCRE vs JavaScript
-``````````````````
+PCRE Versus JavaScript
+``````````````````````
 
-To use PCRE supported features in the regex pattern that are
-unsupported in JavaScript, you must use the :query:`$regex` operator
-expression with the pattern as a string. For example, to use ``(?i)``
-in the pattern to turn case-insensitivity on for the remaining pattern
-and ``(?-i)`` to turn case-sensitivity on for the remaining pattern, you
-must use the :query:`$regex` operator with the pattern as a string:
+To use {+pcre-abbr+}-supported features in a regular expression that
+aren't supported in JavaScript, you must use the ``$regex``
+operator and specify the regular expression as a string.
+
+To match case-insensitive strings:
+
+- ``"(?i)"`` begins a case-insensitive match.
+- ``"(?-i)"`` ends a case-insensitive match.
+
+For example, the regular expression ``"(?i)a(?-i)cme"`` matches strings
+that:
+
+- Begin with ``"a"`` or ``"A"``. This is a case-insensitive match.
+- End with ``"cme"``. This is a case-sensitive match.
+
+These strings match the example regular expression:
+
+- ``"acme"``
+- ``"Acme"``
+
+The following example uses the ``$regex`` operator to find ``name``
+field strings that match the regular expression ``"(?i)a(?-i)cme"``:
 
 .. code-block:: javascript
 
-   { name: { $regex: '(?i)a(?-i)cme' } }
+   { name: { $regex: "(?i)a(?-i)cme" } }
+
+.. include:: /includes/fact-6.1-pcre2.rst
 
 ``$regex`` and ``$not``
 ```````````````````````
 
-Starting in 4.0.7, :query:`$not` operator can perform logical ``NOT``
+The :query:`$not` operator can perform logical ``NOT``
 operation on both:
 
-- regular expression objects (i.e. ``/pattern/``)
+- Regular expression objects (i.e. ``/pattern/``)
 
   For example:
 
@@ -183,7 +236,7 @@ operation on both:
 
      db.inventory.find( { item: { $not: /^p.*/ } } )
 
-- :query:`$regex` operator expressions (starting in MongoDB 4.0.7).
+- ``$regex`` operator expressions 
 
   For example:
 
@@ -191,10 +244,6 @@ operation on both:
 
      db.inventory.find( { item: { $not: { $regex: "^p.*" } } } )
      db.inventory.find( { item: { $not: { $regex: /^p.*/ } } } )
-
-In 4.0.6 and earlier, you could use :query:`$not` operator with regular
-expression objects (i.e. ``/pattern/``) but not with :query:`$regex`
-operator expressions.
 
 .. _regex-index-use:
 
@@ -206,6 +255,7 @@ Index Use
 For case sensitive regular expression queries, if an index exists for
 the field, then MongoDB matches the regular expression against the
 values in the index, which can be faster than a collection scan.
+
 Further optimization can occur if the regular expression is a "prefix
 expression", which means that all potential matches start with the same
 string. This allows MongoDB to construct a "range" from that prefix and
@@ -230,15 +280,17 @@ and is unable to utilize case-insensitive indexes.
 Examples
 --------
 
-The following examples use a collection ``products`` with the following
-documents:
+The examples in this section use the following ``products`` collection:
 
 .. code-block:: javascript
 
-   { "_id" : 100, "sku" : "abc123", "description" : "Single line description." }
-   { "_id" : 101, "sku" : "abc789", "description" : "First line\nSecond line" }
-   { "_id" : 102, "sku" : "xyz456", "description" : "Many spaces before     line" }
-   { "_id" : 103, "sku" : "xyz789", "description" : "Multiple\nline description" }
+   db.products.insertMany( [
+      { _id: 100, sku: "abc123", description: "Single line description." },
+      { _id: 101, sku: "abc789", description: "First line\nSecond line" },
+      { _id: 102, sku: "xyz456", description: "Many spaces before     line" },
+      { _id: 103, sku: "xyz789", description: "Multiple\nline description" },
+      { _id: 104, sku: "Abc789", description: "SKU starts with A" }
+   ] )
 
 Perform a ``LIKE`` Match
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -257,6 +309,17 @@ The example is analogous to the following SQL LIKE statement:
    SELECT * FROM products
    WHERE sku like "%789";
 
+Example output:
+
+.. code-block:: javascript
+   :copyable: false
+
+   [
+      { _id: 101, sku: 'abc789', description: 'First line\nSecond line' },
+      { _id: 103, sku: 'xyz789', description: 'Multiple\nline description' },
+      { _id: 104, sku: 'Abc789', description: 'SKU starts with A' }
+   ]
+
 .. _regex-case-insensitive:
 
 Perform Case-Insensitive Regular Expression Match
@@ -270,12 +333,16 @@ with ``ABC``.
 
    db.products.find( { sku: { $regex: /^ABC/i } } )
 
-The query matches the following documents:
+Example output:
 
 .. code-block:: javascript
+   :copyable: false
 
-   { "_id" : 100, "sku" : "abc123", "description" : "Single line description." }
-   { "_id" : 101, "sku" : "abc789", "description" : "First line\nSecond line" }
+   [
+      { _id: 100, sku: 'abc123', description: 'Single line description.' },
+      { _id: 101, sku: 'abc789', description: 'First line\nSecond line' },
+      { _id: 104, sku: 'Abc789', description: 'SKU starts with A' }
+   ]
 
 .. _regex-multiline-match:
 
@@ -289,32 +356,44 @@ with the letter ``S`` for multiline strings:
 
    db.products.find( { description: { $regex: /^S/, $options: 'm' } } )
 
-The query matches the following documents:
+Example output:
 
 .. code-block:: javascript
+   :copyable: false
 
-   { "_id" : 100, "sku" : "abc123", "description" : "Single line description." }
-   { "_id" : 101, "sku" : "abc789", "description" : "First line\nSecond line" }
+   [
+      { _id: 100, sku: 'abc123', description: 'Single line description.' },
+      { _id: 101, sku: 'abc789', description: 'First line\nSecond line' },
+      { _id: 104, sku: 'Abc789', description: 'SKU starts with A' }
+   ]
 
-Without the ``m`` option, the query would match just the following document:
+Without the ``m`` option, the example output is:
 
 .. code-block:: javascript
+   :copyable: false
 
-   { "_id" : 100, "sku" : "abc123", "description" : "Single line description." }
+   [
+      { _id: 100, sku: 'abc123', description: 'Single line description.' },
+      { _id: 104, sku: 'Abc789', description: 'SKU starts with A' }
+   ]
 
-If the :query:`$regex` pattern does not contain an anchor, the pattern
+If the ``$regex`` pattern does not contain an anchor, the pattern
 matches against the string as a whole, as in the following example:
 
 .. code-block:: javascript
 
    db.products.find( { description: { $regex: /S/ } } )
 
-Then, the :query:`$regex` would match both documents:
+Example output:
 
 .. code-block:: javascript
+   :copyable: false
 
-   { "_id" : 100, "sku" : "abc123", "description" : "Single line description." }
-   { "_id" : 101, "sku" : "abc789", "description" : "First line\nSecond line" }
+   [
+      { _id: 100, sku: 'abc123', description: 'Single line description.' },
+      { _id: 101, sku: 'abc789', description: 'First line\nSecond line' },
+      { _id: 104, sku: 'Abc789', description: 'SKU starts with A' }
+   ]
 
 .. _regex-dot-new-line:
 
@@ -329,18 +408,24 @@ character (i.e. ``.``) to match all characters *including* new line as well as t
 
    db.products.find( { description: { $regex: /m.*line/, $options: 'si' } } )
 
-The query matches the following documents:
+Example output:
 
 .. code-block:: javascript
+   :copyable: false
 
-   { "_id" : 102, "sku" : "xyz456", "description" : "Many spaces before     line" }
-   { "_id" : 103, "sku" : "xyz789", "description" : "Multiple\nline description" }
+   [
+      { _id: 102, sku: 'xyz456', description: 'Many spaces before     line' },
+      { _id: 103, sku: 'xyz789', description: 'Multiple\nline description' }
+   ]
 
-*Without* the ``s`` option, the query would have matched only the following document:
+*Without* the ``s`` option, the example output is:
 
 .. code-block:: javascript
+   :copyable: false
 
-   { "_id" : 102, "sku" : "xyz456", "description" : "Many spaces before     line" }
+   [
+      { _id: 102, sku: 'xyz456', description: 'Many spaces before     line' }
+   ]
 
 .. _regex-ignore-white-spaces:
 
@@ -356,8 +441,108 @@ matching pattern:
    var pattern = "abc #category code\n123 #item number"
    db.products.find( { sku: { $regex: pattern, $options: "x" } } )
 
-The query matches the following document:
+Example output:
+
+.. code-block:: javascript
+   :copyable: false
+
+   [
+      { _id: 100, sku: 'abc123', description: 'Single line description.' }
+   ]
+
+.. _regex-match-case-in-strings:
+
+Use a Regular Expression to Match Case in Strings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following example uses the regular expression ``"(?i)a(?-i)bc"`` to
+match ``sku`` field strings that contain:
+
+- ``"abc"``
+- ``"Abc"``
 
 .. code-block:: javascript
 
-   { "_id" : 100, "sku" : "abc123", "description" : "Single line description." }
+   db.products.find( { sku: { $regex: "(?i)a(?-i)bc" } } )
+
+Example output:
+
+.. code-block:: javascript
+   :copyable: false
+
+   [
+      { _id: 100, sku: 'abc123', description: 'Single line description.' },
+      { _id: 101, sku: 'abc789', description: 'First line\nSecond line' },
+      { _id: 104, sku: 'Abc789', description: 'SKU starts with A' }
+   ]
+
+.. _regex-example-pcre2-ucp:
+
+Extend Regex Options to Match Characters Outside of ASCII
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 6.1
+
+By default, certain regex options (such as ``/b`` and ``/w``) only
+recognize ASCII characters. This can cause unexpected results when
+performing regex matches against UTF-8 characters.
+
+Starting in MongoDB 6.1, you can specify the ``*UCP`` regex option to
+match UTF-8 characters.
+
+.. important:: Performance of UCP Option
+
+   The ``*UCP`` option results in slower queries than those without the
+   option specified because ``*UCP`` requires a multistage table lookup
+   to perform the match.
+
+For example, consider the following documents in a ``songs``
+collection:
+
+.. code-block:: javascript
+
+   db.songs.insertMany( [
+      { _id: 0, "artist" : "Blue Öyster Cult", "title": "The Reaper" },
+      { _id: 1, "artist": "Blue Öyster Cult", "title": "Godzilla" },
+      { _id: 2, "artist" : "Blue Oyster Cult", "title": "Take Me Away" }
+   ] )
+
+The following regex query uses the ``\b`` option in a regex match. The
+``\b`` option matches a word boundary.
+
+.. code-block:: javascript
+
+   db.songs.find( { artist: { $regex: /\byster/ } } )
+
+Example output:
+
+.. code-block:: javascript
+   :copyable: false
+
+   [
+      { _id: 0, artist: 'Blue Öyster Cult', title: 'The Reaper' },
+      { _id: 1, artist: 'Blue Öyster Cult', title: 'Godzilla' }
+   ]
+
+The previous results are unexpected because none of the words in the
+returned ``artist`` fields begin with the matched string (``yster``).
+The ``Ö`` character in documents ``_id: 0`` and ``_id: 1`` is ignored
+when performing the match because it is a UTF-8 character.
+
+The expected result is that the query does not return any documents.
+
+To allow the query to recognize UTF-8 characters, specify the ``*UCP``
+option before the pattern:
+
+.. code-block:: javascript
+
+   db.songs.find( { artist: { $regex: "(*UCP)/\byster/" } } )
+
+The previous query does not return any documents, which is the expected
+result.
+
+.. tip:: Escape Characters for Regex Patterns
+
+   When specifying ``*UCP`` or any other regular expression option,
+   ensure that you use the correct escape characters for your shell or
+   driver.

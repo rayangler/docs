@@ -13,8 +13,6 @@ Partial Indexes
    :depth: 1
    :class: singlecol
 
-.. versionadded:: 3.2
-
 Partial indexes only index the documents in a collection that meet a
 specified filter expression. By indexing a subset of the documents in a
 collection, partial indexes have lower storage requirements and reduced
@@ -41,8 +39,14 @@ indexes only the documents with a ``rating`` field greater than 5.
    )
 
 You can specify a ``partialFilterExpression`` option for all MongoDB
-:ref:`index types <index-types>`.
+:ref:`index types <index-types>`. When specifying a
+``partialFilterExpression`` for a TTL index on a time series collection,
+you can only filter on the collection ``metaField``.
 
+.. seealso::
+
+   To learn how to manage indexes in |compass|, see :ref:`<manage-indexes>`.
+   
 Behavior
 --------
 
@@ -96,16 +100,15 @@ index would return an incomplete result set.
 
    db.restaurants.find( { cuisine: "Italian" } )
 
-Comparison with the ``sparse`` Index
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Comparison with Sparse Indexes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. tip::
-   Partial indexes represent a superset of the functionality offered by
-   sparse indexes and should be preferred over sparse indexes.
+Partial indexes should be preferred over :ref:`sparse indexes
+<index-type-sparse>`. Partial indexes provide the following benefits:
 
-Partial indexes offer a more expressive mechanism than
-:doc:`/core/index-sparse` indexes to specify which documents are
-indexed.
+- Greater control over which documents are indexed.
+
+- A superset of the functionality offered by sparse indexes.
 
 Sparse indexes select documents to index *solely* based on the
 existence of the indexed field, or for compound indexes, the existence
@@ -159,23 +162,35 @@ by the filter expression
 
    db.contacts.find( { name: "xyz", email: { $exists: false } } )
 
+.. _partial-ttl-indexes:
+
+Partial TTL Indexes
+~~~~~~~~~~~~~~~~~~~
+
+Partial indexes can also be TTL indexes. Partial TTL indexes match the 
+specified filter expression and expire only those documents. For details, see
+:ref:`partial-ttl-index-example`. 
+
 Restrictions
 ------------
 
-In MongoDB, you cannot create multiple versions of an index that
-differ only in the options. As such, you cannot create multiple
-partial indexes that differ only by the filter expression.
+.. include:: /includes/fact-5.0-multiple-partial-index.rst
 
 You cannot specify both the ``partialFilterExpression`` option and
 the ``sparse`` option.
 
-MongoDB 3.0 or earlier do not support partial indexes. To use partial
-indexes, you must use MongoDB version 3.2 or higher. For sharded
-clusters or replica sets, all nodes must be version 3.2 or higher.
-
 ``_id`` indexes cannot be partial indexes.
 
 Shard key indexes cannot be partial indexes.
+
+.. _index-partial-equivalent-indexes:
+
+Equivalent Indexes
+~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/indexes/equivalent-indexes.rst
+
+For an example, see :ref:`index-partial-equivalent-indexes-example`.
 
 Examples
 --------
@@ -273,9 +288,11 @@ fields are greater than ``21``:
 
 .. code-block:: javascript
 
-   db.users.insert( { username: "david", age: 27 } )
-   db.users.insert( { username: "amanda", age: 25 } )
-   db.users.insert( { username: "rajiv", age: 32 } )
+   db.users.insertMany( [
+      { username: "david", age: 27 },
+      { username: "amanda", age: 25 },
+      { username: "rajiv", age: 32 }
+   ] )
 
 However, the following documents with duplicate usernames are allowed
 since the unique constraint only applies to documents with ``age``
@@ -283,7 +300,75 @@ greater than or equal to 21.
 
 .. code-block:: javascript
 
-   db.users.insert( { username: "david", age: 20 } )
-   db.users.insert( { username: "amanda" } )
-   db.users.insert( { username: "rajiv", age: null } )
+   db.users.insertMany( [
+      { username: "david", age: 20 },
+      { username: "amanda" },
+      { username: "rajiv", age: null }
+   ] )
 
+.. _index-partial-equivalent-indexes-example:
+
+Equivalent Indexes Example
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/indexes/equivalent-indexes.rst
+
+In previous MongoDB versions, you can create two equivalent indexes. The
+following example creates a ``pizzas`` collection and two equivalent
+indexes named ``index0`` and ``index1``:
+
+.. code-block:: javascript
+
+   // Create the pizzas collection
+   db.pizzas.insertMany( [
+      { _id: 0, type: "pepperoni", size: "small", price: 4 },
+      { _id: 1, type: "cheese", size: "medium", price: 7 },
+      { _id: 2, type: "vegan", size: "large", price: 8 }
+   ] )
+
+   // Create two equivalent indexes with medium pizza sizes
+   db.pizzas.createIndex(
+      { type: 1 },
+      { name: "index0",
+        partialFilterExpression: { size: "medium" },
+        collation: { locale: "en_US", strength: 1 }
+      }
+   )
+
+   db.pizzas.createIndex(
+      { type: 1 },
+      { name: "index1",
+        partialFilterExpression: { size: "MEDIUM" },
+        collation: { locale: "en_US", strength: 1 }
+      }
+   )
+
+The indexes are equivalent because the two indexes specify the same
+pizza size and only differ in the text case in the partial filter
+expression. Only one index is used by queries: the index that was
+created first, which is ``index0`` in the previous example.
+
+Starting in MongoDB 7.3, you cannot create the second index (``index1``)
+and this error is returned:
+
+.. code-block:: none
+   :copyable: false
+
+   MongoServerError: Index already exists with a different name: index0
+
+In MongoDB versions earlier than 7.3, you can create the indexes but
+only the first index (``index0``) is used with these queries:
+
+.. code-block:: javascript
+
+   db.pizzas.find( { type: "cheese", size: "medium" } ).collation(
+      { locale: "en_US", strength: 1 }
+   )
+
+   db.pizzas.find( { type: "cheese", size: "MEDIUM" } ).collation(
+      { locale: "en_US", strength: 1 }
+   )
+   
+   db.pizzas.find( { type: "cheese", size: "Medium" } ).collation(
+      { locale: "en_US", strength: 1 }
+   )

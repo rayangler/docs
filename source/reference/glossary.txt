@@ -1,3 +1,5 @@
+.. _glossary:
+
 ========
 Glossary
 ========
@@ -12,6 +14,12 @@ Glossary
    :backlinks: none
    :depth: 1
    :class: singlecol
+
+.. note:: 
+
+   For terms related to `{+atlas+} <https://www.mongodb.com/docs/atlas?tck=docs_server>`__, the fully
+   managed service for MongoDB deployments in the cloud, see
+   :atlas:`Glossary </reference/glossary/>` in the Atlas documentation.
 
 .. glossary::
    :sorted:
@@ -30,7 +38,7 @@ Glossary
       BSON :term:`ObjectId`.
 
    accumulator
-      An :term:`expression` in the :term:`aggregation framework` that
+      An :term:`expression` in an :term:`aggregation pipeline` that
       maintains state between documents in the aggregation
       :term:`pipeline`. For a list of accumulator operations, see
       :pipeline:`$group`.
@@ -38,7 +46,7 @@ Glossary
    action
       An operation the user can perform on a resource. Actions and
       :term:`resources <resource>` combine to create :term:`privileges
-      <privilege>`. See :doc:`action </reference/privilege-actions>`.
+      <privilege>`. See :ref:`action <security-user-actions>`.
 
    admin database
       A privileged database. Users
@@ -51,9 +59,9 @@ Glossary
       sets of data. MongoDB's :method:`~db.collection.aggregate()` and
       :method:`~db.collection.mapReduce()` methods are two
       examples of aggregation operations. For more information, see
-      :doc:`/aggregation`.
+      :ref:`aggregation`.
 
-   aggregation framework
+   aggregation pipeline
       The set of MongoDB operators that let you calculate aggregate
       values without having to use :term:`map-reduce`. For a list of
       operators, see :doc:`/reference/aggregation`.
@@ -64,7 +72,7 @@ Glossary
       :ref:`replica-set-arbiter-configuration`.
 
    Atlas
-      `MongoDB Atlas <https://www.mongodb.com/cloud/atlas?tck=docs_server>`_
+      `MongoDB Atlas <https://www.mongodb.com/atlas/database?tck=docs_server>`_
       is a cloud-hosted database-as-a-service.
 
    atomic operation
@@ -83,6 +91,13 @@ Glossary
       Provisioning of access to databases and operations. See
       :doc:`/core/authorization`.
 
+   automatic encryption
+      When using :term:`In-Use Encryption`, automatically performing
+      encryption and decryption based on your preconfigured
+      {+enc-schema+}. The {+shared-library+} translates MongoDB
+      Query Language into the correct call, meaning you don't need to
+      rewrite your application for specific encrypt and decrypt calls.
+
    balancer
       An internal MongoDB process that runs in the context of a
       :term:`sharded cluster` and manages the migration of :term:`chunks
@@ -90,17 +105,36 @@ Glossary
       maintenance operations on a sharded cluster. See
       :ref:`sharding-balancing`.
 
+   backup cursor
+      A :term:`tailable cursor` that points to a list of backup files. 
+      Backup cursors are for internal use only.
+
+   blocking sort
+      A sort that must be performed in memory before output is returned. 
+      Blocking sorts may impact performance for large data sets. Use an 
+      :term:`indexed sort` to avoid a blocking sort.
+
+      See :ref:`sort-index-use` for more information on blocking sort
+      operations.
+      
+   bounded collection scan
+      A plan used by the :doc:`query optimizer </core/query-plans>` that
+      eliminates documents with specific field value ranges. For
+      example, if a range of date field values is outside of a specified
+      date range, the documents in that range are eliminated from the
+      query plan. See :ref:`explain-output-collection-scan`.
+
    BSON
       A serialization format used to store :term:`documents <document>` and make
       remote procedure calls in MongoDB. "BSON" is a portmanteau of the words
       "binary" and "JSON". Think of BSON as a binary representation
       of JSON (JavaScript Object Notation) documents. See
-      :doc:`/reference/bson-types` and
+      :ref:`bson-types` and
       :doc:`/reference/mongodb-extended-json`.
 
    BSON types
       The set of types supported by the :term:`BSON` serialization
-      format. For a list of BSON types, see :doc:`/reference/bson-types`.
+      format. For a list of BSON types, see :ref:`bson-types`.
 
    B-tree
       A data structure commonly used by database management systems to
@@ -123,6 +157,14 @@ Glossary
       For example, the set ``A = { 2, 4, 6 }`` contains 3 elements,
       and has a cardinality of 3. See :ref:`shard-key-cardinality`.
 
+   cartesian product
+      The result of combining two data sets such that the combined set
+      contains every possible combination of values. 
+
+   cfq
+      Complete Fairness Queueing (cfq) is a I/O operation scheduler
+      that allocates bandwidth for incoming request processes.
+
    checksum
       A calculated value used to ensure data integrity.
       The :term:`md5` algorithm is sometimes used as a checksum.
@@ -132,7 +174,7 @@ Glossary
       :term:`shard`. Chunk ranges are inclusive of the lower boundary
       and exclusive of the upper boundary. MongoDB splits chunks when
       they grow beyond the configured chunk size, which by default is
-      64 megabytes. MongoDB migrates chunks when a shard contains too
+      128 megabytes. MongoDB migrates chunks when a shard contains too
       many chunks of a collection relative to other shards. See
       :ref:`sharding-data-partitioning` and :ref:`sharding-balancing`.
 
@@ -143,8 +185,20 @@ Glossary
 
       Client can also refer to a single thread or process.
 
+   client affinity
+      A consistent client connection to a specified data source.
+
    cluster
       See :term:`sharded cluster`.
+
+   clustered collection
+      A :term:`collection` that stores documents ordered by a
+      :ref:`clustered index <db.createCollection.clusteredIndex>` key.
+      See :ref:`clustered-collections`.
+
+   CMK
+      Abbreviation of Customer Master Key, see 
+      :term:`Customer Master Key`.
 
    collection
       A grouping of MongoDB :term:`documents <document>`. A collection
@@ -160,6 +214,12 @@ Glossary
       query criteria. These queries are very inefficient and do not use
       indexes. See :doc:`/core/query-optimization` for details about
       query execution strategies.
+
+   commit quorum
+      During an :ref:`index build <index-operations-replicated-build>`
+      the :ref:`commit quorum <createIndexes-cmd-commitQuorum>`
+      specifies how many secondaries must be ready to commit their local
+      index build before the primary node will execute the commit.
 
    compound index
       An :term:`index` consisting of two or more keys. See
@@ -188,6 +248,11 @@ Glossary
       associated with a :term:`sharded cluster`.
       See :ref:`sharding-config-server`.
 
+   connection pool
+     A cache of database connections maintained by the driver. These 
+     connections are re-used when connections to the database are 
+     required, instead of opening new connections.
+
    container
       A collected set of software and its dependent libraries that are
       packaged together to make transferring between computing
@@ -198,7 +263,7 @@ Glossary
 
    CRUD
       An acronym for the fundamental operations of a database: Create,
-      Read, Update, and Delete. See :doc:`/crud`.
+      Read, Update, and Delete. See :ref:`crud`.
 
    CSV
       A text-based data format consisting of comma-separated values.
@@ -214,6 +279,11 @@ Glossary
       the end or timeout of the session. 
       See :ref:`read-operations-cursors`.
 
+   Customer Master Key
+      A key that is used to encrypt your :term:`Data Encryption Key`. 
+      The customer master key should be hosted in a remote key 
+      provider.
+
    daemon
       The conventional name for a background, non-interactive
       process.
@@ -221,6 +291,12 @@ Glossary
    data directory
       The file-system location where the :binary:`~bin.mongod` stores data
       files. The :setting:`~storage.dbPath` option specifies the data directory.
+
+   Data Encryption Key
+      A key you use to encrypt the fields in your MongoDB 
+      documents. The **encrypted** Data Encryption Key is stored in your 
+      Key Vault collection. The Data Encryption Key is 
+      encrypted by the :term:`Customer Master Key`.
 
    data partition
       A distributed system architecture that splits data into ranges.
@@ -255,12 +331,20 @@ Glossary
       The location of MongoDB's data file storage. See
       :setting:`~storage.dbPath`.
 
+   DDL (Data Definition Language)
+      DDL includes commands that create and modify collections and
+      indexes.
+
    delayed member
       A :term:`replica set` member that cannot become primary and
       applies operations at a specified delay. The delay is useful for
       protecting data from human error (i.e. unintentionally deleted
       databases) or updates that have unforeseen effects on the
       production database. See :ref:`replica-set-delayed-members`.
+
+   DEK
+      Abbreviation of Data Encryption Key, see 
+      :term:`Data Encryption Key`.
 
    document
       A record in a MongoDB :term:`collection` and the basic unit of
@@ -299,9 +383,22 @@ Glossary
       :term:`primary` on startup and in the event of a failure. See
       :ref:`replica-set-elections`.
 
+   explicit encryption
+      When using :term:`In-Use Encryption`, explicitly specifying the
+      encryption or decryption operation, keyID, and
+      query type (for {+qe+}) or algorithm (for {+csfle+}) when working
+      with encrypted data. Compare to :term:`automatic encryption`.
+
    unix epoch
       January 1st, 1970 at 00:00:00 UTC. Commonly used in expressing time,
       where the number of seconds or milliseconds since this point is counted.
+
+   envelope encryption
+      An encryption practice where data is encrypted using a 
+      :term:`Data Encryption Key` and the data encryption key is 
+      encrypted by another key called the :term:`Customer Master Key`.
+      Encrypted keys are stored within a MongoDB collection referred to
+      as the KeyVault as :term:`BSON` documents.
 
    eventual consistency
       A property of a distributed system that allows changes to the
@@ -310,9 +407,9 @@ Glossary
       writes at all times.
 
    expression
-      In the context of :term:`aggregation framework`, expressions are
+      In the context of an :term:`aggregation pipeline`, expressions are
       the stateless transformations that operate on the data that passes
-      through a :term:`pipeline`. See :doc:`/core/aggregation-pipeline`.
+      through a :term:`pipeline`. See :ref:`aggregation-pipeline`.
 
    failover
       The process that allows a :term:`secondary` member of a
@@ -364,10 +461,20 @@ Glossary
       in the shard key field to distribute documents among members of
       the :term:`sharded cluster`. See :ref:`index-type-hashed`.
 
-   haystack index
-      A :term:`geospatial` index that enhances searches by creating
-      "buckets" of objects grouped by a second criterion. See
-      :doc:`/core/geohaystack`.
+   health manager
+     A health manager runs health checks on a :term:`health manager 
+     facet` at a specified :ref:`intensity level 
+     <health-managers-intensity-levels>`. Health manager checks run at 
+     specified time intervals. A health manager can be configured to 
+     move a failing :ref:`mongos <mongos>` out of a cluster 
+     automatically. 
+
+   health manager facet
+      A specific set of features and functionality that a :term:`health
+      manager` can be configured to run health checks against. For 
+      example, you can configure a health manager to monitor and
+      manage DNS or LDAP cluster health issues automatically. See 
+      :ref:`health-managers-facets` for details.
 
    hidden member
       A :term:`replica set` member that cannot become :term:`primary`
@@ -393,13 +500,18 @@ Glossary
    index
       A data structure that optimizes queries. See :doc:`/indexes`.
 
+   index bounds
+      The range of index values that MongoDB searches when using an
+      index to fulfill a query. To learn more, see
+      :ref:`multikey-index-bounds`.
+
    init script
       A simple shell script used by a Linux platform's
       :term:`init system` to start, restart, or stop a :term:`daemon`
       process. If you installed MongoDB via a package manager, an init
       script has been provided for your system as part of the
       installation. See the respective
-      :doc:`Installation Guide </installation>` for your operating
+      :ref:`Installation Guide <tutorial-installation>` for your operating
       system.
 
    init system
@@ -411,7 +523,7 @@ Glossary
       Linux tend to use the **systemd** init system, which uses the
       ``systemctl`` command, while older versions tend to use the
       **System V** init system, which uses the ``service`` command.
-      See the respective :doc:`Installation Guide </installation>` for
+      See the respective Installation Guide for
       your operating system.
 
    initial sync
@@ -427,6 +539,13 @@ Glossary
       lock. Intent locks allow concurrent readers and writers of a
       resource.  See :ref:`faq-concurrency-locking`.
 
+   In-Use Encryption
+      Encryption that secures data while being transmitted, stored, and 
+      processed, and enables supported queries on that encrypted data. 
+      MongoDB provides two approaches to In-Use Encryption: 
+      :ref:`{+qe+} <qe-manual-feature-qe>` and
+      :ref:`{+csfle+} <manual-csfle-feature>`.
+
    IPv6
       A revision to the IP (Internet Protocol) standard that
       provides a significantly larger address space to more effectively
@@ -435,6 +554,12 @@ Glossary
    ISODate
      The international date format used by :binary:`~bin.mongosh`
      to display dates. The format is: ``YYYY-MM-DD HH:MM.SS.millis``.
+
+   indexed sort
+      A sort in which an index provides the sorted result. Sort operations that 
+      use an index often have better performance than a :term:`blocking sort`. 
+      See :ref:`Use Indexed to Sort Query Results <sorting-with-indexes>` for 
+      more information.
 
    interrupt point
      A point in an operation's lifecycle when it can
@@ -475,6 +600,15 @@ Glossary
       :term:`JSON` with Padding. Refers to a method of injecting JSON
       into applications. **Presents potential security concerns**.
 
+   key material
+      The random string of bits used by an encryption algorithm to
+      encrypt and decrypt data.
+
+   Key Vault Collection
+      A MongoDB collection used to store the encrypted 
+      :term:`Data Encryption Keys <Data Encryption Key>` as 
+      :term:`BSON` documents.
+
    least privilege
       An authorization policy that gives a user only the amount of access
       that is essential to that user's work and no more.
@@ -506,7 +640,7 @@ Glossary
       manipulation and snapshot capabilities useful for system
       management. For information on LVM and MongoDB, see
       :ref:`lvm-backup-and-restore`.
-
+   
    mapping type
       A Structure in programming languages that associate keys with
       values, where keys may nest other pairs of keys and values
@@ -521,7 +655,7 @@ Glossary
       data. In MongoDB, you can run arbitrary aggregations over data
       using map-reduce. For map-reduce implementation, see
       :doc:`/core/map-reduce`. For all approaches to aggregation,
-      see :doc:`/aggregation`.
+      see :ref:`aggregation`.
 
    md5
       A hashing algorithm used to efficiently provide
@@ -529,9 +663,14 @@ Glossary
       data. MongoDB uses md5 to identify chunks of data for
       :term:`GridFS`. See :doc:`/reference/command/filemd5`.
 
-   MIB
-      Management Information Base. MongoDB uses MIB files to define the type of
-      data tracked by SNMP in the MongoDB Enterprise edition.
+   median
+      In a dataset, the median is the percentile value where 50% of the
+      data falls at or below that value.
+
+   metadata collection
+      In :ref:`{+qe+} <qe-manual-feature-qe>`, the internal collections
+      MongoDB uses to enable querying on encrypted fields. See
+      :ref:`Metadata Collections <qe-metadata-collections>`.
 
    MIME
       Multipurpose Internet Mail Extensions. A standard set of type and
@@ -599,6 +738,11 @@ Glossary
       the partition can communicate to the other side only if they
       originate the communications channel.
 
+   noop
+      No Operation (noop), is an I/O operation scheduler that allocates
+      I/O bandwidth for incoming processes based on a first in, first out 
+      queue.
+
    storage order
       See :term:`natural order`.
 
@@ -620,6 +764,16 @@ Glossary
       logical writes to a MongoDB database. The oplog is the
       basic mechanism enabling :term:`replication` in MongoDB.
       See :doc:`/core/replica-set-oplog`.
+
+   oplog hole
+      A temporary gap in the oplog due to oplog writes not occurring in
+      sequence. Replica set :ref:`primaries <replica-set-primary>` apply
+      oplog entries in parallel as a batch operation. As a result,
+      temporary gaps in the oplog can occur from entries that are not
+      yet written from a batch.
+
+   oplog window
+      .. include:: /includes/replication/fact-oplog-window-definition.rst
 
    optime
       .. versionchanged:: 3.2
@@ -649,10 +803,20 @@ Glossary
       need to run :dbcommand:`cleanupOrphaned` to delete orphaned
       documents.
 
+   orphaned cursor
+      A cursor that is not properly closed or iterated over 
+      in your application code. Orphaned cursors can cause performance
+      issues in your MongoDB deployment.
+
    passive member
       A member of a :term:`replica set` that cannot become primary
       because its :rsconf:`members[n].priority` is
       ``0``. See :doc:`/core/replica-set-priority-0-member`.
+
+   percentile
+      In a dataset, a given percentile is a value where that percentage
+      of the data falls at or below that value. For details, see
+      :ref:`percentile-calculation-considerations`.
 
    PID
       A process identifier. UNIX-like systems assign a unique-integer
@@ -668,7 +832,7 @@ Glossary
 
    pipeline
       A series of operations in an :term:`aggregation` process.
-      See :doc:`/core/aggregation-pipeline`.
+      See :ref:`aggregation-pipeline`.
 
    Point
       A single coordinate pair as described in the GeoJSON Point
@@ -688,18 +852,26 @@ Glossary
       cannot intersect or overlap with each other. See
       :ref:`geospatial-indexes-store-geojson`.
 
+   post-image document
+      A document after it was inserted, replaced, or updated. See
+      :ref:`db.collection.watch-change-streams-pre-and-post-images-example`.
+
    powerOf2Sizes
       A per-collection setting that changes and normalizes the way
       MongoDB allocates space for each :term:`document`, in an effort to
       maximize storage reuse and to reduce fragmentation. This is the
-      default for :doc:`TTL Collections </tutorial/expire-data>`. See
-      :doc:`/reference/command/collMod`.
+      default for :ref:`TTL Collections <ttl-collections>`. See
+      :dbcommand:`collMod`.
 
    prefix compression
       Reduces memory and disk consumption by storing any identical index
       key prefixes only once, per page of memory. See:
       :ref:`storage-wiredtiger-compression` for more about WiredTiger's
       compression behavior.
+
+   pre-image document
+      A document before it was replaced, updated, or deleted. See
+      :ref:`db.collection.watch-change-streams-pre-and-post-images-example`.
 
    pre-splitting
       An operation performed before inserting data that divides the
@@ -750,6 +922,10 @@ Glossary
       :method:`db.collection.findOne()` methods. See
       :ref:`read-operations-queries`.
 
+   query framework
+      A combination of the :term:`query optimizer` and query execution engine 
+      used to process an operation.  
+
    query optimizer
       A process that generates query plans. For each query, the
       optimizer generates a plan that matches the query to the index
@@ -759,7 +935,9 @@ Glossary
       query plan. See :ref:`read-operations-query-optimization`.
 
    query shape
-      A combination of query predicate, sort, and projection.
+      A combination of query predicate, sort, projection, and
+      :ref:`collation <collation>`. The query shape allows MongoDB 
+      to identify logically equivalent queries and analyze their performance.
 
       For the query predicate, only the structure of the predicate,
       including the field names, are significant; the values in the
@@ -768,6 +946,15 @@ Glossary
       'utensil' }`` for a query shape.
 
       .. include:: /includes/extracts/4.2-changes-query-shapes.rst
+
+   range                                                                    
+      A contiguous range of :term:`shard key` values within a               
+      chunk. Data ranges include the lower boundary and             
+      exclude the upper boundary. MongoDB migrates data when a              
+      shard contains :ref:`too much data of a collection                    
+      <sharding-migration-thresholds>` relative to other shards.            
+      See :ref:`sharding-data-partitioning` and                             
+      :ref:`sharding-balancing`.  
 
    read concern
       Specifies a level of isolation for read operations. For example,
@@ -781,7 +968,7 @@ Glossary
       sets. By default, MongoDB directs reads to :term:`primaries
       <primary>`. However, you may also direct reads to secondaries for
       :term:`eventually consistent <eventual consistency>` reads. See
-      :doc:`Read Preference </core/read-preference>`.
+      :ref:`Read Preference <read-preference>`.
 
    read lock
       A shared :term:`lock` on a resource such as a collection or
@@ -897,13 +1084,16 @@ Glossary
       consistency and is the replication topology employed by MongoDB.
       See :doc:`/core/replica-set-primary`.
 
+   snapshot
+      .. include:: /includes/snapshot-definition.rst
+
    snappy
       A compression/decompression library designed to balance
       efficient computation requirements with reasonable compression rates.
       Snappy is the default compression
       library for MongoDB's use of :ref:`WiredTiger
       <storage-wiredtiger>`. See `Snappy
-      <https://google.github.io/snappy/>`_ and the :wtdocs:`WiredTiger compression
+      <https://google.github.io/snappy/>`_ and the :wtdocs-v5.0:`WiredTiger compression
       documentation </compression.html>`
       for more information.
 
@@ -934,12 +1124,24 @@ Glossary
       standalone into a replica set, see
       :doc:`/tutorial/convert-standalone-to-replica-set`.
 
+   stash collection
+      A temporary collection that may be created during
+      :ref:`resharding <sharding-resharding>`. When resharding completes
+      successfully, any stash collections that were created are removed
+      during the operation.
+
    storage engine
       The part of a database that is responsible for managing how data
       is stored and accessed, both in memory and on disk. Different
       storage engines perform better for specific workloads. See
       :doc:`/core/storage-engines` for specific details on the built-in
       storage engines in MongoDB.
+
+   Subject Alternative Name
+      Subject Alternative Name (SAN) is an extension of the X.509 
+      certificate which allows an array of values such as IP addresses 
+      and domain names that specify which resources a single security 
+      certificate may secure.
 
    strict consistency
       A property of a distributed system requiring that all members
@@ -1020,7 +1222,7 @@ Glossary
 
    upsert
       An option for update operations; e.g.
-      :method:`db.collection.update()`,
+      :method:`db.collection.updateOne()`,
       :method:`db.collection.findAndModify()`. If set to true, the
       update operation will either update the document(s) matched by
       the specified query or if no documents match, insert a new
@@ -1074,7 +1276,7 @@ Glossary
       at the cost of more CPU, compared to MongoDB's use of
       :term:`snappy`. You can configure :ref:`WiredTiger
       <storage-wiredtiger>` to use zlib as its compression library. See
-      http://www.zlib.net and the :wtdocs:`WiredTiger compression documentation
+      http://www.zlib.net and the :wtdocs-v5.0:`WiredTiger compression documentation
       </compression.html>` for more
       information.
 
@@ -1085,15 +1287,11 @@ Glossary
       and lower CPU usage when compared to :term:`zlib`.
 
    zone
-      .. versionadded:: 3.4
+      A grouping of documents based on ranges of :term:`shard key` values
+      for a given sharded collection. Each shard in the sharded cluster can
+      associate with one or more zones. In a balanced cluster, MongoDB
+      directs reads and writes covered by a zone only to those shards
+      inside the zone. See the :ref:`zone-sharding` manual page for more
+      information.
 
-         A grouping of documents based on ranges of :term:`shard key` values
-         for a given sharded collection. Each shard in the sharded cluster can
-         associate with one or more zones. In a balanced cluster, MongoDB
-         directs reads and writes covered by a zone only to those shards
-         inside the zone. See the :ref:`zone-sharding` manual page for more
-         information.
-
-         Zones supersede functionality described by :term:`tags <tag>` in
-         MongoDB 3.2.
-
+      Zones supersede functionality described by :term:`tags <tag>` in MongoDB 3.2.

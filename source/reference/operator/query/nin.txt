@@ -4,6 +4,10 @@ $nin
 
 .. default-domain:: mongodb
 
+.. facet::
+   :name: programming_language
+   :values: shell
+
 .. contents:: On this page
    :local:
    :backlinks: none
@@ -12,47 +16,89 @@ $nin
 
 .. query:: $nin
 
-   *Syntax*: ``{ field: { $nin: [ <value1>, <value2> ... <valueN> ]} }``
-
    :query:`$nin` selects the documents where:
 
-   - the ``field`` value is not in the specified ``array`` **or**
-   - the ``field`` does not exist.
+   - the specified field value is not in the specified array **or**
+   - the specified field does not exist.
 
-   .. include:: /includes/fact-comparison-order.rst
+Compatibility
+-------------
 
-   Consider the following query:
+.. |operator-method| replace:: ``$nin``
 
-   .. code-block:: javascript
+.. include:: /includes/fact-compatibility.rst
 
-      db.inventory.find( { qty: { $nin: [ 5, 15 ] } } )
+Syntax
+------
 
-   This query will select all documents in the ``inventory`` collection
-   where the ``qty`` field value does **not** equal ``5`` nor
-   ``15``. The selected documents will include those documents that do
-   *not* contain the ``qty`` field.
+The :query:`$nin` operator has the following form:
 
-   If the ``field`` holds an array, then the :query:`$nin` operator
-   selects the documents whose ``field`` holds an array with **no**
-   element equal to a value in the specified array (e.g. ``<value1>``,
-   ``<value2>``, etc.).
+.. code-block:: javascript
 
-   Consider the following query:
+   { field: { $nin: [ <value1>, <value2> ... <valueN> ] } }
 
-   .. code-block:: javascript
+If the ``field`` holds an array, then the :query:`$nin` operator selects
+the documents whose ``field`` holds an array with **no** element equal to
+a value in the specified array (for example, ``<value1>``,
+``<value2>``, and so on).
 
-      db.inventory.update( { tags: { $nin: [ "appliances", "school" ] } }, { $set: { sale: false } } )
+.. include:: /includes/fact-comparison-order.rst
 
-   This :method:`~db.collection.update()` operation will set
-   the ``sale`` field value in the ``inventory`` collection where the
-   ``tags`` field holds an array with **no** elements matching an
-   element in the array ``["appliances", "school"]`` or where a
-   document does not contain the ``tags`` field.
+Examples
+--------
 
-   .. include:: /includes/extracts/nin_operators_selectivity.rst
-      
-   .. seealso::
+Create the ``inventory`` collection:
 
-      - :method:`~db.collection.find()`
-      - :method:`~db.collection.update()`
-      - :update:`$set`
+.. code-block:: javascript
+
+   db.inventory.insertMany( [
+      { "item": "Pens", "quantity": 350, "tags": [ "school", "office" ] },
+      { "item": "Erasers", "quantity": 15, "tags": [ "school", "home" ] },
+      { "item": "Maps", "tags": [ "office", "storage" ] },
+      { "item": "Books", "quantity": 5, "tags": [ "school", "storage", "home" ] }
+   ] )
+
+Select on Unmatching Documents
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The following query selects all documents from the ``inventory``
+collection where the ``quantity`` does **not** equal either 5 or 15. 
+
+The query also matches documents that do *not* have a ``quantity``
+field.
+
+.. code-block:: javascript
+
+   db.inventory.find( { quantity: { $nin: [ 5, 15 ] } }, { _id: 0 } )
+
+Example output:
+
+.. code-block:: javascript
+
+  { item: 'Pens', quantity: 350, tags: [ 'school', 'office' ] },
+  { item: 'Maps', tags: [ 'office', 'storage' ] }
+
+Select on Elements Not in an Array
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Set the ``exclude`` field to ``true`` for documents that don't have the
+``"school"`` tag.
+
+.. code-block:: javascript
+
+   db.inventory.updateMany(
+       { tags: { $nin: [ "school" ] } },
+       { $set: { exclude: true } }
+   )
+
+:method:`~db.collection.updateMany()` also selects a document when the
+document does not contain the field :query:`$nin` is matching on.
+
+.. include:: /includes/extracts/nin_operators_selectivity.rst
+   
+.. seealso::
+
+   - :method:`~db.collection.find()`
+   - :method:`~db.collection.updateMany()`
+   - :update:`$set`
+

@@ -17,6 +17,9 @@ Definition
 
    Removes the user from the current database.
 
+   .. |dbcommand| replace:: :dbcommand:`dropUser` command
+   .. include:: /includes/fact-mongosh-shell-method-alt.rst
+
    The :method:`db.dropUser()` method takes the following arguments:
 
 
@@ -25,30 +28,14 @@ Definition
       :widths: 20 20 80
    
       * - Parameter
-   
         - Type
-   
         - Description
-   
       * - ``username``
-   
         - string
-   
         - The name of the user to remove from the database.
-          
-          
-   
       * - ``writeConcern``
-   
         - document
-   
-        - Optional. The level of :doc:`write concern </reference/write-concern>` for the
-          removal operation. The ``writeConcern`` document takes the same
-          fields as the :dbcommand:`getLastError` command.
-          
-          
-   
-
+        - .. include:: /includes/fact-write-concern-spec-link.rst
 
    The :method:`db.dropUser()` method wraps the :dbcommand:`dropUser`
    command.

@@ -1,8 +1,21 @@
+.. _agg-pipeline-optimization:
+
 =================================
 Aggregation Pipeline Optimization
 =================================
 
 .. default-domain:: mongodb
+
+.. facet::
+   :name: programming_language
+   :values: shell
+
+.. facet::
+   :name: genre 
+   :values: reference
+
+.. meta:: 
+   :description: Aggregation pipeline operations have an optimization phase which attempts to reshape the pipeline for improved performance.
 
 .. contents:: On this page
    :local:
@@ -19,6 +32,19 @@ include the :method:`explain <db.collection.aggregate()>` option in the
 
 .. include:: /includes/fact-optimizations-subject-to-change.rst
 
+In addition to learning about the aggregation pipeline optimizations
+performed during the optimization phase, you will also see how to
+improve aggregation pipeline performance using :ref:`indexes and
+document filters <aggregation-pipeline-optimization-indexes-and-filters>`.
+
+.. |page-topic| replace:: :atlas:`run aggregation pipelines in the UI </atlas-ui/agg-pipeline>`
+
+.. cta-banner::
+   :url: https://www.mongodb.com/docs/atlas/atlas-ui/agg-pipeline
+   :icon: Cloud
+
+   .. include:: /includes/fact-atlas-compatible.rst
+
 .. _aggregation-pipeline-projection-optimization:
 
 Projection Optimization
@@ -26,8 +52,15 @@ Projection Optimization
 
 The aggregation pipeline can determine if it requires only a subset of
 the fields in the documents to obtain the results. If so, the pipeline
-will only use those required fields, reducing the amount of data
-passing through the pipeline.
+only uses those fields, reducing the amount of data passing through the
+pipeline.
+
+``$project`` Stage Placement
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. |$project| replace:: :pipeline:`$project`
+
+.. include:: /includes/aggregation/fact-project-stage-placement.rst
 
 .. _aggregation-pipeline-sequence-optimization:
 
@@ -112,11 +145,12 @@ use any values computed in either the :pipeline:`$project` or
 :pipeline:`$match` stage before both of the projection stages.
 
 .. note::
-   After optimization, the filter ``{ name: "Joe Schmoe" }`` is in
-   a :pipeline:`$match` stage at the beginning of the pipeline. This has
+
+   After optimization, the filter ``{ name: "Joe Schmoe" }`` is in a
+   :pipeline:`$match` stage at the beginning of the pipeline. This has
    the added benefit of allowing the aggregation to use an index on the
-   ``name`` field when initially querying the collection.
-   See :ref:`aggregation-pipeline-operators-and-performance` for more
+   ``name`` field when initially querying the collection. See
+   :ref:`aggregation-pipeline-optimization-indexes-and-filters` for more
    information.
 
 .. _agg-sort-match-optimization:
@@ -151,8 +185,9 @@ can sometimes add a portion of the :pipeline:`$match` stage before the
 :pipeline:`$redact` stage. If the added :pipeline:`$match` stage is at
 the start of a pipeline, the aggregation can use an index as well as
 query the collection to limit the number of documents that enter the
-pipeline. See :ref:`aggregation-pipeline-operators-and-performance` for
-more information.
+pipeline. See
+:ref:`aggregation-pipeline-optimization-indexes-and-filters` for more
+information.
 
 For example, if the pipeline consists of the following stages:
 
@@ -174,8 +209,6 @@ The optimizer can add the same :pipeline:`$match` stage before the
 
 ``$project``/``$unset`` + ``$skip`` Sequence Optimization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. versionadded:: 3.2
 
 When you have a sequence with :pipeline:`$project` or :pipeline:`$unset` followed by 
 :pipeline:`$skip`, the :pipeline:`$skip` 
@@ -345,8 +378,6 @@ stage
 ``$lookup`` + ``$unwind`` Coalescence
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. versionadded:: 3.2
-
 When a :pipeline:`$unwind` immediately follows another
 :pipeline:`$lookup`, and the :pipeline:`$unwind` operates on the ``as``
 field of the :pipeline:`$lookup`, the optimizer can coalesce the
@@ -382,6 +413,172 @@ option, the ``explain`` output shows the coalesced stage:
        unwinding: { preserveNullAndEmptyArrays: false }
      }
    }
+
+.. _sbe-pipeline-optimizations:
+
+|sbe-title| Pipeline Optimizations
+----------------------------------
+
+MongoDB can use the :ref:`slot-based query execution engine 
+<sbe-landing>` to execute certain pipeline stages when specific 
+conditions are met. In most cases, the |sbe-short| provides improved 
+performance and lower CPU and memory costs compared to the classic query
+engine.
+
+To verify that the |sbe-short| is used, run the aggregation with the
+``explain`` option. This option outputs information on the
+aggregation's query plan. For more information on using ``explain``
+with aggregations, see :ref:`example-aggregate-method-explain-option`.
+
+The following sections describe:
+
+- The conditions when the |sbe-short| is used for aggregation.
+
+- How to verify if the |sbe-short| was used.
+
+.. _agg-group-optimization-sbe:
+
+``$group`` Optimization 
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 5.2
+
+.. include:: /includes/fact-sbe-group-overview.rst
+
+When the |sbe| is used for :pipeline:`$group`, the :ref:`explain results
+<explain-results>` include ``queryPlanner.winningPlan.queryPlan.stage:
+"GROUP"``.
+
+The location of the ``queryPlanner`` object depends on whether the
+pipeline contains stages after the ``$group`` stage that cannot be
+executed using the |sbe-short|.
+
+- If ``$group`` is the last stage or all stages after ``$group`` can
+  be executed using the |sbe-short|, the ``queryPlanner`` object is in
+  the top-level ``explain`` output object (``explain.queryPlanner``).
+
+- If the pipeline contains stages after ``$group`` that cannot be
+  executed using the |sbe-short|, the ``queryPlanner`` object is in
+  ``explain.stages[0].$cursor.queryPlanner``.
+
+.. _agg-lookup-optimization-sbe:
+
+``$lookup`` Optimization 
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 6.0
+
+.. include:: /includes/fact-sbe-lookup-overview.rst
+
+When the |sbe| is used for :pipeline:`$lookup`, the :ref:`explain
+results <explain-results>` include
+``queryPlanner.winningPlan.queryPlan.stage: "EQ_LOOKUP"``. ``EQ_LOOKUP``
+means "equality lookup".
+
+The location of the ``queryPlanner`` object depends on whether the
+pipeline contains stages after the ``$lookup`` stage that cannot be
+executed using the |sbe-short|.
+
+- If ``$lookup`` is the last stage or all stages after ``$lookup`` can
+  be executed using the |sbe-short|, the ``queryPlanner`` object is in
+  the top-level ``explain`` output object (``explain.queryPlanner``).
+
+- If the pipeline contains stages after ``$lookup`` that cannot be
+  executed using the |sbe-short|, the ``queryPlanner`` object is in
+  ``explain.stages[0].$cursor.queryPlanner``.
+
+.. _aggregation-pipeline-optimization-indexes-and-filters:
+
+Improve Performance with Indexes and Document Filters
+-----------------------------------------------------
+
+The following sections show how you can improve aggregation performance
+using indexes and document filters.
+
+Indexes
+~~~~~~~
+
+An aggregation pipeline can use :ref:`indexes <indexes>` from the input 
+collection to improve performance. Using an index limits the amount of 
+documents a stage processes. Ideally, an index can :ref:`cover 
+<read-operations-covered-query>` the stage query. A covered query has 
+especially high performance, since the index returns all matching 
+documents.
+
+For example, a pipeline that consists of :pipeline:`$match`, 
+:pipeline:`$sort`, :pipeline:`$group` can benefit from indexes at 
+every stage:
+
+- An index on the ``$match`` query field efficiently 
+  identifies the relevant data
+
+- An index on the sorting field returns data in sorted order for the 
+  ``$sort`` stage
+
+- An index on the grouping field that matches the ``$sort`` 
+  order returns all of the field values needed for the
+  ``$group`` stage, making it a covered query.
+
+To determine whether a pipeline uses indexes, review the query plan and 
+look for ``IXSCAN`` or ``DISTINCT_SCAN`` plans.
+
+.. note::
+   In some cases, the query planner uses a ``DISTINCT_SCAN`` index plan 
+   that returns one document per index key value. ``DISTINCT_SCAN`` 
+   executes faster than ``IXSCAN`` if there are multiple documents per 
+   key value. However, index scan parameters might affect the time 
+   comparison of ``DISTINCT_SCAN`` and ``IXSCAN``.
+
+For early stages in your aggregation pipeline, consider indexing the 
+query fields. Stages that can benefit from indexes are:
+
+:pipeline:`$match` stage
+  During the ``$match`` stage, the server can use an index if ``$match`` is the first stage in the pipeline, after any optimizations from the :ref:`query planner <query-plans-query-optimization>`.
+
+:pipeline:`$sort` stage
+   During the ``$sort`` stage, the server can use an index if the stage is not preceded by a :pipeline:`$project`, :pipeline:`$unwind`, or 
+   :pipeline:`$group` stage.
+
+:pipeline:`$group` stage
+  During the ``$group`` stage, the server can use an index to quickly
+  find the :group:`$first <$first>` or :group:`$last <$last>` document
+  in each group if the stage meets both of these conditions:
+
+  - The pipeline :pipeline:`sorts <$sort>` and :pipeline:`groups
+    <$group>` by the same field.
+
+  - The ``$group`` stage only uses the :group:`$first` or 
+    :group:`$last` accumulator operator.
+
+  See :ref:`$group Performance Optimizations <group-pipeline-optimization>` for an example.
+
+:pipeline:`$geoNear` stage 
+  The server always uses an index for the ``$geoNear`` stage, since it 
+  requires a :ref:`geospatial index <index-feature-geospatial>`.
+
+Additionally, stages later in the pipeline that retrieve data from 
+other, unmodified collections can use indexes on those collections 
+for optimization. These stages include:
+
+- :pipeline:`$lookup`
+- :pipeline:`$graphLookup`
+- :pipeline:`$unionWith`
+
+Document Filters
+~~~~~~~~~~~~~~~~
+
+If your aggregation operation requires only a subset of the documents in
+a collection, filter the documents first:
+
+- Use the :pipeline:`$match`, :pipeline:`$limit`, and :pipeline:`$skip`
+  stages to restrict the documents that enter the pipeline.
+  
+- When possible, put :pipeline:`$match` at the beginning of the pipeline
+  to use indexes that scan the matching documents in a collection.
+
+- :pipeline:`$match` followed by :pipeline:`$sort` at the start of the
+  pipeline is equivalent to a single query with a sort, and can use an
+  index.
 
 Example
 -------

@@ -1,8 +1,17 @@
+.. _production-notes:
+
 ================
 Production Notes
 ================
 
 .. default-domain:: mongodb
+
+.. facet::
+   :name: genre
+   :values: reference
+
+.. meta:: 
+   :description: System configurations that affect MongoDB, especially when running in production.
 
 .. contents:: On this page
    :local:
@@ -13,42 +22,28 @@ Production Notes
 This page details system configurations that affect MongoDB,
 especially when running in production.
 
-.. warning:: MMAPv1 Removed
-
-
-   MongoDB 4.2 removes the deprecated MMAPv1 storage engine. To change
-   your MMAPv1 storage engine deployment to :doc:`/core/wiredtiger`, see:
-
-   - :doc:`/tutorial/change-standalone-wiredtiger`
-
-   - :doc:`/tutorial/change-replica-set-wiredtiger`
-
-   - :doc:`/tutorial/change-sharded-cluster-wiredtiger`
-
 .. include:: /includes/fact-mms-summary.rst
 
-MongoDB Binaries
-----------------
+.. |link-topic-ing| replace:: running in production
+
+.. |atlas-url| replace:: :atlas:`Atlas Production Notes </production-notes/>`
+
+.. include:: /includes/fact-atlas-link.rst
 
 .. _prod-notes-supported-platforms:
 
-Supported Platforms
-~~~~~~~~~~~~~~~~~~~
+Platform Support
+----------------
 
 For running **in production**, refer to the
 :ref:`prod-notes-recommended-platforms` for operating system
 recommendations.
 
-.. note::
-
-   .. include:: /includes/extracts/4.0-errata-wt-4018.rst
-
-   For details, see :issue:`WT-4018`.
-
-.. _prod-notes-supported-platforms-x86_64:
+Platform Support Notes
+----------------------
 
 x86_64
-``````
+~~~~~~
 
 MongoDB requires the following minimum ``x86_64`` microarchitectures:
 [#microarch-intel]_
@@ -66,7 +61,65 @@ Starting in MongoDB 5.0, :binary:`~bin.mongod`, :binary:`~bin.mongos`,
 and the legacy :binary:`~bin.mongo` shell no longer support ``x86_64``
 platforms which do not meet this minimum microarchitecture requirement.
 
-.. include:: /includes/fact-platform-x86_64.rst
+- MongoDB only supports Oracle Linux running the  Red Hat Compatible
+  Kernel (RHCK). MongoDB does **not** support the Unbreakable
+  Enterprise Kernel (UEK).
+
+- MongoDB 5.0 requires use of the AVX instruction set, available on
+  `select Intel and AMD processors
+  <https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#CPUs_with_AVX>`__.
+
+.. _prod-notes-supported-platforms-ARM64:
+
+ARM64
+~~~~~
+
+MongoDB on ``arm64`` requires the *ARMv8.2-A* or later
+microarchitecture.
+
+Starting in MongoDB 5.0, :binary:`~bin.mongod`, :binary:`~bin.mongos`,
+and the legacy :binary:`~bin.mongo` shell no longer support ``arm64``
+platforms which do not meet this minimum microarchitecture requirement.
+
+.. _prod-notes-supported-platforms-x86_64:
+.. _prod-notes-supported-platforms-PPC64LE:
+.. _prod-notes-supported-platforms-s390x:
+
+Platform Support Matrix
+-----------------------
+
+.. sharedinclude:: server/platform-support/platform-support.rst
+
+.. [#SLES12-SP-info]
+
+   MongoDB versions 5.0 and greater are tested against SLES 12 service 
+   pack 5. Earlier versions of MongoDB are tested against SLES 12 
+   with no service pack.
+
+.. [#SLES15-SP-info]
+
+   MongoDB versions 7.0 and later are tested against SLES 15 service pack 4. 
+   Earlier versions of MongoDB are tested against SLES 15 with no service pack.
+
+.. [#RHEL7-compat]
+   
+   MongoDB version 7.0 is built and tested against RHEL 7.9. Earlier versions 
+   of MongoDB are tested against RHEL 7 and assume forward compatibility.
+
+.. _prod-notes-recommended-platforms:
+
+Recommended Platforms
+~~~~~~~~~~~~~~~~~~~~~
+
+While MongoDB supports a variety of platforms, the following operating
+systems are recommended for production use on ``x86_64`` architecture:
+
+- Amazon Linux 2
+- Debian 10
+- :abbr:`RHEL (Red Hat Enterprise Linux)` / CentOS 7 and 8 [#rocky-almalinux]_
+- SLES 12 and 15
+- Ubuntu LTS 20.04 and 22.04
+- Windows Server 2016 and 2019
 
 .. [#oracle-linux]
 
@@ -80,60 +133,12 @@ platforms which do not meet this minimum microarchitecture requirement.
    `select Intel and AMD processors
    <https://en.wikipedia.org/wiki/Advanced_Vector_Extensions#CPUs_with_AVX>`__.
 
-.. _prod-notes-supported-platforms-ARM64:
+.. [#rocky-almalinux]
 
-ARM64
-`````
-
-MongoDB on ``arm64`` requires the *ARMv8.2-A* or later
-microarchitecture.
-
-Starting in MongoDB 5.0, :binary:`~bin.mongod`, :binary:`~bin.mongos`,
-and the legacy :binary:`~bin.mongo` shell no longer support ``arm64``
-platforms which do not meet this minimum microarchitecture requirement.
-
-.. include:: /includes/fact-platform-arm64.rst
-
-.. _prod-notes-supported-platforms-PPC64LE:
-
-PPC64LE (MongoDB Enterprise Edition)
-````````````````````````````````````
-
-.. include:: /includes/fact-platform-ppc64le.rst
-
-.. _prod-notes-supported-platforms-s390x:
-
-s390x (MongoDB Community Edition)
-`````````````````````````````````
-
-.. include:: /includes/fact-platform-s390x-community.rst
-
-s390x (MongoDB Enterprise Edition)
-``````````````````````````````````
-
-.. include:: /includes/fact-platform-s390x-enterprise.rst
-
-.. _prod-notes-supported-platforms-containers:
-
-Containers
-``````````
-
-.. include:: /includes/fact-platform-containers.rst
-
-.. _prod-notes-recommended-platforms:
-
-Recommended Platforms
-~~~~~~~~~~~~~~~~~~~~~
-
-While MongoDB supports a variety of platforms, the following operating
-systems are recommended for production use on ``x86_64`` architecture:
-
-- Amazon Linux 2
-- Debian 9 and 10
-- :abbr:`RHEL (Red Hat Enterprise Linux)` / CentOS 7 and 8
-- SLES 12 and 15
-- Ubuntu LTS 18.04 and 20.04
-- Windows Server 2016 and 2019
+   MongoDB on-premises products released for RHEL version 8.0+ are 
+   compatible with and supported on Rocky Linux version 8.0+ and 
+   AlmaLinux version 8.0+, contingent upon those distributions meeting their 
+   obligation to deliver full RHEL compatibility.
 
 .. seealso::
 
@@ -150,7 +155,7 @@ current stable release, even if you are installing via a package
 manager.
 
 For other MongoDB products, refer either to the :dl:`MongoDB Download Center <>`
-page or their `respective documentation <https://docs.mongodb.com/?tck=docs_server>`_.
+page or their `respective documentation <https://www.mongodb.com/docs/?tck=docs_server>`_.
 
 MongoDB ``dbPath``
 ------------------
@@ -162,6 +167,8 @@ engine other than the one specified by :option:`--storageEngine <mongod --storag
 
 :binary:`~bin.mongod` must possess read and write permissions for the specified
 :setting:`~storage.dbPath`.
+
+.. include:: /includes/security/fact-antivirus-scan.rst
 
 .. _prod-notes-concurrency:
 
@@ -192,22 +199,14 @@ Journaling
 ~~~~~~~~~~
 
 MongoDB uses *write ahead logging* to an on-disk :term:`journal`.
-Journaling guarantees that MongoDB can quickly recover :doc:`write
-operations </crud>` that were written to the journal
+Journaling guarantees that MongoDB can quickly recover :ref:`write
+operations <crud>` that were written to the journal
 but not written to data files in cases where :binary:`~bin.mongod`
-terminated due to a crash or other serious failure.
-
-Leave journaling enabled in order to ensure that :binary:`~bin.mongod` will
-be able to recover its data files and keep the data files in a valid
-state following a crash. See :doc:`Journaling </core/journaling/>` for
-more information.
-
-.. include:: /includes/wiredtiger-node-nojournal.rst
+terminated due to a crash or other serious failure. See 
+:ref:`<journaling-internals>` for more information.
 
 Read Concern
 ~~~~~~~~~~~~
-
-.. versionadded:: 3.2
 
 .. include:: /includes/fact-read-own-writes.rst
 
@@ -216,7 +215,7 @@ Write Concern
 
 .. include:: /includes/introduction-write-concern.rst
 
-See the :doc:`Write Concern </reference/write-concern>` document for more
+See the :ref:`Write Concern <write-concern>` document for more
 information about choosing an appropriate write concern level for your
 deployment.
 
@@ -234,15 +233,15 @@ require access, such as application servers, monitoring services, and
 other MongoDB components.
 
 .. important::
-   By default, :doc:`authorization </core/authorization>` is not
+   By default, :ref:`authorization <authorization>` is not
    enabled, and :binary:`~bin.mongod` assumes a trusted environment. Enable
    :setting:`~security.authorization` mode as needed. For more
    information on authentication mechanisms supported in MongoDB as
-   well as authorization in MongoDB, see :doc:`/core/authentication`
-   and :doc:`/core/authorization`.
+   well as authorization in MongoDB, see :ref:`<authentication>`
+   and :ref:`<authorization>`.
 
 For additional information and considerations on security, refer to the
-documents in the :doc:`Security Section </security>`, specifically:
+documents in the :ref:`Security Section <security>`, specifically:
 
 - :doc:`/administration/security-checklist`
 - :doc:`/core/security-hardening`
@@ -357,6 +356,9 @@ MongoDB checks NUMA settings on start up when deployed on Linux (since version
 2.0) and Windows (since version 2.6) machines. If the
 NUMA configuration may degrade performance, MongoDB prints a warning.
 
+The ``numad`` daemon process can also reduce :binary:`~bin.mongod` performance. 
+You should ensure ``numad`` is not enabled on MongoDB servers.
+
 .. seealso::
 
    - `The MySQL "swap insanity" problem and the effects of NUMA
@@ -426,7 +428,7 @@ NUMA for use with MongoDB.
 
          You must use ``numactl`` to start each of your
          :binary:`~bin.mongod` instances, including all
-         :doc:`config servers </core/sharded-cluster-config-servers>`,
+         :ref:`config servers <sharding-config-server>`,
          :binary:`~bin.mongos` instances, and clients. Edit the default
          **systemd** service file for each as follows:
 
@@ -480,7 +482,7 @@ NUMA for use with MongoDB.
 
          You must use ``numactl`` to start each of your
          :binary:`~bin.mongod` instances, including all
-         :doc:`config servers </core/sharded-cluster-config-servers>`,
+         :ref:`config servers <sharding-config-server>`,
          :binary:`~bin.mongos` instances, and clients.
 
          #. Install ``numactl`` for your platform if not already
@@ -598,9 +600,20 @@ Scheduling for Virtual or Cloud Hosted Devices
 
 For local block devices attached to a virtual machine instance via
 the hypervisor or hosted by a cloud hosting provider, the guest operating system
-should use a *noop* scheduler for best performance. The
-*noop* scheduler allows the operating system to defer I/O scheduling to
+should use the :term:`cfq` scheduler for best performance. The
+``cfq`` scheduler allows the operating system to defer I/O scheduling to
 the underlying hypervisor.
+
+.. note::
+
+   The :term:`noop` scheduler can be used for scheduling if all the 
+   following conditions are met:
+
+   - The hypervisor is VMware.
+   - A replica set topology or sharded cluster is used.
+   - The virtual machines are located on the same virtual host.
+   - The underlying storage containing the DBpaths is a common 
+     :abbr:`LUN (logical unit number)` blockstore.
 
 Scheduling for Physical Servers
 +++++++++++++++++++++++++++++++
@@ -616,15 +629,15 @@ Architecture
 Replica Sets
 ~~~~~~~~~~~~
 
-See the :doc:`Replica Set Architectures </core/replica-set-architectures>`
+See the :ref:`Replica Set Architectures <replica-set-architecture>`
 document for an overview of architectural considerations for replica
 set deployments.
 
 Sharded Clusters
 ~~~~~~~~~~~~~~~~
 
-See :doc:`Sharded Cluster Production Architecture
-</core/sharded-cluster-components>` for an
+See :ref:`Sharded Cluster Production Architecture
+<sharding-shards>` for an
 overview of recommended sharded cluster architectures for production
 deployments.
 
@@ -646,7 +659,7 @@ compression library:
       Provides better compression rate than ``snappy`` but has a
       higher CPU cost than both ``snappy`` and ``zstd``.
 
-- :term:`zstd` (Available starting in MongoDB 4.2) 
+- :term:`zstd` 
       Provides better compression rate than both ``snappy`` and
       ``zlib`` and has a lower CPU cost than ``zlib``.
 
@@ -686,13 +699,6 @@ operations like the following:
 - Features which rely on timekeeping may have inconsistent or
   unpredictable behavior in clusters with clock drift between MongoDB
   components. 
-
-NTP synchronization is required for deployments running MongoDB lower
-than ``3.4.6`` or ``3.2.17`` with the Wired Tiger storage engine, where
-clock drift could lead to :issue:`checkpoint hangs <WT-3227>`. The issue
-was fixed in MongoDB :ref:`3.4.6+ <3.4.6-changelog>` and MongoDB
-:ref:`3.2.17+ <3.2.17-release-notes>`, and is resolved in all point
-release of MongoDB 3.6, 4.0, 4.2, and later releases.
 
 .. _prod-notes-platform-considerations:
 
@@ -840,7 +846,7 @@ consider the following recommendations:
   files <dbpath>`.
 
 - Adjust the ``ulimit`` settings for your platform according to the
-  recommendations in the :doc:`ulimit </reference/ulimit>` reference.
+  recommendations in the :ref:`ulimit <ulimit>` reference.
   Low ``ulimit`` values will negatively affect MongoDB when under heavy
   use and can lead to failed connections to MongoDB processes and loss
   of service. 
@@ -860,11 +866,6 @@ consider the following recommendations:
 - Configure SELinux for MongoDB **if** you are **not** using the
   default MongoDB directory paths or :doc:`ports
   </reference/default-mongodb-port>`.
-
-  See: :ref:`Configure SELinux for
-  MongoDB <install-rhel-configure-selinux>` and :ref:`Configure SELinux
-  for MongoDB Enterprise <install-enterprise-rhel-configure-selinux>`
-  for the required configuration.
 
   .. include:: /includes/fact-selinux-server-side-js.rst
 
@@ -963,6 +964,8 @@ configuration, you should:
   To learn more about Enhanced Networking, see to the
   `AWS documentation <http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/enhanced-networking.html#enabling_enhanced_networking>`_.
 
+-  Set ``tcp_keepalive_time`` to 120. 
+
 If you are concerned more about reproducible performance on
 :abbr:`EC2 (Elastic Compute Cloud)`, you should also:
 
@@ -1030,7 +1033,7 @@ and the `VMKernel
 <https://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=2054994>`_.
 Failure to follow the best practices can result in performance problems
 and affect :doc:`replica set </core/replica-set-high-availability>` and
-:doc:`sharded cluster </tutorial/troubleshoot-sharded-clusters>` high
+:ref:`sharded cluster <sharding-sharded-cluster>` high
 availability mechanisms.
 
 It is possible to clone a virtual machine running MongoDB.
@@ -1047,13 +1050,6 @@ KVM
 
 Performance Monitoring
 ----------------------
-
-.. note::
-
-   Starting in version 4.0, MongoDB offers :doc:`free Cloud monitoring
-   </administration/free-monitoring>` for standalones and replica sets.
-   For more information, see :doc:`/administration/free-monitoring`.
-
 
 iostat
 ~~~~~~
@@ -1090,6 +1086,6 @@ Backups
 -------
 
 To make backups of your MongoDB database, please refer to
-:doc:`MongoDB Backup Methods Overview </core/backups>`.
+:ref:`MongoDB Backup Methods Overview <backup-methods>`.
 
 .. include:: /includes/unicode-checkmark.rst

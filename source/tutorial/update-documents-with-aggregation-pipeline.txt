@@ -1,48 +1,165 @@
+.. _updates-agg-pipeline:
+
 =================================
 Updates with Aggregation Pipeline
 =================================
 
 .. default-domain:: mongodb
 
+.. facet::
+   :name: programming_language
+   :values: shell
+
 .. meta::
    :description: The following page provides examples of updates with aggregation pipelines.
 
-Starting in MongoDB 4.2, you can use the aggregation pipeline for
-update operations. With the update operations, the aggregation
-pipeline can consist of the following stages:
+.. contents:: On this page
+   :local:
+   :backlinks: none
+   :depth: 2
+   :class: singlecol
 
-- :pipeline:`$addFields`
-- :pipeline:`$set`
-- :pipeline:`$project`
-- :pipeline:`$unset`
-- :pipeline:`$replaceRoot`
-- :pipeline:`$replaceWith`
+Starting in MongoDB 4.2, you can use the aggregation pipeline for
+update operations. You can build and execute aggregation pipelines to 
+perform updates in `{+atlas+} <https://www.mongodb.com/docs/atlas>`__, 
+`MongoDB Compass <https://www.mongodb.com/docs/compass/>`__, 
+`MongoDB Shell <https://www.mongodb.com/docs/mongodb-shell/>`__, or 
+`Drivers <https://www.mongodb.com/docs/drivers/>`__.
+
+With the update operations, the aggregation pipeline can consist of the 
+following stages:
+
+.. include:: /includes/aggregation/update-aggregation-stages.rst
 
 Using the aggregation pipeline allows for a more expressive update
 statement, such as expressing conditional updates based on current
 field values or updating one field using the value of another field(s).
 
-Example 1
-----------
+Create an Update Aggregation Pipeline in Atlas
+----------------------------------------------
 
-.. tip:: 
+You can use the {+atlas+} UI to build an aggregation pipeline to perform 
+updates. To create and execute aggregation pipelines in the
+{+atlas+} UI, you must have the 
+:authrole:`Project Data Access Read Only` role or higher.
 
-   You can try out the example in the provided shell. Click inside the
-   shell to connect. Once connected, you can run the examples in the
-   shell.
+.. procedure::
+   :style: normal
 
-   .. include:: /includes/fact-mws.rst
+   .. step:: Access the Aggregation Pipeline Builder.
+
+      .. procedure::
+         :style: connected
+
+         .. step:: Select the database for the collection.
+
+            The main panel and :guilabel:`Namespaces` on the left side list the
+            collections in the database.
+
+         .. step:: Select the collection.
+
+            Select the collection on the left-hand side or in the main panel.
+            The main panel displays the :guilabel:`Find`, :guilabel:`Indexes`,
+            and :guilabel:`Aggregation` views.
+
+         .. step:: Select the Aggregation view.
+
+            When you first open the :guilabel:`Aggregation` view, Atlas
+            displays an empty aggregation pipeline.
+
+   .. step:: Create an aggregation pipeline to perform updates.
+
+      .. procedure::
+         :style: connected
+
+         .. step:: Select an aggregation stage.
+      
+            Select an aggregation stage from the :guilabel:`Select` 
+            drop-down menu in the bottom-left panel.
+            
+            The toggle to the right of the drop-down menu dictates whether 
+            the stage is enabled.
+
+            To perform updates with an aggregation, use one of 
+            these stages:
+
+            .. include:: /includes/aggregation/update-aggregation-stages.rst
+
+         .. step:: Fill in your aggregation stage.
+
+            Fill in your stage with the appropriate values. 
+            If :ref:`Comment Mode <pipeline-settings>` is enabled, the pipeline
+            builder provides syntactic guidelines for your selected stage. 
+            
+            As you modify your stage, Atlas updates the preview documents on
+            the right based on the results of the current stage.
+
+            For examples of what you might include in your aggregation stage,
+            see the :ref:`examples <agg-updates-examples>` on this page.
+
+            Add stages as needed. For more information on creating aggregation
+            pipelines in Atlas, refer to :ref:`agg-pipeline-create`.
+
+   .. step:: Export the aggregation pipeline.
+
+      .. procedure::
+         :style: connected
+
+         .. step:: Click Export to Language.
+
+            You can find this button at the top of the pipeline builder.
+
+         .. step:: Select your desired export language.
+
+            In the :guilabel:`Export Pipeline To` menu, select your desired
+            language.
+
+            The :guilabel:`My Pipeline` pane on the left displays your
+            pipeline in |mdb-shell| syntax. You can copy this directly to execute
+            your pipeline in the |mdb-shell|.
+
+            The pane on the right displays your pipeline in the selected
+            language. Select your preferred language.
+
+         .. step:: Select options, if desired.
+
+            *(Optional)*: Check the :guilabel:`Include Import Statements` option
+            to include the required import statements for the language selected.
+
+            *(Optional)*: Check the :guilabel:`Include Driver Syntax` option
+            to include Driver-specific code to:
+            
+            - Initialize the client
+            - Specify the database and collection 
+            - Perform the aggregation operation
+
+         .. step:: Copy the pipeline.
+
+            Click the :guilabel:`Copy` button at the top-right of the pipeline
+            to copy the pipeline for the selected language to your clipboard.
+            Paste the copied pipeline into your application.
+
+.. _agg-updates-examples:
+
+Examples
+--------
+
+The following examples demonstrate how to use the aggregation pipeline
+stages ``$set``, ``$replaceRoot``, and ``$addFields`` to perform updates.
+
+updateOne with $set
+~~~~~~~~~~~~~~~~~~~
 
 Create an example ``students`` collection (if the collection does
 not currently exist, insert operations will create the collection):
 
 .. code-block:: javascript
 
-   db.students.insertMany([
+   db.students.insertMany( [
       { _id: 1, test1: 95, test2: 92, test3: 90, modified: new Date("01/05/2020") },
       { _id: 2, test1: 98, test2: 100, test3: 102, modified: new Date("01/05/2020") },
       { _id: 3, test1: 95, test2: 110, modified: new Date("01/04/2020") }
-   ])
+   ] )
 
 To verify, query the collection:
 
@@ -70,26 +187,18 @@ To verify the update, you can query the collection:
 
    db.students.find().pretty()
 
-Example 2
-----------
-
-.. tip:: 
-
-   You can try out the example in the provided shell. Click inside the
-   shell to connect. Once connected, you can run the examples in the
-   shell.
-
-   .. include:: /includes/fact-mws.rst
+updateMany with $replaceRoot and $set
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Create an example ``students2`` collection (if the collection does not
 currently exist, insert operations will create the collection):
 
 .. code-block:: javascript
 
-   db.students2.insertMany([
+   db.students2.insertMany( [
       { "_id" : 1, quiz1: 8, test2: 100, quiz2: 9, modified: new Date("01/05/2020") },
       { "_id" : 2, quiz2: 5, test1: 80, test2: 89, modified: new Date("01/05/2020") },
-   ])
+   ] )
 
 To verify, query the collection:
 
@@ -135,28 +244,19 @@ To verify the update, you can query the collection:
 
    db.students2.find()
 
-Example 3
----------
-
-.. tip:: 
-
-   You can try out the example in the provided shell. Click inside the
-   shell to connect. Once connected, you can run the examples in the
-   shell.
-
-   .. include:: /includes/fact-mws.rst
-
+updateMany with $set
+~~~~~~~~~~~~~~~~~~~~
 
 Create an example ``students3`` collection (if the collection does not
 currently exist, insert operations will create the collection):
 
 .. code-block:: javascript
 
-   db.students3.insert([
+   db.students3.insertMany( [
       { "_id" : 1, "tests" : [ 95, 92, 90 ], "modified" : ISODate("2019-01-01T00:00:00Z") },
       { "_id" : 2, "tests" : [ 94, 88, 90 ], "modified" : ISODate("2019-01-01T00:00:00Z") },
       { "_id" : 3, "tests" : [ 70, 75, 82 ], "modified" : ISODate("2019-01-01T00:00:00Z") }
-   ]);
+   ] );
 
 To verify, query the collection:
 
@@ -205,27 +305,19 @@ To verify the update, you can query the collection:
 
    db.students3.find()
 
-Example 4
----------
-
-.. tip:: 
-
-   You can try out the example in the provided shell. Click inside the
-   shell to connect. Once connected, you can run the examples in the
-   shell.
-
-   .. include:: /includes/fact-mws.rst
+updateOne with $set
+~~~~~~~~~~~~~~~~~~~
 
 Create an example ``students4`` collection (if the collection does
 not currently exist, insert operations will create the collection):
 
 .. code-block:: javascript
 
-   db.students4.insertMany([
+   db.students4.insertMany( [
      { "_id" : 1, "quizzes" : [ 4, 6, 7 ] },
      { "_id" : 2, "quizzes" : [ 5 ] },
      { "_id" : 3, "quizzes" : [ 10, 10, 10 ] }
-   ])
+   ] )
 
 To verify, query the collection:
 
@@ -250,16 +342,8 @@ To verify the update, query the collection:
 
    db.students4.find()
 
-Example 5
----------
-
-.. tip:: 
-
-   You can try out the example in the provided shell. Click inside the
-   shell to connect. Once connected, you can run the examples in the
-   shell.
-
-   .. include:: /includes/fact-mws.rst
+updateMany with $addFields
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Create an example ``temperatures`` collection that contains
 temperatures in Celsius (if the collection does not currently exist,
@@ -267,11 +351,11 @@ insert operations will create the collection):
 
 .. code-block:: javascript
 
-   db.temperatures.insertMany([
+   db.temperatures.insertMany( [
      { "_id" : 1, "date" : ISODate("2019-06-23"), "tempsC" : [ 4, 12, 17 ] },
      { "_id" : 2, "date" : ISODate("2019-07-07"), "tempsC" : [ 14, 24, 11 ] },
      { "_id" : 3, "date" : ISODate("2019-10-30"), "tempsC" : [ 18, 6, 8 ] }
-   ])
+   ] )
 
 To verify, query the collection:
 
@@ -311,15 +395,13 @@ To verify the update, you can query the collection:
    db.temperatures.find()
 
 Additional Examples
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 See also the various update method pages for additional examples:
 
 - :ref:`db.collection.updateOne <updateOne-example-agg>`
 
 - :ref:`db.collection.updateMany <updateMany-example-agg>`
-
-- :ref:`db.collection.update() <update-example-agg>`
 
 - :ref:`db.collection.findOneAndUpdate() <findOneAndUpdate-agg-pipeline>`
 

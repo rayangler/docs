@@ -12,6 +12,10 @@ Sharding
 
 .. default-domain:: mongodb
 
+.. facet::
+   :name: genre
+   :values: reference
+
 .. contents:: On this page
    :local:
    :backlinks: none
@@ -64,6 +68,14 @@ the deployment.
 
 MongoDB supports *horizontal scaling* through :term:`sharding`.
 
+.. |page-topic| replace:: :atlas:`shard collections in the UI </atlas-ui/collections/#shard-a-collection>`
+
+.. cta-banner::
+   :url: https://www.mongodb.com/docs/atlas/atlas-ui/collections/#shard-a-collection
+   :icon: Cloud
+
+   .. include:: /includes/fact-atlas-compatible.rst
+
 .. _sharded-cluster:
 
 Sharded Cluster
@@ -71,7 +83,7 @@ Sharded Cluster
 
 A MongoDB :term:`sharded cluster` consists of the following components:
 
-* :doc:`shard </core/sharded-cluster-shards>`: Each shard contains a
+* :ref:`shard <shards-concepts>`: Each shard contains a
   subset of the sharded data. Each shard can be deployed as a :term:`replica
   set`.
 
@@ -80,7 +92,7 @@ A MongoDB :term:`sharded cluster` consists of the following components:
   the sharded cluster. Starting in MongoDB 4.4, ``mongos`` can support
   :ref:`hedged reads <mongos-hedged-reads>` to minimize latencies.
 
-* :doc:`config servers </core/sharded-cluster-config-servers>`: Config
+* :ref:`config servers <sharding-config-server>`: Config
   servers store metadata and configuration settings for the cluster.
 
 The following graphic describes the interaction of components within a
@@ -94,7 +106,7 @@ collection data across the shards in the cluster.
 Shard Keys
 ----------
 
-MongoDB uses the :doc:`shard key </core/sharding-shard-key>` to
+MongoDB uses the :ref:`shard key <sharding-shard-key>` to
 distribute the collection's documents across shards. The shard key
 consists of a field or multiple fields in the documents. 
 
@@ -157,17 +169,16 @@ MongoDB partitions sharded data into :term:`chunks<chunk>`. Each
 chunk has an inclusive lower and exclusive upper range based on the
 :term:`shard key`.
 
-Balancer and Even Chunk Distribution
-------------------------------------
+Balancer and Even Data Distribution
+-----------------------------------
 
-In an attempt to achieve an even distribution of chunks across all
-shards in the cluster, a :doc:`balancer
-</core/sharding-balancer-administration>` runs in the background to
-migrate :term:`chunks<chunk>` across the :term:`shards<shard>` .
+In an attempt to achieve an even distribution of data across all
+shards in the cluster, a :ref:`balancer <sharding-balancing>` runs in the 
+background to migrate :term:`ranges <range>` across the :term:`shards <shard>`.
 
 .. seealso::
 
-   :doc:`/core/sharding-data-partitioning`
+   :ref:`sharding-range-migration`
 
 Advantages of Sharding
 ----------------------
@@ -236,6 +247,8 @@ If queries do *not* include the shard key or the prefix of a
 a :ref:`broadcast operation <sharding-mongos-broadcast>`, querying
 *all* shards in the sharded cluster. These scatter/gather queries can
 be long running operations.
+
+.. include:: /includes/fact-5.1-fassert-shard-restart-add-CWWC.rst
 
 .. note::
 
@@ -357,7 +370,7 @@ Collations in Sharding
 
 Use the :dbcommand:`shardCollection` command with the ``collation :
 { locale : "simple" }`` option to shard a collection which has a
-:doc:`default collation </reference/collation>`. Successful
+:ref:`default collation <collation>`. Successful
 sharding requires that:
 
 - The collection must have an index whose prefix is the shard key
@@ -389,12 +402,22 @@ available on sharded clusters.
 
 .. include:: /includes/extracts/transactions-committed-visibility.rst
 
+Learn More
+----------
 
-For details, see:
+Practical MongoDB Aggregations E-Book
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For more information on how sharding works with
+:ref:`aggregations <aggregation-pipeline>`, read the sharding 
+chapter in the `Practical MongoDB Aggregations
+<https://www.practical-mongodb-aggregations.com/guides/sharding.html>`__
+e-book.
+
+Additional Information
+~~~~~~~~~~~~~~~~~~~~~~
 
 - :doc:`/core/transactions`
 - :doc:`/core/transactions-production-consideration`
 - :doc:`/core/transactions-sharded-clusters`
-
-
 

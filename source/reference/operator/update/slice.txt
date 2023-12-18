@@ -58,6 +58,8 @@ $slice
 Behavior
 --------
 
+.. include:: /includes/fact-update-operator-processing-order.rst
+
 The order in which the modifiers appear is immaterial. Previous
 versions required the :update:`$each` modifier to appear as the first
 modifier if used in conjunction with :update:`$slice`. For a list of
@@ -84,7 +86,7 @@ last five elements:
 
 .. code-block:: javascript
 
-   db.students.update(
+   db.students.updateOne(
       { _id: 1 },
       {
         $push: {
@@ -118,7 +120,7 @@ first three elements.
 
 .. code-block:: javascript
 
-   db.students.update(
+   db.students.updateOne(
       { _id: 2 },
       {
         $push: {
@@ -153,7 +155,7 @@ array ``[]`` for the :update:`$each` modifier, as in the following:
 
 .. code-block:: javascript
 
-   db.students.update(
+   db.students.updateOne(
      { _id: 3 },
      {
        $push: {

@@ -17,71 +17,60 @@ Definition
 
    Assigns additional :ref:`privileges <privileges>` to a :ref:`user-defined
    <user-defined-roles>` role defined on the database on which the
-   command is run. The :dbcommand:`grantPrivilegesToRole` command uses
-   the following syntax:
+   command is run. 
+   
+   .. |method| replace:: :method:`db.grantPrivilegesToRole` helper method
+   .. include:: /includes/fact-dbcommand-tip
 
-   .. code-block:: javascript
+   The :dbcommand:`grantPrivilegesToRole` command uses the following syntax:
 
+.. code-block:: javascript
+
+   db.runCommand(
       {
         grantPrivilegesToRole: "<role>",
         privileges: [
-            {
-              resource: { <resource> }, actions: [ "<action>", ... ]
-            },
-            ...
+          {
+            resource: { <resource> }, actions: [ "<action>", ... ]
+          },
+          ...
         ],
         writeConcern: { <write concern> },
         comment: <any>
       }
+   )
 
-   The :dbcommand:`grantPrivilegesToRole` command has the following
-   fields:
+Command Fields
+--------------
 
+The command has the following fields:
 
-   .. list-table::
-      :header-rows: 1
-      :widths: 20 20 80
-   
-      * - Field
-   
-        - Type
-   
-        - Description
-   
-      * - ``grantPrivilegesToRole``
-   
-        - string
-   
-        - The name of the user-defined role to grant privileges to.
-          
-          
-   
-      * - ``privileges``
-   
-        - array
-   
-        - The privileges to add to the role. For the format of a privilege, see
-          :data:`~admin.system.roles.privileges`.
-          
-          
-   
-      * - ``writeConcern``
-   
-        - document
-   
-        - Optional. The level of :doc:`write concern </reference/write-concern>` for the
-          modification. The ``writeConcern`` document takes the same
-          fields as the :dbcommand:`getLastError` command.
-          
-          
-      * - ``comment``
+.. list-table::
+   :header-rows: 1
+   :widths: 20 20 80
 
-        - any
+   * - Field
+     - Type
+     - Description
 
-        - .. include:: /includes/extracts/comment-content.rst
-       
-          .. versionadded:: 4.4
+   * - ``grantPrivilegesToRole``
+     - string
+     - The name of the user-defined role to grant privileges to.
 
+   * - ``privileges``
+     - array
+     - The privileges to add to the role. For the format of a privilege, see
+       :data:`~admin.system.roles.privileges`.
+
+   * - ``writeConcern``
+     - document
+     - .. include:: /includes/fact-write-concern-spec-link.rst
+
+   * - ``comment``
+     - any
+     - .. include:: /includes/extracts/comment-content.rst
+       .. versionadded:: 4.4
+  
 
 Behavior
 --------

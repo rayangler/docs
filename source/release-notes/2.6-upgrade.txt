@@ -49,7 +49,7 @@ Before upgrading MongoDB always test your application in a staging
 environment before deploying the upgrade to your production
 environment.
 
-To begin the upgrade procedure, connect a 2.6 :binary:`~bin.mongo` shell to
+To begin the upgrade procedure, connect a 2.6 ``mongo`` shell to
 your MongoDB 2.4 :binary:`~bin.mongos` or :binary:`~bin.mongod` and run the
 :v2.6:`db.upgradeCheckAllDBs()
 </reference/method/db.upgradeCheckAllDBs>` to check your data set for
@@ -137,11 +137,11 @@ If you did not install the ``mongodb-org`` package, and installed a subset
 of MongoDB components replace ``mongodb-org`` in the commands above with
 the appropriate package names.
 
-See installation instructions for :doc:`Ubuntu
-</tutorial/install-mongodb-on-ubuntu>`, :doc:`RHEL
-</tutorial/install-mongodb-on-red-hat>`,
-:doc:`Debian </tutorial/install-mongodb-on-debian>` for a list of the
-available packages and complete MongoDB installation instructions.
+See installation instructions for :ref:`Ubuntu 
+<install-mdb-community-ubuntu>`, :ref:`RHEL 
+<install-mdb-community-redhat-centos>`, :ref:`Debian 
+<install-mdb-community-debian>` for a list of the available packages and 
+complete MongoDB installation instructions.
 
 
 Upgrade MongoDB Processes

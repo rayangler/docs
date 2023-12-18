@@ -77,7 +77,8 @@ content: |
    - An :ref:`invalidate event <change-event-invalidate>` occurs; for
      example, a collection drop or rename.
 
-   - The connection to the MongoDB deployment is closed.
+   - The connection to the MongoDB deployment closes or times out. 
+     See :ref:`cursor-behaviors` for more information.
 
    - .. include:: /includes/extracts/changestream-remove-shard.rst
 ---
@@ -181,9 +182,7 @@ content: |
 ref: changestream-disable-rc-majority
 content: |
    
-   Disabling :readconcern:`"majority"` read concern disables support
-   for :doc:`/changeStreams` for MongoDB 4.0 and earlier. For MongoDB
-   4.2+, disabling read concern ``"majority"`` has no effect on change
+   Disabling :readconcern:`"majority"` read concern has no effect on change
    streams availability.
 ---
 ref: changestream-rc-majority-4.2

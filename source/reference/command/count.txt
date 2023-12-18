@@ -18,6 +18,9 @@ Definition
    Counts the number of documents in a collection or a view. Returns a
    document that contains this count and as well as the command status.
 
+   .. |method| replace:: :method:`~db.collection.count`  helper method
+   .. include:: /includes/fact-dbcommand-tip
+
    .. note::
 
       MongoDB drivers compatible with the 4.0 features deprecate their
@@ -27,14 +30,18 @@ Definition
       specific API names for a given driver, see the driver API
       documentation.
 
-   :dbcommand:`count` has the following form:
+Syntax
+------
 
-   .. note::
+The command has the following syntax:
 
-      .. include:: /includes/extracts/4.2-changes-count-syntax-validation.rst
+.. note::
 
-   .. code-block:: javascript
+   .. include:: /includes/extracts/4.2-changes-count-syntax-validation.rst
 
+.. code-block:: javascript
+
+   db.runCommand(
       {
         count: <collection or view>,
         query: <document>,
@@ -42,131 +49,146 @@ Definition
         skip: <integer>,
         hint: <hint>,
         readConcern: <document>,
+        maxTimeMS: <integer>,
         collation: <document>,
         comment: <any>
       }
+   )
 
-   :dbcommand:`count` has the following fields:
+Command Fields
+~~~~~~~~~~~~~~
 
+:dbcommand:`count` has the following fields:
 
-   .. list-table::
-      :header-rows: 1
-      :widths: 20 20 80
-   
-      * - Field
-   
-        - Type
-   
-        - Description
-   
-      * - ``count``
-   
-        - string
-   
-        - The name of the collection or view to count.
-          
-          
-   
-      * - ``query``
-   
-        - document
-   
-        - Optional. A query that selects which documents to count in the collection or view.
-          
-          
-   
-      * - ``limit``
-   
-        - integer
-   
-        - Optional. The maximum number of matching documents to return.
-          
-          
-   
-      * - ``skip``
-   
-        - integer
-   
-        - Optional. The number of matching documents to skip before returning results.
-          
-          
-   
-      * - ``hint``
-   
-        - string or document
-   
-        - Optional. The index to use. Specify either the index name as a string or the
-          index specification document.
-
-   
-      * - ``readConcern``
-   
-        - document
-   
-        - Optional. Specifies the :term:`read concern`. The option has the following
-          syntax:
-          
-          .. code-block:: javascript
-          
-             readConcern: { level: <value> }
-          
-          .. include:: /includes/fact-readConcern-option-description.rst
-          
-          
-   
-      * - ``collation``
-   
-        - document
-   
-        - Optional. 
-          
-          .. include:: /includes/extracts/collation-option.rst
-          
-      
-      * - ``comment``
-
-        - any
-
-        - .. include:: /includes/extracts/comment-content.rst
+.. list-table::
+   :header-rows: 1
+   :widths: 20 20 80
+ 
+   * - Field
+ 
+     - Type
+ 
+     - Description
+ 
+   * - ``count``
+ 
+     - string
+ 
+     - The name of the collection or view to count.
        
-          .. versionadded:: 4.4
+       
+ 
+   * - ``query``
+ 
+     - document
+ 
+     - Optional. A query that selects which documents to count in the collection or view.
+       
+       
+ 
+   * - ``limit``
+ 
+     - integer
+ 
+     - Optional. The maximum number of matching documents to return.
+       
+       
+ 
+   * - ``skip``
+ 
+     - integer
+ 
+     - Optional. The number of matching documents to skip before returning results.
+       
+       
+ 
+   * - ``hint``
+ 
+     - string or document
+ 
+     - Optional. The index to use. Specify either the index name as a string or the
+       index specification document.
+ 
+ 
+   * - ``readConcern``
+ 
+     - document
+ 
+     - Optional. Specifies the :term:`read concern`. The option has the following
+       syntax:
+       
+       .. code-block:: javascript
+       
+          readConcern: { level: <value> }
+       
+       .. include:: /includes/fact-readConcern-option-description.rst
+
+
+   * - ``maxTimeMS``
+
+     - non-negative integer
+
+     - Optional.
+
+       .. include:: /includes/maxTimeMS-description.rst
+                         
+ 
+   * - ``collation``
+ 
+     - document
+ 
+     - Optional. 
+       
+       .. include:: /includes/extracts/collation-option.rst
+       
    
+   * - ``comment``
+ 
+     - any
+ 
+     - .. include:: /includes/extracts/comment-content.rst
+    
+       .. versionadded:: 4.4
+ 
 
+Stable API Support
+------------------
 
-   :binary:`~bin.mongosh` also provides the following wrapper methods for :dbcommand:`count`:
-   
-   - :method:`~cursor.count()`
-   - :method:`db.collection.estimatedDocumentCount()`
-   - :method:`db.collection.count()`
-
-   .. important::
-
-      - Avoid using the :dbcommand:`count` and its wrapper methods
-        without a query predicate (note:
-        :method:`db.collection.estimatedDocumentCount()` does not take
-        a query predicate) since without the query predicate, these
-        operations return results based on the collection's metadata,
-        which may result in an approximate count. In particular,
-
-        - On a sharded cluster, the resulting count will not correctly
-          filter out :term:`orphaned documents <orphaned document>`.
-
-        - :ref:`After an unclean shutdown <count-accuracy-shutdown>`,
-          the count may be incorrect.
-
-      - For counts based on collection metadata, see also 
-        :ref:`collStats pipeline stage with the count <collstat-count>`
-        option.
+Starting in MongoDB 6.0, the ``count`` command is included in
+:ref:`Stable API <stable-api>` V1. To use the ``count`` command in the
+Stable API, you must connect your driver to a deployment that is running
+MongoDB 6.0 or greater.
 
 Behavior
 --------
 
+.. _count-command-behavior-query-predicate:
+
+Inaccurate Counts Without Query Predicate
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When you call :dbcommand:`count` without a query predicate, you may
+receive inaccurate document counts. Without a query predicate,
+:dbcommand:`count` commands return results based on the collection's
+metadata, which may result in an approximate count. In particular,
+
+- On a sharded cluster, the resulting count will not correctly
+  filter out :term:`orphaned documents <orphaned document>`.
+
+- After an unclean shutdown or :ref:`file copy based initial sync
+  <replica-set-initial-sync-file-copy-based>`, the count may be
+  incorrect.
+
+For counts based on collection metadata, see also
+:ref:`collStats pipeline stage with the count <collstat-count>`
+option.
+
 Count and Transactions
 ~~~~~~~~~~~~~~~~~~~~~~
 
-You cannot use :dbcommand:`count` and shell helpers
-:method:`~cursor.count()` and :method:`db.collection.count()` in
-:ref:`transactions <transactions-ops-count>`.
+.. include:: /includes/fact-uncommitted-transactions.rst
+
+.. |countMethod| replace:: :dbcommand:`count`
 
 For details, see :ref:`Transactions and Count Operations
 <transactions-ops-count>`.

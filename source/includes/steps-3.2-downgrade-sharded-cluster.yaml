@@ -11,8 +11,8 @@ title: "Check the ``minOpTimeUpdaters`` value."
 level: 4
 ref: 3.2-downgrade-minoptimerecovery
 content: |
-    If the sharded cluster uses :doc:`CSRS
-    </core/sharded-cluster-config-servers>`, for *each* shard, check
+    If the sharded cluster uses :ref:`CSRS
+    <sharding-config-server>`, for *each* shard, check
     the ``minOpTimeUpdaters`` value to see if it is zero. A
     ``minOpTimeUpdaters`` value of zero indicates that there are no
     migrations in progress. A non-zero value indicates either that a
@@ -44,8 +44,8 @@ title: "Prepare CSRS Config Servers for downgrade."
 level: 4
 ref: 3.2-downgrade-csrs
 content: |
-    If the sharded cluster uses :doc:`CSRS
-    </core/sharded-cluster-config-servers>`:
+    If the sharded cluster uses :ref:`CSRS
+    <sharding-config-server>`:
 
     a. :ref:`Remove secondary members from the replica set
        <remove-member-using-reconfig>` to have only a primary and two
@@ -53,7 +53,7 @@ content: |
        primary; i.e. the other two members have ``0`` for
        :rsconf:`~members[n].votes` and :rsconf:`~members[n].priority`.
 
-       Connect a :binary:`~bin.mongo` shell to the primary and run:
+       Connect a ``mongo`` shell to the primary and run:
 
        .. code-block:: javascript
 
@@ -88,7 +88,7 @@ content: |
     #. Step down the primary using :dbcommand:`replSetStepDown` against the ``admin`` database.
        Ensure enough time for the secondaries to catch up.
 
-       Connect a :binary:`~bin.mongo` shell to the primary and run:
+       Connect a ``mongo`` shell to the primary and run:
 
        .. code-block:: javascript
 
@@ -99,13 +99,12 @@ content: |
 
     #. If you are rolling back to MMAPv1:
 
-       a. Start a :doc:`CSRS </core/sharded-cluster-config-servers>` member as
+       a. Start a :ref:`CSRS <sharding-config-server>` member as
           a standalone; i.e. without the :option:`--replSet <mongod --replSet>`
           or, if using a configuration file, :setting:`replication.replSetName`.
 
        #. Run :binary:`~bin.mongodump` to dump the ``config`` database, then
-          shutdown the :doc:`CSRS </core/sharded-cluster-config-servers>`
-          member.
+          shutdown the CSRS member.
 
           .. code-block:: bash
 
@@ -153,7 +152,7 @@ pre: |
   Restart each replica set shard and update the protocolVersion.
 action:
   pre: |
-    Connect a :binary:`~bin.mongo` shell to the current primary and
+    Connect a ``mongo`` shell to the current primary and
     downgrade the replication protocol:
   language: javascript
   code: |
@@ -240,7 +239,7 @@ content: |
 
   For each replica set shard, downgrade the :binary:`~bin.mongod` binaries
   and restart. If your :binary:`~bin.mongod` instance is using the
-  :doc:`WiredTiger </core/wiredtiger>` storage engine, you must include
+  :ref:`WiredTiger <storage-wiredtiger>` storage engine, you must include
   the :option:`--storageEngine <mongod --storageEngine>` option (or :setting:`storage.engine` if
   using the configuration file) with the 3.0 binary.
 

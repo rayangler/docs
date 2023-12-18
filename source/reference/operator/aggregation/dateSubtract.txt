@@ -17,7 +17,7 @@ Definition
 
    .. versionadded:: 5.0
 
-   Decrements a :doc:`Date </reference/method/Date>` object by a
+   Decrements a :method:`Date()` object by a
    specified number of time units.
 
    The :expression:`$dateSubtract` expression has the following syntax:
@@ -33,10 +33,10 @@ Definition
          }
       } 
 
-   Returns a :doc:`Date </reference/method/Date>`. The ``startDate`` 
-   can be any expression that resolves to type Date, Timestamp or
-   ObjectId. No matter which data type is used as input, the value
-   returned will be a :doc:`Date </reference/method/Date>` object.
+   Returns a ``Date()``. The ``startDate`` can be any expression that 
+   resolves to type Date, Timestamp or ObjectId. No matter which data 
+   type is used as input, the value returned will be a ``Date()`` 
+   object.
 
    .. list-table::
       :header-rows: 1
@@ -333,7 +333,9 @@ documents that have a ``logoutTime`` in the past week.
 
 The :pipeline:`$project` stage uses the :expression:`$dateToString`
 expression to convert the dates to a more readable format. Without the
-conversion MongoDB would return the date in :term:`ISODate` format. 
+conversion, MongoDB returns the date in :term:`ISODate` format and
+assumes a UTC timezone.
+
 The output shows two customers have logged out in the last week.
 
 .. code-block:: javascript

@@ -30,7 +30,7 @@ Definition
    As part of refining the shard key, the
    :dbcommand:`refineCollectionShardKey` command updates the
    :doc:`chunk ranges </core/sharding-data-partitioning>` and
-   :doc:`zone ranges </core/zone-sharding>` to incorporate the new
+   :ref:`zone ranges <zone-sharding>` to incorporate the new
    fields without modifying the range values of the existing key
    fields. That is, the refinement of the shard key does not
    immediately affect the distribution of chunks across shards or
@@ -46,49 +46,43 @@ Syntax
    cluster must have :ref:`feature compatibility version (fcv) <view-fcv>`
    of ``4.4``.
 
-The :dbcommand:`refineCollectionShardKey` command must be run against
-the ``admin`` database and has the following form:
+The command has the following syntax:
 
 .. code-block:: javascript
 
-   db.adminCommand( { 
-      refineCollectionShardKey: "<database>.<collection>", 
-      key: { <existing key specification>, <suffix1>: <1|"hashed">, ... }
-   } )
+   db.adminCommand( 
+      { 
+        refineCollectionShardKey: "<database>.<collection>", 
+        key: { <existing key specification>, <suffix1>: <1|"hashed">, ... }
+      } 
+   )
 
 Command Fields
-~~~~~~~~~~~~~~
+--------------
 
-The :dbcommand:`refineCollectionShardKey` command has the following fields:
-
+The command takes the following fields:
 
 .. list-table::
    :header-rows: 1
    :widths: 20 20 80
 
    * - Field
-
      - Type
-
      - Description
 
    * - :ref:`refineCollectionShardKey <refineCollectionShardKey-namespace>`
-
      - string
-
      - .. _refineCollectionShardKey-namespace:
      
        The :term:`namespace` of the sharded collection in the
        form ``"<database>.<collection>"``.
 
    * - :ref:`key <refineCollectionShardKey-key>`
-
      - document
-
      - .. _refineCollectionShardKey-key:
      
        The document that specifies the field or fields to use as the
-       new :doc:`shard key </core/sharding-shard-key>` for the
+       new :ref:`shard key <sharding-shard-key>` for the
        collection.
 
        ``{ <existing key specification>, <suffix1>: <1|"hashed">, ... }``
@@ -161,7 +155,7 @@ Index Considerations
 
          - The supporting index cannot be a :doc:`partial index </core/index-partial>`.
 
-         - The supporting index cannot be a :doc:`sparse index </core/index-sparse>`.
+         - The supporting index cannot be a :ref:`sparse index <index-type-sparse>`.
          
          - If the collection uses a non-``simple`` collation, the supporting
            index must specify ``{ locale: "simple" }`` collation.
@@ -184,21 +178,17 @@ Index Considerations
    
 - Index Collation
       If the sharded collection has a non-``simple`` default
-      :doc:`collation </reference/collation>`, then the index *must* include a
+      :ref:`collation <collation>`, then the index *must* include a
       collation document with ``{ locale : "simple" }``. At least one
       of the indexes whose fields support the shard key pattern must
       have the simple collation.
+
+.. include:: /includes/refine-shard-key-index-type.rst
 
 Examples
 --------
 
 To set up the example in the ``test`` database:
-
-a. Enable sharding on the database, if sharding is not already enabled:
-
-   .. code-block:: javascript
-
-      sh.enableSharding("test")
 
 #. Use following :dbcommand:`shardCollection` operation to shard the
    ``orders`` collection in the ``test`` database. The operation
@@ -248,14 +238,8 @@ Collection with non-``simple`` Collation
 
 To set up the example in the ``test`` database:
 
-a. Enable sharding on the database, if sharding is not already enabled:
-
-   .. code-block:: javascript
-
-      sh.enableSharding("test")
-
 #. Create the ``cafés`` collection in the ``test`` database,
-   specifying French ``fr`` as the default :doc:`collation </reference/collation>`.
+   specifying French ``fr`` as the default collation.
 
    .. code-block:: javascript
 
@@ -280,9 +264,8 @@ To modify the shard key to be both the ``customer_id`` field and the
 
 #. :method:`Create the index <db.collection.createIndex()>` to
    support the new shard key if the index does not already exist.
-   Because the collection uses a non-simple :doc:`collation
-   </reference/collation>`, the index must include the ``collation:
-   { locale: "simple" }`` option.
+   Because the collection uses a non-simple collation, the index
+   must include the ``collation: { locale: "simple" }`` option.
 
    .. code-block:: javascript
 

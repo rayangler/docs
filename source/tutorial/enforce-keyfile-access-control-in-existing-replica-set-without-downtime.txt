@@ -19,16 +19,9 @@ for replica sets consists of :ref:`internal authentication <inter-process-auth>`
 among the replica set members, and :ref:`user access control <authorization>`
 for clients connecting to the replica set.
 
-If your deployment does not enforce authentication, MongoDB 3.4+ provides the
-:option:`--transitionToAuth <mongod --transitionToAuth>` option for performing a no-downtime upgrade to
-enforcing authentication.
-
-.. versionadded:: 3.4
-
-   MongoDB 3.2 and earlier do not support a no-downtime upgrade to enforce
-   authentication. See
-   :doc:`/tutorial/enforce-keyfile-access-control-in-existing-replica-set` for
-   enforcing authentication in an existing MongoDB 3.2 replica set.
+If your deployment does not currently enforce authentication, you can use the
+:option:`--transitionToAuth <mongod --transitionToAuth>` option to enforce
+authentication without downtime.
 
 This tutorial uses the :ref:`keyfile <internal-auth-keyfile>` internal
 authentication mechanism for internal security, and
@@ -80,8 +73,6 @@ management best practices.
 IP Binding
 ~~~~~~~~~~~
 
-.. versionchanged:: 3.6
-
 .. include:: /includes/fact-default-bind-ip-change.rst
 
 Passwords
@@ -97,7 +88,7 @@ Passwords
 Enforce Keyfile Access Control on Existing Replica Set
 ------------------------------------------------------
 
-.. include:: /includes/tip-hostnames.rst
+.. include:: /includes/important-hostnames.rst
 
 .. include:: /includes/steps/enable-authentication-in-replica-set-no-downtime.rst
 

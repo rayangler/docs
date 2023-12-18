@@ -1,3 +1,5 @@
+.. _shards-concepts:
+
 ======
 Shards
 ======
@@ -14,11 +16,21 @@ A :term:`shard` contains a subset of sharded data for a :term:`sharded
 cluster`. Together, the cluster's shards hold the entire data set for the
 cluster.
 
-As of MongoDB 3.6, shards must be deployed as a :term:`replica set` to
-provide redundancy and high availability.
+Shards must be deployed as a :term:`replica set` to provide redundancy and high
+availability.
 
-Users, clients, or applications should only directly connect to a shard to
-perform local administrative and maintenance operations.
+.. important::
+
+   Sharded clusters use the write concern ``"majority"`` for a lot of internal
+   operations. Using an arbiter in a sharded cluster is discouraged due to
+   :ref:`replica-set-arbiter-performance-psa`.
+
+.. warning::
+
+   **Typically, do not perform operations directly on a shard because
+   they might cause data corruption or data loss.** Users, clients, or
+   applications should only directly connect to a shard to perform local
+   administrative or maintenance operations.
 
 Performing queries on a single shard only returns a subset of data. Connect to
 the :binary:`~bin.mongos` to perform cluster level operations, including read or
@@ -75,6 +87,8 @@ security and prevent unauthorized cluster components from accessing the
 cluster. You must start each :binary:`~bin.mongod` in the cluster with the
 appropriate security settings in order to enforce internal authentication.
 
+.. include:: /includes/intra-cluster-authentication.rst
+
 See :doc:`/tutorial/deploy-sharded-cluster-with-keyfile-access-control` for a
 tutorial on deploying a secured sharded cluster.
 
@@ -86,6 +100,8 @@ unauthorized access to shard data and operations. Start each :binary:`~bin.mongo
 in the replica set with the :option:`--auth <mongod --auth>` option to enforce RBAC.
 Alternatively, enforcing :doc:`/core/security-internal-authentication` for
 intra-cluster security also enables user access controls via RBAC.
+
+.. include:: /includes/intra-cluster-authentication.rst
 
 Each shard has its own shard-local users. These users cannot be used
 on other shards, nor can they be used for connecting to the cluster

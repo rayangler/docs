@@ -56,7 +56,7 @@ A. Create the OpenSSL Configuration File
       default_md = sha256                           ## Use SHA-256 for Signatures
       distinguished_name = req_dn
       req_extensions = v3_req
-      x509_extensions = v3_ca # The extentions to add to the self signed cert
+      x509_extensions = v3_ca # The extensions to add to the self signed cert
 
       [ v3_req ]
       subjectKeyIdentifier  = hash
@@ -156,7 +156,7 @@ B. Generate the Test CA PEM File
 
    .. code-block:: bash
 
-      cat mongodb-test-ca.crt mongodb-test-ia.crt  > test-ca.pem
+      cat mongodb-test-ia.crt mongodb-test-ca.crt > test-ca.pem
 
 You can use the :red:`test` PEM file when configuring :binary:`~bin.mongod`,
 :binary:`~bin.mongos`, or :binary:`~bin.mongosh` for TLS/SSL :red:`testing`.

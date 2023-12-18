@@ -1,8 +1,21 @@
+.. _install-mdb-community-edition:
+
+.. This page is hidden from the TOC and search indexing.
+
+:orphan:
+
+.. meta::
+   :robots: noindex, nosnippet
+
 =================================
 Install MongoDB Community Edition
 =================================
 
 .. default-domain:: mongodb
+
+.. facet::
+   :name: genre
+   :values: reference
 
 .. contents:: On this page
    :local:
@@ -10,21 +23,9 @@ Install MongoDB Community Edition
    :depth: 1
    :class: singlecol
 
-These documents provide instructions to install MongoDB Community Edition.
+.. include:: /includes/unicode-checkmark.rst
 
-.. _`MongoDB Download Center`: https://www.mongodb.com/try/download/community?tck=docs_server
-
-:doc:`Install on Linux </administration/install-on-linux>`
-   Install MongoDB Community Edition and required dependencies on
-   Linux.
-
-:doc:`Install on macOS </tutorial/install-mongodb-on-os-x>`
-   Install MongoDB Community Edition on macOS systems from MongoDB
-   archives.
-
-:doc:`Install on Windows </tutorial/install-mongodb-on-windows>`
-   Install MongoDB Community Edition on Windows systems and
-   optionally start MongoDB as a Windows service.
+.. include:: /includes/rapid-release.rst
 
 
 .. toctree::
@@ -34,3 +35,4 @@ These documents provide instructions to install MongoDB Community Edition.
    Install on Linux </administration/install-on-linux>
    Install on macOS </tutorial/install-mongodb-on-os-x>
    Install on Windows </tutorial/install-mongodb-on-windows>
+   Install with Docker </tutorial/install-mongodb-community-with-docker>

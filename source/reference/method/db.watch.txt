@@ -17,31 +17,20 @@ Definition
 
    *For replica sets and sharded clusters only*
 
-   .. versionadded:: 4.0
-
-      Requires ``featureCompatibilityVersion`` (fCV) set to
-      ``"4.0"`` or greater. For more information on fCV, see
-      :dbcommand:`setFeatureCompatibilityVersion`.
-
    Opens a :ref:`change stream cursor <changeStreams>` for a database
    to report on all its non-``system`` collections.
-
 
    .. list-table::
       :header-rows: 1
       :widths: 20 20 80
-   
+
       * - Parameter
-   
         - Type
-   
         - Description
-   
+
       * - ``pipeline``
-   
         - array
-   
-        - :doc:`Aggregation pipeline </core/aggregation-pipeline>` consisting
+        - Optional. An :ref:`aggregation-pipeline` consisting
           of one or more of the following aggregation stages:
           
           .. include:: /includes/extracts/changestream-available-pipeline-stages.rst
@@ -49,26 +38,13 @@ Definition
           Specify a pipeline to filter/modify the change events output.
           
           .. include:: /includes/extracts/4.2-changes-change-stream-modification-error.rst
-          
-          
-   
+
       * - ``options``
-   
         - document
-   
         - Optional. Additional options that modify the behavior of
           :method:`db.watch()`.
-          
-          You must pass an empty array ``[]`` to the ``pipeline`` parameter if
-          you are not specifying a pipeline but are passing the ``options``
-          document.
-          
-          
-   
-
 
    The ``options`` document can contain the following fields and values:
-
 
    .. list-table::
       :header-rows: 1
@@ -130,8 +106,16 @@ Definition
           :method:`db.watch()` returns a ``fullDocument`` field with
           the document lookup in addition to the ``updateDescription`` delta.
           
-          
-   
+          .. include:: /includes/change-stream-pre-and-post-images-full-document.rst
+
+
+      * - ``fullDocumentBeforeChange``   
+        - string
+        - Optional. Default is ``"off"``.
+
+          .. include:: /includes/change-stream-pre-and-post-images-full-document-before-change.rst
+
+
       * - ``batchSize``
    
         - int
@@ -159,9 +143,8 @@ Definition
    
         - document
    
-        - Optional. Pass a :ref:`collation document <collation-document-fields>`
-          to specify a :doc:`collation </reference/collation>` for the 
-          change stream cursor.
+        - Optional. Pass a :ref:`collation document <collation-document-fields>` 
+          to specify a collation for the change stream cursor.
           
           If omitted, defaults to ``simple`` binary comparison.
           
@@ -178,10 +161,6 @@ Definition
           
           ``startAtOperationTime`` is mutually exclusive with ``resumeAfter``
           and ``startAfter``.
-          
-          
-   
-
 
    :returns:
       A :term:`cursor` over the change event documents.
@@ -239,11 +218,7 @@ Resumability
 
 .. include:: /includes/extracts/changestream-resume.rst
 
-.. note:: Resume Token
-
-   .. include:: /includes/extracts/changestream-resume-token-versions-4.2-greater.rst
-
-   .. include:: /includes/extracts/changestream-resume-token-hex-change.rst
+.. include:: /includes/change-stream/resume-after
 
 .. |watchmethod| replace:: :method:`db.watch()`
 
@@ -268,6 +243,13 @@ have a :ref:`role <roles>` that grants the following :ref:`privilege
 The built-in :authrole:`read` role provides the appropriate
 privileges.
 
+Cursor Iteration
+----------------
+
+.. include:: /includes/fact-multiple-cursor-monitors.rst
+
+.. _db.watch-example:
+
 Example
 -------
 
@@ -280,18 +262,23 @@ database.
 
    watchCursor = db.getSiblingDB("hr").watch()
 
+
 Iterate the cursor to check for new events. Use the
-:method:`cursor.isExhausted()` method to ensure the loop only exits
-if the change stream cursor is closed *and* there are no objects
-remaining in the latest batch:
+:method:`cursor.isClosed()` method with the :method:`cursor.tryNext()`
+method to ensure the loop only exits if the change stream cursor is
+closed *and* there are no objects remaining in the latest batch:
 
 .. code-block:: javascript
 
-   while (!watchCursor.isExhausted()){
-      if (watchCursor.hasNext()){
-         printjson(watchCursor.next());
-      }
+   while (!watchCursor.isClosed()) {
+     let next = watchCursor.tryNext()
+     while (next !== null) {
+       printjson(next);
+       next = watchCursor.tryNext()
+     }
    }
 
 For complete documentation on change stream output, see
 :ref:`change-stream-output`.
+
+.. include:: /includes/isExhausted-no-change-streams.rst

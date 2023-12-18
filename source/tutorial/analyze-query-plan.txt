@@ -10,6 +10,9 @@ Analyze Query Performance
    :depth: 1
    :class: singlecol
 
+The :ref:`explain plan results <explain-results>` for queries are
+subject to change between MongoDB versions.
+
 .. tabs-drivers::
 
    tabs:
@@ -20,17 +23,14 @@ Analyze Query Performance
          and the :method:`db.collection.explain("executionStats")
          <db.collection.explain()>` methods provide statistics about
          the performance of a query. These statistics can be useful in
-         measuring if and how a query uses an index.
-
-         .. include:: /includes/fact-explain-collection-method.rst
+         measuring if and how a query uses an index. See
+         :method:`db.collection.explain()` for details.
 
      - id: compass
        content: |
-         |compass| provides an
-         `Explain Plan <https://docs.mongodb.com/compass/master/query-plan/>`_
-         tab, which displays statistics about the performance of a
-         query. These statistics can be useful in measuring if and how
-         a query uses an index.
+         |compass| provides an :compass:`Explain Plan </query-plan/>` tab, which 
+         displays statistics about  the performance of a query. These statistics 
+         can be useful in measuring if and how a query uses an index.
 
 Evaluate the Performance of a Query
 -----------------------------------
@@ -105,22 +105,23 @@ Query with No Index
          .. code-block:: javascript
 
             {
-               "queryPlanner" : {
-                     "plannerVersion" : 1,
+               queryPlanner: {
                      ...
-                     "winningPlan" : {
-                        "stage" : "COLLSCAN",
-                        ...
+                     winningPlan: {
+                        queryPlan: {
+                           stage: 'COLLSCAN',
+                           ...
+                        }
                      }
                },
-               "executionStats" : {
-                  "executionSuccess" : true,
-                  "nReturned" : 3,
-                  "executionTimeMillis" : 0,
-                  "totalKeysExamined" : 0,
-                  "totalDocsExamined" : 10,
-                  "executionStages" : {
-                     "stage" : "COLLSCAN",
+               executionStats: {
+                  executionSuccess: true,
+                  nReturned: 3,
+                  executionTimeMillis: 0,
+                  totalKeysExamined: 0,
+                  totalDocsExamined: 10,
+                  executionStages: {
+                     stage: 'COLLSCAN',
                      ...
                   },
                   ...
@@ -128,8 +129,8 @@ Query with No Index
                ...
             }
 
-         - :data:`queryPlanner.winningPlan.stage
-           <explain.queryPlanner.winningPlan.stage>` displays
+         - :data:`queryPlanner.winningPlan.queryPlan.stage
+           <explain.queryPlanner.winningPlan.queryPlan.stage>` displays
            ``COLLSCAN`` to indicate a collection scan.
 
            Collection scans indicate that the
@@ -265,28 +266,29 @@ To support the query on the ``quantity`` field, add an index on the
          .. code-block:: javascript
 
             {
-               "queryPlanner" : {
-                     "plannerVersion" : 1,
+               queryPlanner: {
                      ...
-                     "winningPlan" : {
-                           "stage" : "FETCH",
-                           "inputStage" : {
-                              "stage" : "IXSCAN",
-                              "keyPattern" : {
-                                 "quantity" : 1
+                     winningPlan: {
+                        queryPlan: {
+                           stage: 'FETCH',
+                           inputStage: {
+                              stage: 'IXSCAN',
+                              keyPattern: {
+                                 quantity: 1
                               },
                               ...
                            }
+                        }
                      },
-                     "rejectedPlans" : [ ]
+                     rejectedPlans: [ ]
                },
-               "executionStats" : {
-                     "executionSuccess" : true,
-                     "nReturned" : 3,
-                     "executionTimeMillis" : 0,
-                     "totalKeysExamined" : 3,
-                     "totalDocsExamined" : 3,
-                     "executionStages" : {
+               executionStats: {
+                     executionSuccess: true,
+                     nReturned: 3,
+                     executionTimeMillis: 0,
+                     totalKeysExamined: 3,
+                     totalDocsExamined: 3,
+                     executionStages: {
                         ...
                      },
                      ...
@@ -294,8 +296,8 @@ To support the query on the ``quantity`` field, add an index on the
                ...
             }
 
-         - :data:`queryPlanner.winningPlan.inputStage.stage
-           <explain.queryPlanner.winningPlan.inputStage>` displays
+         - :data:`queryPlanner.winningPlan.queryPlan.inputStage.stage
+           <explain.queryPlanner.winningPlan.queryPlan.inputStage>` displays
            ``IXSCAN`` to indicate index use.
 
          - :data:`executionStats.nReturned <explain.executionStats.nReturned>`
@@ -389,7 +391,7 @@ To support the query on the ``quantity`` field, add an index on the
            displays the query stages ``FETCH`` and ``IXSCAN``.
            ``IXSCAN`` indicates that the
            :binary:`~bin.mongod` used an index to satisfy the query
-           before exeuting the ``FETCH`` stage and retrieving the
+           before executing the ``FETCH`` stage and retrieving the
            documents.
 
          Raw JSON
@@ -470,32 +472,34 @@ in a very efficient query.
          output:
 
          .. code-block:: javascript
-            :emphasize-lines: 20,22
+            :emphasize-lines: 22,24
 
             {
-               "queryPlanner" : {
+               queryPlanner: {
                   ...
-                  "winningPlan" : {
-                     "stage" : "FETCH",
-                     "inputStage" : {
-                        "stage" : "IXSCAN",
-                        "keyPattern" : {
-                           "quantity" : 1,
-                           "type" : 1
-                        },
-                        ...
+                  winningPlan: {
+                     queryPlan: {
+                        stage: 'FETCH',
+                        inputStage: {
+                           stage: 'IXSCAN',
+                           keyPattern: {
+                              quantity: 1,
+                              type: 1
+                           },
+                           ...
+                           }
                         }
                      }
                   },
-                  "rejectedPlans" : [ ]
+                  rejectedPlans: [ ]
                },
-               "executionStats" : {
-                  "executionSuccess" : true,
-                  "nReturned" : 2,
-                  "executionTimeMillis" : 0,
-                  "totalKeysExamined" : 5,
-                  "totalDocsExamined" : 2,
-                  "executionStages" : {
+               executionStats: {
+                  executionSuccess: true,
+                  nReturned: 2,
+                  executionTimeMillis: 0,
+                  totalKeysExamined: 5,
+                  totalDocsExamined: 2,
+                  executionStages: {
                   ...
                   }
                },
@@ -523,28 +527,30 @@ in a very efficient query.
             :emphasize-lines: 19,21
 
             {
-               "queryPlanner" : {
+               queryPlanner: {
                   ...
-                  "winningPlan" : {
-                     "stage" : "FETCH",
-                     "inputStage" : {
-                        "stage" : "IXSCAN",
-                        "keyPattern" : {
-                           "type" : 1,
-                           "quantity" : 1
-                        },
-                        ...
+                  queryPlan: {
+                     winningPlan: {
+                        stage: 'FETCH',
+                        inputStage: {
+                           stage: 'IXSCAN',
+                           keyPattern: {
+                              type: 1,
+                              quantity: 1
+                           },
+                           ...
+                        }
                      }
                   },
-                  "rejectedPlans" : [ ]
+                  rejectedPlans: [ ]
                },
-               "executionStats" : {
-                  "executionSuccess" : true,
-                  "nReturned" : 2,
-                  "executionTimeMillis" : 0,
-                  "totalKeysExamined" : 2,
-                  "totalDocsExamined" : 2,
-                  "executionStages" : {
+               executionStats: {
+                  executionSuccess: true,
+                  nReturned: 2,
+                  executionTimeMillis: 0,
+                  totalKeysExamined: 2,
+                  totalDocsExamined: 2,
+                  executionStages: {
                      ...
                   }
                },
@@ -576,6 +582,6 @@ in a very efficient query.
        content: |
          .. seealso::
 
-            - :doc:`Query Optimization </core/query-optimization>`
+            - :ref:`Query Optimization <read-operations-indexing>`
             - :ref:`MongoDB Compass Documentation <compass-index>`
-            - `Compass Query Plan Documentation <https://docs.mongodb.com/compass/master/query-plan/>`_
+            - :compass:`Compass Query Plan Documentation </query-plan/>`

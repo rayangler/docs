@@ -88,7 +88,6 @@
 
          .. literalinclude:: /driver-examples/DocumentationTransactionsExampleSpec.scala
             :language: scala
-            :lines: 66-77
 
      - id: ruby
        content: |
@@ -128,7 +127,7 @@
          .. literalinclude:: /driver-examples/test-mongoc-sample-commands.c 
             :language: c
             :start-after: commit transactions with retry logic
-            :end-before: updates two collections in a transaction 
+            :end-before: updates two collections in a transaction and calls commit_with_retry
 
      - id: cpp
        content: |

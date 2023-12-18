@@ -82,17 +82,17 @@ WiredTiger and Driver Version Compatibility
 
 For MongoDB 3.0 deployments that use the WiredTiger storage engine, the
 following operations return no output when issued in previous versions
-of the :binary:`~bin.mongo` shell or drivers:
+of the ``mongo`` shell or drivers:
 
 - :method:`db.getCollectionNames()`
 - :method:`db.collection.getIndexes()`
 - ``show collections``
 - ``show tables``
 
-Use the 3.0 :binary:`~bin.mongo` shell or the :ref:`3.0 compatible version
+Use the 3.0 ``mongo`` shell or the :ref:`3.0 compatible version
 <compatibility-driver-versions>` of the official drivers when
 connecting to 3.0 :binary:`~bin.mongod` instances that use WiredTiger. The
-2.6.8 :binary:`~bin.mongo` shell is also compatible with 3.0
+2.6.8 ``mongo`` shell is also compatible with 3.0
 :binary:`~bin.mongod` instances that use WiredTiger.
 
 ``db.fsyncLock()`` is not Compatible with WiredTiger
@@ -369,7 +369,7 @@ You can disable this behavior with the
 :setting:`net.ssl.allowInvalidCertificates` setting or the
 ``--sslAllowInvalidCertificates`` command line option.
 
-To start the :binary:`~bin.mongo` shell with ``--ssl``, you must explicitly
+To start the ``mongo`` shell with ``--ssl``, you must explicitly
 specify either the ``--sslCAFile`` or ``--sslAllowInvalidCertificates``
 option at startup. See :doc:`/tutorial/configure-ssl-clients` for more
 information.
@@ -398,10 +398,10 @@ configuration changes are necessary.
 ``mongo`` Shell Version Compatibility
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Versions of the :binary:`~bin.mongo` shell before 3.0 are *not*
+Versions of the ``mongo`` shell before 3.0 are *not*
 compatible with 3.0 deployments of MongoDB that enforce access
 control. If you have a 3.0 MongoDB deployment that requires
-access control, you must use 3.0 versions of the :binary:`~bin.mongo`
+access control, you must use 3.0 versions of the ``mongo``
 shell.
 
 HTTP Status Interface and REST API Compatibility
@@ -441,14 +441,14 @@ index build on start up.
 ``2d`` Indexes and Geospatial Near Queries
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-For :query:`$near` queries that use a :doc:`2d </core/2d>` index:
+For :query:`$near` queries that use a :ref:`2d <2d-index>` index:
 
 - MongoDB no longer uses a default limit of 100 documents.
 
 - Specifying a :method:`~cursor.batchSize()` is no longer analogous to
   specifying a :method:`~cursor.limit()`.
 
-For :query:`$nearSphere` queries that use a :doc:`2d </core/2d>` index,
+For :query:`$nearSphere` queries that use a :ref:`2d <2d-index>` index,
 MongoDB no longer uses a default limit of 100 documents.
 
 .. _compatibility-driver-versions:
@@ -541,7 +541,7 @@ The following commands and methods are no longer available in MongoDB 3.0:
 
 The following commands and methods are deprecated in MongoDB 3.0:
 
-- :dbcommand:`diagLogging`
+- ``diagLogging``
 
 - ``eval``, ``db.eval()``
 

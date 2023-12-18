@@ -15,21 +15,16 @@ Definition
 
 .. method:: Session.commitTransaction()
 
-   .. versionadded:: 4.0
+   Saves the changes made by the operations in the :ref:`multi-document
+   transaction <transactions>` and ends the transaction.
+   
+   .. include:: /includes/transaction-support
+   
+   ``Session.commitTransaction()`` does not return a value.
 
-   Saves the changes made by the operations in the :doc:`multi-document
-   transaction </core/transactions>` and ends the transaction.
+   .. |dbcommand| replace:: :dbcommand:`commitTransaction` command
+   .. include:: /includes/fact-mongosh-shell-method-alt
 
-   .. note:: Availability
-
-
-      - **In version 4.0**, MongoDB supports multi-document
-        transactions on replica sets.
-
-      - **In version 4.2**, MongoDB introduces distributed
-        transactions, which adds support for multi-document
-        transactions on sharded clusters and incorporates the existing
-        support for multi-document transactions on replica sets.
 
 Behavior
 --------

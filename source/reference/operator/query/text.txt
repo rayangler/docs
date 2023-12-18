@@ -4,11 +4,22 @@ $text
 
 .. default-domain:: mongodb
 
+.. facet::
+   :name: programming_language
+   :values: shell
+
+.. meta:: 
+   :keywords: search
+
 .. contents:: On this page
    :local:
    :backlinks: none
    :depth: 1
    :class: singlecol
+
+.. include:: /includes/extracts/fact-text-search-legacy-atlas.rst
+
+This page describes :query:`$text` operator for self-managed deployments.
 
 Definition
 ----------
@@ -16,104 +27,87 @@ Definition
 .. query:: $text
 
    :query:`$text` performs a text search on the content of the fields
-   indexed with a :doc:`text index </core/index-text>`. A
-   :query:`$text` expression has the following syntax:
+   indexed with a :ref:`text index <index-type-text>`. 
 
-   .. versionchanged:: 3.2
+Compatibility
+-------------
 
-   .. code-block:: javascript
+.. |operator-method| replace:: ``$text``
 
-      {
-        $text:
-          {
-            $search: <string>,
-            $language: <string>,
-            $caseSensitive: <boolean>,
-            $diacriticSensitive: <boolean>
-          }
-      }
+.. include:: /includes/fact-compatibility.rst
 
-   The :query:`$text` operator accepts a text query document with the
-   following fields:
+Syntax
+------
+   
+A :query:`$text` expression has the following syntax:
 
-   .. |object-behavior| replace:: :ref:`text-query-operator-behavior`
-   .. |text-obj| replace:: text search
+.. code-block:: javascript
 
+   {
+     $text: {
+       $search: <string>,
+       $language: <string>,
+       $caseSensitive: <boolean>,
+       $diacriticSensitive: <boolean>
+     }
+   }
 
-   .. list-table::
-      :header-rows: 1
-      :widths: 20 20 80
-   
-      * - Field
-   
-        - Type
-   
-        - Description
-   
-      * - ``$search``
-   
-        - string
-   
-        - A string of terms that MongoDB parses and uses to query the text
-          index. MongoDB performs a logical ``OR`` search of the terms unless
-          specified as a phrase. See |object-behavior| for more information on
-          the field.
-          
-          
-   
-      * - ``$language``
-   
-        - string
-   
-        - Optional. The language that determines the list of stop words for the search and
-          the rules for the stemmer and tokenizer. If not specified, the search
-          uses the default language of the index. For supported languages, see
-          :ref:`text-search-languages`.
-          
-          .. include:: /includes/fact-text-search-language-none.rst
-          
-          
-   
-      * - ``$caseSensitive``
-   
-        - boolean
-   
-        - Optional. A boolean flag to enable or disable case sensitive search. Defaults
-          to ``false``; i.e. the search defers to the case insensitivity of the
-          :doc:`text </core/index-text>` index.
-          
-          For more information, see :ref:`text-operator-case-sensitivity`.
-          
-          .. versionadded:: 3.2
-          
-          
-   
-      * - ``$diacriticSensitive``
-   
-        - boolean
-   
-        - Optional. A boolean flag to enable or disable diacritic sensitive search
-          against :doc:`version 3 text indexes </core/index-text>`. Defaults to
-          ``false``; i.e. the search defers to the diacritic insensitivity of
-          the :doc:`text </core/index-text>` index.
-          
-          Text searches against earlier versions of the text index are
-          inherently diacritic sensitive and cannot be diacritic insensitive.
-          As such, the ``$diacriticSensitive`` option has no effect with
-          earlier versions of the text index.
-          
-          For more information, see :ref:`text-operator-diacritic-sensitivity`.
-          
-          .. versionadded:: 3.2
-          
-          
-   
+The :query:`$text` operator accepts a text query document with the
+following fields:
 
+.. |object-behavior| replace:: :ref:`text-query-operator-behavior`
+.. |text-obj| replace:: text search
 
-   The :query:`$text` operator, by default, does *not* return results
-   sorted in terms of the results' scores. For more information on
-   sorting by the text search scores, see the
-   :ref:`text-operator-text-score` documentation.
+.. list-table::
+   :header-rows: 1
+   :widths: 20 20 80
+
+   * - Field
+     - Type
+     - Description
+   
+   * - ``$search``
+     - string
+     - A string of terms that MongoDB parses and uses to query the text
+       index. MongoDB performs a logical ``OR`` search of the terms unless
+       specified as a :ref:`phrase <text-operator-phrases>`. For more 
+       information on the field, see |object-behavior|.        
+
+   * - ``$language``
+     - string
+     - Optional. The language that determines the list of stop words for the search and
+       the rules for the stemmer and tokenizer. If not specified, the search
+       uses the default language of the index. For supported languages, see
+       :ref:`text-search-languages`.
+          
+       .. include:: /includes/fact-text-search-language-none.rst
+
+   * - ``$caseSensitive``
+     - boolean
+     - Optional. A boolean flag to enable or disable case sensitive search. Defaults
+       to ``false``; i.e. the search defers to the case insensitivity of the
+       :ref:`text <index-type-text>` index.
+          
+       For more information, see :ref:`text-operator-case-sensitivity`.
+
+   * - ``$diacriticSensitive``
+     - boolean
+     - Optional. A boolean flag to enable or disable diacritic sensitive search
+       against :ref:`version 3 text indexes <index-type-text>`. Defaults to
+       ``false``; i.e. the search defers to the diacritic insensitivity of
+       the :ref:`text <index-type-text>` index.
+
+       Text searches against earlier versions of the text index are
+       inherently diacritic sensitive and cannot be diacritic insensitive.
+       As such, the ``$diacriticSensitive`` option has no effect with
+       earlier versions of the ``text`` index.
+
+       For more information, see :ref:`text-operator-diacritic-sensitivity`.
+
+The :query:`$text` operator, by default, does *not* return results
+sorted in terms of the results' scores. For more information on
+sorting by the text search scores, see the
+:ref:`text-operator-text-score` documentation.
 
 .. _text-query-operator-behavior:
 
@@ -143,6 +137,9 @@ Restrictions
 
 - .. include:: /includes/extracts/views-unsupported-text-search.rst
 
+- :query:`$text` is unsupported for creating indexes using the
+  :ref:`Stable API <stable-api>` V1.
+
 If using the :query:`$text` operator in aggregation, the following
 restrictions also apply.
 
@@ -156,8 +153,8 @@ restrictions also apply.
 ~~~~~~~~~~~~~~~~~
 
 In the ``$search`` field, specify a string of words that the
-:query:`$text` operator parses and uses to query the :doc:`text index
-</core/index-text>`.
+:query:`$text` operator parses and uses to query the :ref:`text index
+<index-type-text>`.
 
 The :query:`$text` operator treats most punctuation
 in the string as delimiters, except a hyphen-minus (``-``) that negates term or
@@ -166,7 +163,7 @@ an escaped double quotes ``\"`` that specifies a phrase.
 .. note::
 
    The ``$search`` field for the :query:`$text` expression is different
-   than the the :atlas:`$search aggregation stage
+   than the :atlas:`$search aggregation stage
    </reference/atlas-search/query-syntax/>` provided by
    :atlas:`Atlas Search </atlas-search>`. The ``$search`` aggregation
    stage performs full-text search on specified fields and is only
@@ -184,8 +181,7 @@ phrase in escaped double quotes (``\"``), as in:
 
    "\"ssl certificate\""
 
-If the ``$search`` string includes a phrase and individual terms, text
-search will only match the documents that include the phrase.
+.. include:: /includes/fact-text-search-phrase-and-term.rst
 
 For example, passed a ``$search`` string:
 
@@ -195,6 +191,10 @@ For example, passed a ``$search`` string:
 
 The :query:`$text` operator searches for the phrase ``"ssl
 certificate"``.
+
+.. note:: 
+   
+   .. include:: /includes/fact-text-search-multiple-phrases.rst
 
 .. _text-operator-term-negation:
 
@@ -262,12 +262,10 @@ matches on the exact word.
 Case Insensitivity
 ~~~~~~~~~~~~~~~~~~
 
-.. versionchanged:: 3.2
-
 The :query:`$text` operator defaults to the case insensitivity of the
-:doc:`text </core/index-text>` index:
+:ref:`text <index-type-text>` index:
 
-- The :ref:`version 3 text index <text-index-case-insensitivity>` is
+- The version 3 :ref:`text index <text-index-case-insensitivity>` is
   case insensitive for Latin characters with or without diacritics and
   characters from non-Latin alphabets, such as the Cyrillic alphabet.
   See :ref:`text <text-index-case-insensitivity>` index for details.
@@ -311,12 +309,10 @@ Specifying ``$caseSensitive: true`` may impact performance.
 Diacritic Insensitivity
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-.. versionchanged:: 3.2
-
 The :query:`$text` operator defaults to the diacritic insensitivity of
-the :doc:`text </core/index-text>` index:
+the :ref:`text <index-type-text>` index:
 
-- The :ref:`version 3 text index <text-index-diacritic-insensitivity>` is
+- The version 3 :ref:`text index <text-index-diacritic-insensitivity>` is
   diacritic insensitive. That is, the index does not distinguish
   between characters that contain diacritical marks and their
   non-marked counterpart, such as ``é``, ``ê``, and ``e``.
@@ -326,11 +322,11 @@ the :doc:`text </core/index-text>` index:
 ``$diacriticSensitive`` Option
 ``````````````````````````````
 
-To support diacritic sensitive text search against the version 3
-``text`` index, specify ``$diacriticSensitive: true``.
+To support diacritic sensitive text search against the ``text`` index,
+specify ``$diacriticSensitive: true``.
 
 Text searches against earlier versions of the ``text`` index are
-inherently diacritic sensitive and cannot be diacritic insensitive. As
+inherently diacritic sensitive and cannot be diacritic insensitive.  As
 such, the ``$diacriticSensitive`` option for the :query:`$text`
 operator has no effect with earlier versions of the ``text`` index.
 
@@ -351,7 +347,7 @@ Specifying ``$diacriticSensitive: true`` may impact performance.
 
 To perform a diacritic sensitive search against an earlier version of
 the ``text`` index, the :query:`$text` operator searches the ``text``
-index which is diacritic sensitive.
+index, which is diacritic sensitive.
 
 For diacritic sensitive search, if the suffix stem contains the
 diacritic mark or marks, the :query:`$text` operator matches on the
@@ -374,7 +370,7 @@ Examples
 --------
 
 The following examples assume a collection ``articles`` that has a
-:doc:`version 3 text </core/index-text>` index on the field ``subject``:
+:ref:`version 3 text <index-type-text>` index on the field ``subject``:
 
 .. code-block:: javascript
 
@@ -384,8 +380,7 @@ Populate the collection with the following documents:
 
 .. code-block:: javascript
 
-   db.articles.insert(
-      [
+   db.articles.insertMany( [
         { _id: 1, subject: "coffee", author: "xyz", views: 50 },
         { _id: 2, subject: "Coffee Shopping", author: "efg", views: 5 },
         { _id: 3, subject: "Baking a cake", author: "abc", views: 90  },
@@ -394,8 +389,7 @@ Populate the collection with the following documents:
         { _id: 6, subject: "Сырники", author: "jkl", views: 80 },
         { _id: 7, subject: "coffee and cream", author: "efg", views: 10 },
         { _id: 8, subject: "Cafe con Leche", author: "xyz", views: 10 }
-      ]
-   )
+   ] )
 
 
 Search for a Single Word
@@ -413,9 +407,9 @@ the word:
 
 .. code-block:: javascript
 
-   { "_id" : 2, "subject" : "Coffee Shopping", "author" : "efg", "views" : 5 }
-   { "_id" : 7, "subject" : "coffee and cream", "author" : "efg", "views" : 10 }
-   { "_id" : 1, "subject" : "coffee", "author" : "xyz", "views" : 50 }
+   { _id: 1, subject: 'coffee', author: 'xyz', views: 50 },
+   { _id: 7, subject: 'coffee and cream', author: 'efg', views: 10 },
+   { _id: 2, subject: 'Coffee Shopping', author: 'efg', views: 5 }
 
 .. seealso::
 
@@ -469,6 +463,27 @@ This query returns documents that contain the phrase ``coffee shop``:
 .. code-block:: javascript
 
    { "_id" : 2, "subject" : "Coffee Shopping", "author" : "efg", "views" : 5 }
+
+The following query searches for the phrases ``coffee shop`` and ``Cafe
+con Leche``. This is a logical OR of the two phrases.
+
+.. code-block:: javascript
+
+   db.articles.find( { $text: { $search: "\'coffee shop\' \'Cafe con Leche\'" } } )
+   
+This query returns documents that contain both the phrases, including
+documents that contain terms from both the phrases: 
+
+.. code-block:: javascript
+   :copyable: false 
+
+   [
+     { _id: 8, subject: 'Cafe con Leche', author: 'xyz', views: 10 },
+     { _id: 5, subject: 'Café Con Leche', author: 'abc', views: 200 },
+     { _id: 1, subject: 'coffee', author: 'xyz', views: 50 },
+     { _id: 7, subject: 'coffee and cream', author: 'efg', views: 10 },
+     { _id: 2, subject: 'Coffee Shopping', author: 'efg', views: 5 }
+   ]
 
 .. seealso::
 
@@ -537,8 +552,6 @@ languages.
 Case and Diacritic Insensitive Search
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. versionchanged:: 3.2
-
 The :query:`$text` operator defers to the case and diacritic
 insensitivity of the ``text`` index. The version 3 ``text`` index is
 diacritic insensitive and expands its case insensitivity to include the
@@ -563,7 +576,7 @@ documents.
    { "_id" : 5, "subject" : "Café Con Leche", "author" : "abc", "views" : 200 }
    { "_id" : 8, "subject" : "Cafe con Leche", "author" : "xyz", "views" : 10 }
 
-With the previous versions of the ``text`` index, the query would not
+With previous versions of the ``text`` index, the query would not
 match any document.
 
 .. seealso::
@@ -571,14 +584,12 @@ match any document.
    - :ref:`text-operator-case-sensitivity`
    - :ref:`text-operator-diacritic-sensitivity`
    - :ref:`match-operation-stemmed-words`
-   - :doc:`/core/index-text`
+   - :ref:`<index-type-text>`
 
 .. _text-operator-case-sensitive-search:
 
 Perform Case Sensitive Search
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. versionchanged:: 3.2
 
 To enable case sensitive search, specify ``$caseSensitive: true``.
 Specifying ``$caseSensitive: true`` may impact performance.
@@ -657,10 +668,8 @@ The query matches the following document:
 Diacritic Sensitive Search
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. versionchanged:: 3.2
-
-To enable diacritic sensitive search against a version 3 :doc:`text
-</core/index-text>` index, specify ``$diacriticSensitive: true``.
+To enable diacritic sensitive search against a version 3
+:ref:`text <index-type-text>` index, specify ``$diacriticSensitive: true``.
 Specifying ``$diacriticSensitive: true`` may impact performance.
 
 Diacritic Sensitive Search for a Term
@@ -757,7 +766,7 @@ Sort by Text Search Score
 .. include:: /includes/extracts/4.4-changes-projection-sort-meta-list.rst
 
 
-- In MongoDB 4.2 and earlier, to sort by the text score, include the
+- In MongoDB 4.2, to sort by the text score, include the
   **same** :expression:`$meta` expression in **both** the projection
   document and the sort expression. The following
   query searches for the term ``coffee`` and sorts the results by the

@@ -81,7 +81,7 @@ In-memory storage engine requires that all its data (including indexes,
 oplog if :binary:`~bin.mongod` instance is part of a replica set, etc.) must
 fit into the specified :option:`--inMemorySizeGB <mongod --inMemorySizeGB>` command-line option
 or :setting:`storage.inMemory.engineConfig.inMemorySizeGB` setting in
-the :doc:`YAML configuration file </reference/configuration-options>`.
+the :ref:`YAML configuration file <configuration-options>`.
 
 .. include:: /includes/fact-inmemory-storage-engine-default-ram.rst
 
@@ -184,9 +184,13 @@ and replication configuration information.
 Sharded Cluster
 ~~~~~~~~~~~~~~~
 
-You can deploy :binary:`~bin.mongod` instances that use in-memory storage
-engine as part of a sharded cluster. For example, in a sharded cluster,
-you could have one shard that has consists of the following replica set:
+You can deploy :binary:`~bin.mongod` instances that use an in-memory 
+storage engine as part of a :term:`sharded cluster`. The in-memory 
+storage engine avoids disk I/O to allow for more
+predictable database operation latency. In a sharded cluster, a 
+:term:`shard` can consist of a single :program:`mongod` instance or a 
+:term:`replica set`. For example, you could have one shard that 
+consists of the following replica set:
 
 - two :binary:`~bin.mongod` instances run with in-memory storage engine
 

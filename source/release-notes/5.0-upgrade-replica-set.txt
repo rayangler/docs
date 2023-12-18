@@ -14,9 +14,7 @@ Upgrade a Replica Set to 5.0
 
 .. include:: /includes/5.0-upgrade-replacements.rst
 
-Familiarize yourself with the content of this document, including
-thoroughly reviewing the prerequisites, prior to upgrading to MongoDB
-5.0.
+.. include:: /includes/upgrade-intro.rst
 
 The following steps outline the procedure to upgrade a
 :binary:`~bin.mongod` that is a replica set member from version
@@ -29,13 +27,15 @@ The following steps outline the procedure to upgrade a
 Prerequisites
 -------------
 
+.. include:: /includes/valid-ttl-config-prereq.rst
+
 All Members Version
 ~~~~~~~~~~~~~~~~~~~
 
 All replica set members must be running version |oldversion|. To
 upgrade a replica set from an |olderseries| and earlier, *first*
 :doc:`upgrade all members of the replica set to the latest
-4.2-series release </release-notes/4.2-upgrade-replica-set>`, and
+4.4-series release </release-notes/4.4-upgrade-replica-set>`, and
 then follow the procedure to upgrade from MongoDB |oldversion| to
 |newversion|.
 

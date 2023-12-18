@@ -4,6 +4,10 @@ $sum (aggregation)
 
 .. default-domain:: mongodb
 
+.. facet::
+   :name: programming_language
+   :values: shell
+
 .. contents:: On this page
    :local:
    :backlinks: none
@@ -21,6 +25,13 @@ Calculates and returns the collective sum of numeric values.
 :group:`$sum` ignores non-numeric values.
 
 .. include:: /includes/extracts/fact-aggregation-accumulator-sum.rst
+
+Compatibility
+-------------
+
+.. |operator-method| replace:: ``$sum``
+
+.. include:: /includes/fact-compatibility.rst
 
 Syntax
 ------

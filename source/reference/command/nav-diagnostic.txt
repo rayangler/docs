@@ -20,10 +20,6 @@ Diagnostic Commands
 
      - Description
 
-   * - :dbcommand:`availableQueryOptions`
-
-     - Internal command that reports on the capabilities of the current MongoDB instance.
-
    * - :dbcommand:`buildInfo`
 
      - Displays statistics about the MongoDB build.
@@ -39,10 +35,6 @@ Diagnostic Commands
    * - :dbcommand:`connectionStatus`
 
      - Reports the authentication state for the current connection.
-
-   * - :dbcommand:`cursorInfo`
-
-     - Removed in MongoDB 3.2. Replaced with :serverstatus:`metrics.cursor`.
 
    * - :dbcommand:`dataSize`
 
@@ -126,6 +118,11 @@ Diagnostic Commands
 
      - Internal command that scans for a collection's data and indexes for correctness.
 
+   * - :dbcommand:`validateDBMetadata`
+
+     - Checks that the stored metadata of a database/collection is valid 
+       within a particular API version.
+
    * - :dbcommand:`whatsmyuri`
 
      - Internal command that returns information on the current client.
@@ -135,16 +132,13 @@ Diagnostic Commands
    :titlesonly: 
    :hidden: 
 
-   /reference/command/availableQueryOptions
    /reference/command/buildInfo
    /reference/command/collStats
    /reference/command/connPoolStats
    /reference/command/connectionStatus
-   /reference/command/cursorInfo
    /reference/command/dataSize
    /reference/command/dbHash
    /reference/command/dbStats
-   /reference/command/diagLogging
    /reference/command/driverOIDTest
    /reference/command/explain
    /reference/command/features
@@ -161,4 +155,5 @@ Diagnostic Commands
    /reference/command/shardConnPoolStats
    /reference/command/top
    /reference/command/validate
+   /reference/command/validateDBMetadata
    /reference/command/whatsmyuri

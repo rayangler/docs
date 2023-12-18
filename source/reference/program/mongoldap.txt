@@ -2,7 +2,7 @@
 
 .. default-domain:: mongodb
 
-.. only:: (not man)
+.. cond:: (not man)
 
    .. binary:: mongoldap
 
@@ -20,12 +20,12 @@
 
 .. |tool-binary| replace:: :binary:`~bin.mongoldap`
 
-.. versionadded:: 3.4 MongoDB Enterprise
+*MongoDB Enterprise*
 
 Synopsis
 --------
 
-Starting in version 3.4, MongoDB Enterprise provides
+MongoDB Enterprise provides
 :binary:`~bin.mongoldap` for testing MongoDB's LDAP :ref:`configuration
 options <security.ldap.options>` against a running LDAP server or set
 of servers.
@@ -154,6 +154,20 @@ configuration files are valid, the output might be as follows:
    [OK] Successfully acquired the following roles:
    ...
 
+Behavior
+--------
+
+Starting in MonogoDB 5.1, ``mongoldap`` supports prefixing LDAP
+server with ``srv:`` and ``srv_raw:``.
+
+If your connection string specifies ``"srv:<DNS_NAME>"``, ``mongoldap`` 
+verifies that ``"_ldap._tcp.gc._msdcs.<DNS_NAME>"`` exists for SRV to 
+support Active Directory. If not found, it verifies 
+``"_ldap._tcp.<DNS_NAME>"`` exists for SRV. If an SRV record cannot be 
+found, ``mongoldap`` warns you to use ``"srv_raw:<DNS_NAME>"`` instead. 
+``mongoldap`` does the reverse check for ``"srv_raw:<DNS_NAME>"`` by 
+checking for ``"_ldap._tcp.<DNS NAME>"``. 
+
 Options
 -------
 
@@ -192,8 +206,6 @@ Options
 
 
 .. option:: --ldapServers=<host1>:<port>,<host2>:<port>,...,<hostN>:<port>
-
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
    
    The LDAP server against which the :program:`mongoldap` authenticates users or
    determines what actions a user is authorized to perform on a given
@@ -207,16 +219,13 @@ Options
    4.1.10 <https://www.rfc-editor.org/rfc/rfc4511.txt>`_. Do not use :option:`--ldapServers`
    for listing every LDAP server in your infrastructure.
    
-   This setting can be configured on a running :program:`mongoldap` using
-   :dbcommand:`setParameter`.
-   
    If unset, :program:`mongoldap` cannot use :doc:`LDAP authentication or authorization
    </core/security-ldap>`.
 
                                            
 .. option:: --ldapQueryUser=<string>
 
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
+   *Available in MongoDB Enterprise only.*
    
    The identity with which :program:`mongoldap` binds as, when connecting to or
    performing queries on an LDAP server.
@@ -231,9 +240,6 @@ Options
    
    If unset, :program:`mongoldap` will not attempt to bind to the LDAP server.
    
-   This setting can be configured on a running :program:`mongoldap` using
-   :dbcommand:`setParameter`.
-   
    .. note::
    
       Windows MongoDB deployments can use :option:`--ldapBindWithOSDefaults`
@@ -241,33 +247,18 @@ Options
       both :option:`--ldapQueryUser` and :option:`--ldapBindWithOSDefaults` at the same time.
 
                                            
-.. option:: --ldapQueryPassword=<string>
+.. option:: --ldapQueryPassword=<string | array>
 
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
-   
-   The password used to bind to an LDAP server when using
-   :option:`--ldapQueryUser`. You must use :option:`--ldapQueryPassword` with
-   :option:`--ldapQueryUser`.
-   
-   If unset, :program:`mongoldap` will not attempt to bind to the LDAP server.
-   
-   This setting can be configured on a running :program:`mongoldap` using
-   :dbcommand:`setParameter`.
-   
-   .. note::
-   
-      Windows MongoDB deployments can use :option:`--ldapBindWithOSDefaults`
-      instead of :option:`--ldapQueryPassword` and :option:`--ldapQueryPassword`. You cannot specify
-      both :option:`--ldapQueryPassword` and :option:`--ldapBindWithOSDefaults` at the same time.
+.. include:: /includes/query-password.rst
+   :start-after: START-MONGOLDAP-QUERYPASSWORD
+   :end-before: END-MONGOLDAP-QUERYPASSWORD
 
                                            
 .. option:: --ldapBindWithOSDefaults=<bool>
 
    *Default*: false
-
-   .. versionadded:: 3.4
    
-      Available in MongoDB Enterprise for the Windows platform only.
+   Available in MongoDB Enterprise for the Windows platform only.
    
    Allows :program:`mongoldap` to authenticate, or bind, using your Windows login
    credentials when connecting to the LDAP server.
@@ -286,7 +277,7 @@ Options
 
    *Default*: simple
 
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
+   *Available in MongoDB Enterprise only.*
    
    The method :program:`mongoldap` uses to authenticate to an LDAP
    server. Use with :option:`--ldapQueryUser <mongoldap
@@ -318,7 +309,7 @@ Options
 
    *Default*: DIGEST-MD5
 
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
+   *Available in MongoDB Enterprise only.*
    
    A comma-separated list of SASL mechanisms :program:`mongoldap` can
    use when authenticating to the LDAP server. The :program:`mongoldap` and the
@@ -381,7 +372,7 @@ Options
 
    *Default*: tls
 
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
+   *Available in MongoDB Enterprise only.*
    
    By default, :program:`mongoldap` creates a TLS/SSL secured connection to the LDAP
    server.
@@ -409,11 +400,11 @@ Options
       credentials between :program:`mongoldap` and the LDAP server.
 
                                            
-.. option:: --ldapTimeoutMS=<long>
+.. option:: --ldapTimeoutMS=<int>
 
    *Default*: 10000
 
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
+   *Available in MongoDB Enterprise only.*
    
    The amount of time in milliseconds :program:`mongoldap` should wait for an LDAP server
    to respond to a request.
@@ -422,14 +413,10 @@ Options
    MongoDB server and the LDAP server, if the source of the failure is a
    connection timeout. Decreasing the value of :option:`--ldapTimeoutMS` reduces the time
    MongoDB waits for a response from the LDAP server.
-   
-   This setting can be configured on a running :program:`mongoldap` using
-   :dbcommand:`setParameter`.
-
                                            
 .. option:: --ldapUserToDNMapping=<string>
 
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
+   *Available in MongoDB Enterprise only.*
    
    Maps the username provided to :program:`mongoldap` for authentication to a LDAP
    Distinguished Name (DN). You may need to use :option:`--ldapUserToDNMapping` to transform a
@@ -508,7 +495,7 @@ Options
    .. note::
    
       An explanation of  `RFC4514 <https://www.ietf.org/rfc/rfc4514.txt>`_,
-      `RFC4515 <https://tools.ietf.org/search/rfc4515>`_,
+      `RFC4515 <https://tools.ietf.org/html/rfc4515>`_,
       `RFC4516 <https://tools.ietf.org/html/rfc4516>`_, or LDAP queries is out
       of scope for the MongoDB Documentation. Please review the RFC directly or
       use your preferred LDAP resource.
@@ -581,17 +568,13 @@ Options
    
    If :option:`--ldapUserToDNMapping` is unset, :program:`mongoldap` applies no transformations to the username
    when attempting to authenticate or authorize a user against the LDAP server.
-   
-   This setting can be configured on a running :program:`mongoldap` using the
-   :dbcommand:`setParameter` database command.
-
 
 .. option:: --ldapAuthzQueryTemplate=<string>
 
-   .. versionadded:: 3.4 Available in MongoDB Enterprise only.
+   *Available in MongoDB Enterprise only.*
    
    A relative LDAP query URL formatted conforming to `RFC4515
-   <https://tools.ietf.org/search/rfc4515>`_ and `RFC4516
+   <https://tools.ietf.org/html/rfc4515>`_ and `RFC4516
    <https://tools.ietf.org/html/rfc4516>`_ that :program:`mongoldap` executes to obtain
    the LDAP groups to which the authenticated user belongs to. The query is
    relative to the host or hosts specified in :option:`--ldapServers`.
@@ -654,13 +637,9 @@ Options
    
    If unset, :program:`mongoldap` cannot authorize users using LDAP.
    
-   This setting can be configured on a running :program:`mongoldap` using the
-   :dbcommand:`setParameter` database command.
-   
    .. note::
    
-      An explanation of `RFC4515 <https://tools.ietf.org/search/rfc4515>`_,
+      An explanation of `RFC4515 <https://tools.ietf.org/html/rfc4515>`_,
       `RFC4516 <https://tools.ietf.org/html/rfc4516>`_ or LDAP queries is out
       of scope for the MongoDB Documentation. Please review the RFC directly or
       use your preferred LDAP resource.
-

@@ -18,10 +18,6 @@
        Salted Challenge Response Authentication Mechanism using the SHA-256
        hash function.
 
-       Requires featureCompatibilityVersion set to ``4.0``.
-
-       .. versionadded:: 4.0
-
    * - :ref:`MONGODB-X509 <security-auth-x509>`
 
      - MongoDB TLS/SSL certificate authentication.
@@ -38,4 +34,10 @@
        for authenticating in-database users. ``PLAIN`` transmits
        passwords in plain text. This mechanism is available only in
        `MongoDB Enterprise
+       <http://www.mongodb.com/products/mongodb-enterprise-advanced?tck=docs_server>`_.
+
+   * - :ref:`MONGODB-OIDC <authentication-oidc>`
+
+     - OpenID Connect is an authentication layer built on top of OAuth2. This mechanism 
+       is available only in `MongoDB Enterprise
        <http://www.mongodb.com/products/mongodb-enterprise-advanced?tck=docs_server>`_.

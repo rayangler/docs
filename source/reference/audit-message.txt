@@ -1,3 +1,5 @@
+.. _audit-message:
+
 ===========================
 System Event Audit Messages
 ===========================
@@ -73,10 +75,15 @@ The recorded JSON messages have the following syntax:
 
      - document
 
-     - Document that contains a universally unique identifier (UUID) for
-       the audit message. The ``$type`` field specifies the BSON subtype
-       for the ``$binary`` field. The ``$type`` value of ``04``
-       specifies that the ``$binary`` field contains a UUID.
+     - A document that contains a message identifier.
+       
+       The :abbr:`UUID (Universally unique identifier)` identifies a 
+       client connection. Use the UUID to track audit events connected
+       to that client. 
+
+       The value of the ``$type`` field is :ref:`BSON type <bson-types>`
+       ``04`` which indicates that the ``$binary`` field contains a
+       UUID.
 
        .. versionadded:: 5.0
 
@@ -178,7 +185,7 @@ associated ``param`` details and the ``result`` values, if any.
 
    * - .. _audit-message-authenticate:
 
-       :authaction:`authenticate`
+       ``authenticate``
 
      - .. code-block:: none
           :copyable: false
@@ -189,7 +196,7 @@ associated ``param`` details and the ``result`` values, if any.
             mechanism: <mechanism>
           }
 
-       Starting in MongoDB 5.0, :authaction:`authenticate`:
+       Starting in MongoDB 5.0, ``authenticate``:
 
        - Is logged for incomplete authentication attempts.
        
@@ -207,7 +214,7 @@ associated ``param`` details and the ``result`` values, if any.
 
    * - .. _audit-message-authCheck:
 
-       :authaction:`authCheck`
+       ``authCheck``
 
      - .. code-block:: none
           :copyable: false
@@ -227,8 +234,8 @@ associated ``param`` details and the ``result`` values, if any.
        
        .. include:: /includes/fact-auditAuthorizationSuccess-performance-impact.rst
 
-       Starting in MongoDB 5.0, :authaction:`authCheck` is not logged
-       for actions that are generated internally.
+       Starting in MongoDB 5.0, ``authCheck`` is not logged for actions
+       that are generated internally.
 
        .. versionchanged:: 5.0
 
@@ -238,7 +245,7 @@ associated ``param`` details and the ``result`` values, if any.
 
    * - .. _audit-message-clientMetadata:
 
-       :authaction:`clientMetadata`
+       ``clientMetadata``
 
      - .. code-block:: none
           :copyable: false
@@ -298,7 +305,7 @@ associated ``param`` details and the ``result`` values, if any.
        
        - Collection is created.
        
-       - :ref:`View <3.4-reference-views>` is created, with the view
+       - :ref:`View <views-landing-page>` is created, with the view
          name logged in the ``ns`` field.
 
        .. include:: /includes/collection-audit-event.rst
@@ -308,7 +315,7 @@ associated ``param`` details and the ``result`` values, if any.
      - ``0`` - Success
 
 
-   * - :authaction:`createDatabase`
+   * - ``createDatabase``
 
      - .. code-block:: none
           :copyable: false
@@ -367,7 +374,7 @@ associated ``param`` details and the ``result`` values, if any.
 
    * - .. _audit-message-directAuthMutation:
 
-       :authaction:`directAuthMutation`
+       ``directAuthMutation``
 
      - .. code-block:: none
           :copyable: false
@@ -389,7 +396,7 @@ associated ``param`` details and the ``result`` values, if any.
      - ``0`` - Success
 
 
-   * - :authaction:`renameCollection`
+   * - ``renameCollection``
 
      - .. code-block:: none
           :copyable: false
@@ -420,7 +427,7 @@ associated ``param`` details and the ``result`` values, if any.
        
        - Collection is dropped.
        
-       - :ref:`View <3.4-reference-views>` is dropped, with the view
+       - :ref:`View <views-landing-page>` is dropped, with the view
          name logged in the ``ns`` field.
 
        .. include:: /includes/collection-audit-event.rst
@@ -495,7 +502,7 @@ associated ``param`` details and the ``result`` values, if any.
 
      - ``0`` - Success
 
-   * - :authaction:`dropAllUsersFromDatabase`
+   * - ``dropAllUsersFromDatabase``
 
      - .. code-block:: none
           :copyable: false
@@ -505,7 +512,37 @@ associated ``param`` details and the ``result`` values, if any.
 
      - ``0`` - Success
 
-   * - :authaction:`updateUser`
+   * - .. _audit-message-getClusterParameter:
+
+       ``getClusterParameter``
+     - .. code-block:: none
+          :copyable: false
+
+          { 
+              requestedClusterServerParameters: <parameters> 
+          }
+     - ``0`` - Success 
+
+   * - .. _audit-message-setClusterParameter: 
+
+       ``setClusterParameter``
+     - .. include:: /includes/fact-audit-message-setClusterParameter-form.rst 
+     - ``0`` - Success 
+
+   * - .. _audit-message-updateCachedClusterServerParameter:
+
+       ``updateCachedClusterServerParameter``
+     - .. include:: /includes/fact-audit-message-setClusterParameter-form.rst 
+ 
+       Logged when a parameter is changed because of:
+
+       - Propagation of a ``setClusterParameter`` command
+       - Replication event such as rollback
+       - A refresh of new cluster parameter values from the config 
+         server on ``mongos``
+     - ``0`` - Success 
+
+   * - ``updateUser``
 
      - .. code-block:: none
           :copyable: false
@@ -529,7 +566,7 @@ associated ``param`` details and the ``result`` values, if any.
 
      - ``0`` - Success
 
-   * - :authaction:`grantRolesToUser`
+   * - ``grantRolesToUser``
 
      - .. code-block:: none
           :copyable: false
@@ -549,7 +586,7 @@ associated ``param`` details and the ``result`` values, if any.
 
      - ``0`` - Success
 
-   * - :authaction:`revokeRolesFromUser`
+   * - ``revokeRolesFromUser``
 
      - .. code-block:: none
           :copyable: false
@@ -601,7 +638,7 @@ associated ``param`` details and the ``result`` values, if any.
 
      - ``0`` - Success
 
-   * - :authaction:`updateRole`
+   * - ``updateRole``
 
      - .. code-block:: none
           :copyable: false
@@ -646,7 +683,7 @@ associated ``param`` details and the ``result`` values, if any.
 
      - ``0`` - Success
 
-   * - :authaction:`dropAllRolesFromDatabase`
+   * - ``dropAllRolesFromDatabase``
 
      - .. code-block:: none
           :copyable: false
@@ -656,7 +693,7 @@ associated ``param`` details and the ``result`` values, if any.
 
      - ``0`` - Success
 
-   * - :authaction:`grantRolesToRole`
+   * - ``grantRolesToRole``
 
      - .. code-block:: none
           :copyable: false
@@ -676,7 +713,7 @@ associated ``param`` details and the ``result`` values, if any.
 
      - ``0`` - Success
 
-   * - :authaction:`revokeRolesFromRole`
+   * - ``revokeRolesFromRole``
 
      - .. code-block:: none
           :copyable: false
@@ -696,7 +733,7 @@ associated ``param`` details and the ``result`` values, if any.
 
      - ``0`` - Success
 
-   * - :authaction:`grantPrivilegesToRole`
+   * - ``grantPrivilegesToRole``
 
      - .. code-block:: none
           :copyable: false
@@ -719,7 +756,7 @@ associated ``param`` details and the ``result`` values, if any.
 
      - ``0`` - Success
 
-   * - :authaction:`revokePrivilegesFromRole`
+   * -  ``revokePrivilegesFromRole``
 
      - .. code-block:: none
           :copyable: false
@@ -779,7 +816,7 @@ associated ``param`` details and the ``result`` values, if any.
 
      - ``0`` - Success
 
-   * - :authaction:`shardCollection`
+   * - ``shardCollection``
 
      - .. code-block:: none
           :copyable: false
@@ -801,7 +838,6 @@ associated ``param`` details and the ``result`` values, if any.
           {
             shard: <shard name>,
             connectionString: <hostname>:<port>,
-            maxSize: <maxSize>
           }
 
        When a shard is a replica set, the ``connectionString`` includes the
@@ -861,7 +897,7 @@ associated ``param`` details and the ``result`` values, if any.
 
    * - .. _audit-message-logout:
 
-       :authaction:`logout`
+       ``logout``
 
      - .. code-block:: none
           :copyable: false
@@ -895,17 +931,25 @@ associated ``param`` details and the ``result`` values, if any.
 
    * - .. _audit-message-startup:
    
-       :authaction:`startup`
-
+       ``startup``
      - .. code-block:: none
           :copyable: false
 
-          { options: <document> }
+          { 
+              startupOptions: <document>, 
+              initialClusterServerParameter: <array of documents> 
+          }
 
-       The ``options`` document contains the options the instance was 
-       started with.
+       - ``startupOptions`` contains all of the options that the node 
+         has after startup 
+       - ``initialClusterServerParameters`` contains the initial values
+         of the cluster server parameters that the node has at the end 
+         of startup:
+
+         - after they have been loaded from storage (for ``mongod``) 
+         - after they have been refreshed from the config server 
+           (for ``mongos``).
      
        .. versionadded:: 5.0
-
-
+       .. versionchanged:: 6.1
      - ``0`` - Success

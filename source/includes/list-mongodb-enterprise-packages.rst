@@ -30,16 +30,17 @@ repository, and contains the following officially-supported packages:
          * - ``{+package-name-enterprise+}-mongos``
            - Contains the :binary:`~bin.mongos` daemon.
 
-         * - ``{+package-name-enterprise+}-shell``
-           - Contains the :binary:`~bin.mongo` shell.
-
          * - ``{+package-name-enterprise+}-cryptd``
            - Contains the :ref:`mongocryptd <csfle-encryption-components>`
              binary
 
-  * - ``mongodb-mongosh``
+  * - ``{+package-name+}-mongosh``
     - Contains the MongoDB Shell (:binary:`~bin.mongosh`).
- 
+
+  * - ``{+package-name+}-shared-openssl*``
+    - Contains the MongoDB Shell that uses the OpenSSL version already
+      installed on your computer (:binary:`~bin.mongosh`).
+
   * - ``{+package-name-enterprise+}-tools``
     - A ``metapackage`` that automatically installs the component
       packages listed below:

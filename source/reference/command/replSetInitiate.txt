@@ -10,11 +10,17 @@ replSetInitiate
    :depth: 1
    :class: singlecol
 
+Definition
+----------
+
 .. dbcommand:: replSetInitiate
 
    The :dbcommand:`replSetInitiate` command initializes a new replica set.
    
    .. |command| replace:: ``replSetInitiate``
+
+   .. |method| replace:: :method:`rs.initiate` helper method
+   .. include:: /includes/fact-dbcommand-tip
 
    .. include:: /includes/fact-dbcommand.rst
 
@@ -23,28 +29,35 @@ replSetInitiate
       Run the command on only one of the :binary:`~bin.mongod` instances
       for the replica set.
 
-   Use the following syntax:
+Syntax
+------
 
-   .. code-block:: javascript
+The command has the following syntax:
 
-      { replSetInitiate : <config_document> }
+.. code-block:: javascript
 
-   The ``<config_document>`` is a :term:`document` that specifies
-   the replica set's configuration. For instance, here's a config document
-   for creating a simple 3-member replica set:
-
-   .. code-block:: javascript
-
-      {
-          _id : <setname>,
-           members : [
-               {_id : 0, host : <host0>},
-               {_id : 1, host : <host1>},
-               {_id : 2, host : <host2>},
-           ]
+   db.runCommand(
+      { 
+        replSetInitiate : <config_document> 
       }
+   )
 
-   .. include:: /includes/tip-hostnames.rst
+The ``<config_document>`` is a :term:`document` that specifies
+the replica set's configuration. For instance, here's a config document
+for creating a simple 3-member replica set:
+
+.. code-block:: javascript
+
+  {
+      _id : <setname>,
+       members : [
+           {_id : 0, host : <host0>},
+           {_id : 1, host : <host1>},
+           {_id : 2, host : <host2>},
+       ]
+  }
+
+.. include:: /includes/important-hostnames.rst
 
 IP Binding
 ----------
@@ -70,13 +83,11 @@ the :method:`rs.initiate()` helper:
 
    rs.initiate(config)
 
-.. include:: /includes/tip-hostnames.rst
+.. include:: /includes/important-hostnames.rst
 
 Notice that omitting the port cause the host to use the default port
 of 27017. Notice also that you can specify other options in the config
 documents such as the ``arbiterOnly`` setting in this example.
-
-.. slave-ok, admin-only
 
 .. seealso::
 

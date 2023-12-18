@@ -28,120 +28,114 @@ Definition
    - For sharded clusters, issue the :dbcommand:`setDefaultRWConcern`
      on a :binary:`~bin.mongos`.
 
-   :dbcommand:`setDefaultRWConcern` has the following form:
+Syntax
+------
 
-   .. code-block:: javascript
+The command has the following syntax:
 
-      db.adminCommand(
-        {
-          setDefaultRWConcern : 1,
-          defaultReadConcern: { <read concern> },
-          defaultWriteConcern: { <write concern> },
-          writeConcern: { <write concern> },
-          comment: <any>
-        }
-      )
+.. code-block:: javascript
 
-   :dbcommand:`setDefaultRWConcern` has the following fields:
+   db.adminCommand(
+     {
+       setDefaultRWConcern : 1,
+       defaultReadConcern: { <read concern> },
+       defaultWriteConcern: { <write concern> },
+       writeConcern: { <write concern> },
+       comment: <any>
+     }
+   )
 
-   .. list-table::
-      :header-rows: 1
-      :widths: 20 20 80
+Command Fields
+--------------
 
-      * - Field
-   
-        - Type
-   
-        - Description
+The command takes the following fields:
 
-      * - :ref:`setDefaultRWConcern <setDefaultRWConcern-cmd-setDefaultRWConcern>`
-        
-        - ``int``
-        
-        - .. _setDefaultRWConcern-cmd-setDefaultRWConcern:
-        
-          Set to ``1``.
-
-      * - :ref:`defaultReadConcern <setDefaultRWConcern-cmd-defaultReadConcern>`
-        
-        - ``object``
-
-        - .. _setDefaultRWConcern-cmd-defaultReadConcern:
-        
-          Document containing the global read concern configuration.
-          Specify a valid :ref:`read concern object 
-          <read-concern-option>`. 
-
-          - :dbcommand:`setDefaultRWConcern` supports the 
-            following subset of :ref:`level <read-concern-levels>`:
-
-            - :readconcern:`"local"`
-            - :readconcern:`"available"`
-            - :readconcern:`"majority"`
-          
-          - To unset the currently configured default read concern,
-            specify an empty document ``{}``.
-
-          - :dbcommand:`setDefaultRWConcern` only supports the
-            ``levels`` read concern setting.
-            You cannot specify any other read concern setting in the 
-            default read concern.
-
-          Omit this document to leave the current global read concern
-          unmodified. If omitted, :dbcommand:`setDefaultRWConcern` must
-          specify :ref:`defaultWriteConcern 
-          <setDefaultRWConcern-cmd-defaultWriteConcern>`.
-
-      * - :ref:`defaultWriteConcern <setDefaultRWConcern-cmd-defaultWriteConcern>`
-
-        - ``object``
-
-        - .. _setDefaultRWConcern-cmd-defaultWriteConcern:
-        
-          Document containing the global default write concern
-          configuration. 
-
-          - For the write concern :ref:`w <wc-w>` setting, 
-            :dbcommand:`setDefaultRWConcern` supports all 
-            write concern values *except* ``w : 0``.
-
-          - For the write concern :ref:`wtimeout <wc-w>` setting,
-            :dbcommand:`setDefaultRWConcern` defaults to ``0`` if the
-            setting is omitted. Operations block until the requested
-            write concern is met. If specifying a global default
-            ``wtimeout``, ensure the value is large enough to allow
-            write operations to achieve the requested write concern. 
-
-          - To unset the currently configured write concern, specify 
-            an empty document ``{}``.
-
-          Omit this document to leave the current global write concern 
-          unmodified. If omitted, :dbcommand:`setDefaultRWConcern` must
-          specify :ref:`defaultReadConcern 
-          <setDefaultRWConcern-cmd-defaultReadConcern>`.
-
-      * - :ref:`writeConcern <setDefaultRWConcern-cmd-writeConcern>`
-
-        - object
-
-        - .. _setDefaultRWConcern-cmd-writeConcern:
-
-          Optional. A document that specifies the 
-          :ref:`write concern <write-concern>` to be used by the 
-          :dbcommand:`setDefaultRWConcern` command itself. 
-
-          If omitted, :dbcommand:`setDefaultRWConcern` uses the 
-          previously set global default write concern *if* one 
-          was configured.
-
-      * - ``comment``
-
-        - any
-
-        - .. include:: /includes/extracts/comment-content.rst
+.. list-table::
+   :header-rows: 1
+   :widths: 25 15 60
+ 
+   * - Field
+     - Type
+     - Description
+ 
+   * - :ref:`setDefaultRWConcern <setDefaultRWConcern-cmd-setDefaultRWConcern>`
+     - ``int``
+     - .. _setDefaultRWConcern-cmd-setDefaultRWConcern:
+     
+       Set to ``1``.
+ 
+   * - :ref:`defaultReadConcern <setDefaultRWConcern-cmd-defaultReadConcern>`
+     - ``object``
+     - .. _setDefaultRWConcern-cmd-defaultReadConcern:
+     
+       Document containing the global read concern configuration.
+       Specify a valid :ref:`read concern object 
+       <read-concern-option>`. 
+ 
+       - :dbcommand:`setDefaultRWConcern` supports the 
+         following subset of :ref:`level <read-concern-levels>`:
+ 
+         - :readconcern:`"local"`
+         - :readconcern:`"available"`
+         - :readconcern:`"majority"`
        
-          .. versionadded:: 4.4
-
+       - To unset the currently configured default read concern,
+         specify an empty document ``{}``.
+ 
+       - :dbcommand:`setDefaultRWConcern` only supports the
+         ``levels`` read concern setting.
+         You cannot specify any other read concern setting in the 
+         default read concern.
+ 
+       Omit this document to leave the current global read concern
+       unmodified. If omitted, :dbcommand:`setDefaultRWConcern` must
+       specify :ref:`defaultWriteConcern 
+       <setDefaultRWConcern-cmd-defaultWriteConcern>`.
+ 
+   * - :ref:`defaultWriteConcern <setDefaultRWConcern-cmd-defaultWriteConcern>`
+     - ``object``
+     - .. _setDefaultRWConcern-cmd-defaultWriteConcern:
+     
+       Document containing the global default write concern
+       configuration. 
+ 
+       - For the write concern :ref:`w <wc-w>` setting, 
+         :dbcommand:`setDefaultRWConcern` supports all 
+         write concern values *except* ``w : 0``.
+ 
+       - For the write concern :ref:`wc-wtimeout` setting,
+         :dbcommand:`setDefaultRWConcern` defaults to ``0`` if the
+         setting is omitted. Operations block until the requested
+         write concern is met. If specifying a global default
+         ``wtimeout``, ensure the value is large enough to allow
+         write operations to achieve the requested write concern. 
+ 
+       - To unset the currently configured write concern, specify 
+         an empty document ``{}``.
+ 
+       Omit this document to leave the current global write concern 
+       unmodified. If omitted, :dbcommand:`setDefaultRWConcern` must
+       specify :ref:`defaultReadConcern 
+       <setDefaultRWConcern-cmd-defaultReadConcern>`.
+ 
+   * - :ref:`writeConcern <setDefaultRWConcern-cmd-writeConcern>`
+     - object
+     - .. _setDefaultRWConcern-cmd-writeConcern:
+ 
+       Optional. A document that specifies the 
+       :ref:`write concern <write-concern>` to be used by the 
+       :dbcommand:`setDefaultRWConcern` command itself. 
+ 
+       If omitted, :dbcommand:`setDefaultRWConcern` uses the 
+       previously set global default write concern *if* one 
+       was configured.
+ 
+   * - ``comment``
+     - any
+     - .. include:: /includes/extracts/comment-content.rst
+    
+       .. versionadded:: 4.4
+ 
 :dbcommand:`setDefaultRWConcern` returns an object that contains the
 currently configured global default read and write concern. See
 :dbcommand:`getDefaultRWConcern` for more complete documentation on
@@ -220,8 +214,8 @@ Sharding Administrative Commands Override Write Concern Settings
 
 Sharding administrative commands that perform write operations on the
 :ref:`config server <sharding-config-server>`, such as the
-:dbcommand:`enableSharding` or :dbcommand:`addShard` commands, have
-specific behavior with global default write concern settings:
+:dbcommand:`enableSharding` or :dbcommand:`addShard` commands,
+have specific behavior with global default write concern settings:
 
 - The commands use :writeconcern:`"majority"` regardless of the 
   configured global default write concern.
@@ -308,6 +302,8 @@ The operation returns a document similar to the following:
      "operationTime" : Timestamp(1586290925, 1)
    }
 
+.. _set_global_default_write_concern:
+
 Set Global Default Read and Write Concern
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -338,54 +334,67 @@ The operation returns a document similar to the following:
    "defaultReadConcern" : {
      "level" : "majority"
    }
-   
 
 Unset Global Default Read and Write Concern
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Consider a deployment with the following default read and write 
-concern:
+You can:
 
+- Unset the global default read concern.
+- Only unset the global default write concern if you haven't already
+  set it.
+
+For example, assume the global default read concern is set to
+:readconcern:`level: "majority" <"majority">`. To unset the global
+default read concern, use an empty document ``{}``:
+
+.. code-block:: javascript
+
+   db.adminCommand( {
+      "setDefaultRWConcern" : 1, 
+      "defaultReadConcern" : {}
+   } )
+
+The operation returns a document that indicates the operation was
+successful:
 
 .. code-block:: javascript
    :copyable: false
 
    {
-     "defaultWriteConcern" : {
-       "w" : "majority"
-     },
-     "defaultReadConcern" : {
-       "level" : "majority"
-     },
-     "updateOpTime" : Timestamp(1586290895, 1),
-     "updateWallClockTime" : ISODate("2020-04-07T20:21:41.849Z"),
-     "localUpdateWallClockTime" : ISODate("2020-04-07T20:21:41.862Z"),
-     "ok" : 1,
-     "$clusterTime" : { ... }
-     "operationTime" : Timestamp(1586290925, 1)
+      defaultReadConcern: { level: 'local' },
+      defaultWriteConcern: { w: 2, wtimeout: 0 },
+      updateOpTime: Timestamp({ t: 1656696934, i: 1 }),
+      updateWallClockTime: ISODate("2022-07-01T17:35:40.578Z"),
+      defaultWriteConcernSource: 'global',
+      defaultReadConcernSource: 'implicit',
+      localUpdateWallClockTime: ISODate("2022-07-01T17:35:40.578Z"),
+      ok: 1,
+      '$clusterTime': {
+         ...
+      },
+      operationTime: Timestamp({ t: 1656632593, i: 1 })
    }
 
-The following operation unsets the global default read and write 
-concern settings:
+You can only unset the global default write concern if you haven't
+already set it.
+
+To unset the global default write concern, use an empty document ``{}``:
 
 .. code-block:: javascript
 
-   db.adminCommand({
-     "setDefaultRWConcern" : 1,
-     "defaultReadConcern" : {},
-     "defaultWriteConcern" : {}
-   })
+   db.adminCommand( {
+      "setDefaultRWConcern" : 1, 
+      "defaultWriteConcern" : {}
+   } )
 
-The operation returns a document similar to the following:
+If the global default write concern is:
+
+- Unset, the operation succeeds.
+- Already set, the operation returns the following error.
 
 .. code-block:: javascript
    :copyable: false
 
-   {
-     "updateOpTime" : Timestamp(1586290895, 1),
-     "updateWallClockTime" : ISODate("2020-04-07T20:21:41.849Z"),
-     "localUpdateWallClockTime" : ISODate("2020-04-07T20:21:41.862Z"),
-     "ok" : 1,
-     "$clusterTime" : { ... }
-     "operationTime" : Timestamp(1586290925, 1)
-   }
+   MongoServerError: The global default write concern cannot be unset
+   once it is set.

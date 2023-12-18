@@ -33,11 +33,10 @@ The ``map`` function has the following requirements:
   starting in version 4.4.
 
 - Starting in MongoDB 4.4, :dbcommand:`mapReduce` no longer supports
-  the deprecated BSON type JavaScript code with scope
-  (:doc:`BSON type 15 </reference/bson-types/>`) for its functions. The
-  ``map`` function must be either BSON type String (:doc:`BSON type 2
-  </reference/bson-types/>`) or BSON type JavaScript (:doc:`BSON type 13
-  </reference/bson-types/>`). To pass constant values which will be
+  the deprecated :ref:`BSON Type <bson-types>` JavaScript code with 
+  scope (BSON Type 15) for its functions. The ``map`` function must be 
+  either BSON Type String (BSON Type 2) or BSON Type JavaScript 
+  (BSON Type 13). To pass constant values which will be
   accessible in the ``map`` function, use the ``scope`` parameter.
 
   | The use of JavaScript code with scope for the ``map`` function has
@@ -88,11 +87,6 @@ The ``reduce`` function exhibits the following behaviors:
 - The ``reduce`` function should *not* affect the outside
   system.
 
-- MongoDB will **not** call the ``reduce`` function for a key
-  that has only a single value. The ``values`` argument is an array
-  whose elements are the ``value`` objects that are "mapped" to the
-  ``key``.
-
 - MongoDB can invoke the ``reduce`` function more than once for the
   same key. In this case, the previous output from the ``reduce``
   function for that key will become one of the input values to the next
@@ -107,12 +101,11 @@ The ``reduce`` function exhibits the following behaviors:
   joined together in subsequent ``reduce`` steps.
 
 - Starting in MongoDB 4.4, :dbcommand:`mapReduce` no longer supports
-  the deprecated BSON type JavaScript code with scope
-  (:doc:`BSON type 15 </reference/bson-types/>`) for its functions. The
-  ``reduce`` function must be either BSON type String (:doc:`BSON type 2
-  </reference/bson-types/>`) or BSON type JavaScript (:doc:`BSON type 13
-  </reference/bson-types/>`). To pass constant values which will be
-  accessible in the ``reduce`` function, use the ``scope`` parameter.
+  the deprecated BSON Type JavaScript code with scope (BSON Type 15) 
+  for its functions. The ``reduce`` function must be either BSON Type 
+  String (BSON Type 2) or BSON Type JavaScript (BSON Type 13). To pass 
+  constant values which will be accessible in the ``reduce`` function, 
+  use the ``scope`` parameter.
 
   | The use of JavaScript code with scope for the ``reduce`` function
     has been deprecated since version 4.2.1.
@@ -181,8 +174,7 @@ on secondary members of replica sets.
 
    out: { <action>: <collectionName>
            [, db: <dbName>]
-           [, sharded: <boolean> ]
-           [, nonAtomic: <boolean> ] }
+           [, sharded: <boolean> ] }
 
 When you output to a collection with an action, the ``out`` has the
 following parameters:
@@ -229,24 +221,6 @@ following parameters:
   If ``true`` and ``collectionName`` is an existing unsharded collection,
   map-reduce fails.
 
-- ``nonAtomic``:
-
-  .. note::
-  
-     Starting in MongoDB 4.2, explicitly setting ``nonAtomic`` to ``false`` is
-     deprecated.
-
-  Optional. Specify output operation as non-atomic. This applies **only**
-  to the ``merge`` and ``reduce`` output modes, which may take minutes to
-  execute.
-
-  By default ``nonAtomic`` is ``false``, and the map-reduce
-  operation locks the database during post-processing.
-
-  If ``nonAtomic`` is ``true``, the post-processing step prevents
-  MongoDB from locking the database: during this time, other clients
-  will be able to read intermediate states of the output collection.
-
 Output Inline
 ~~~~~~~~~~~~~~
 
@@ -291,13 +265,11 @@ aware that:
   the ``scope`` parameter.
 
 - Starting in MongoDB 4.4, :dbcommand:`mapReduce` no longer supports
-  the deprecated BSON type JavaScript code with scope
-  (:doc:`BSON type 15 </reference/bson-types/>`) for its functions. The
-  ``finalize`` function must be either BSON type String
-  (:doc:`BSON type 2 </reference/bson-types/>`) or BSON type JavaScript
-  (:doc:`BSON type 13 </reference/bson-types/>`). To pass constant
-  values which will be accessible in the ``finalize`` function, use the
-  ``scope`` parameter.
+  the deprecated BSON Type JavaScript code with scope (BSON Type 15) for 
+  its functions. The ``finalize`` function must be either BSON Type 
+  String (BSON Type 2) or BSON Type JavaScript (BSON Type 13). To pass 
+  constant values which will be accessible in the ``finalize`` function, 
+  use the ``scope`` parameter.
 
   | The use of JavaScript code with scope for the ``finalize`` function
     has been deprecated since version 4.2.1.

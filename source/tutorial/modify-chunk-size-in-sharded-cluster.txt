@@ -1,5 +1,8 @@
+.. _tutorial-modifying-chunk-size:
+.. _tutorial-modifying-range-size:
+
 ======================================
-Modify Chunk Size in a Sharded Cluster
+Modify Range Size in a Sharded Cluster
 ======================================
 
 .. default-domain:: mongodb
@@ -10,15 +13,14 @@ Modify Chunk Size in a Sharded Cluster
    :depth: 1
    :class: singlecol
 
-The default chunk size for a sharded cluster is 64 megabytes. This
-default chunk size works well for most deployments; however, if you
-notice that automatic migrations have more I/O than your hardware can
-handle, you may want to reduce the chunk size. For automatic splits and
-migrations, a small chunk size leads to more rapid and frequent
-migrations. The allowed range of the chunk size is between 1 and 1024
-megabytes, inclusive.
+The default range size for a sharded cluster is 128 megabytes. This
+default range size works well for most deployments; however, if you
+notice that automatic migrations use more I/O than your hardware can
+handle, you may want to reduce the range size. A small range size leads 
+to more rapid and frequent migrations. The allowed size is between 1 and 
+1024 megabytes, inclusive.
 
-To modify the chunk size, use the following procedure:
+To modify the range size, use the following procedure:
 
 #. Connect to any :binary:`~bin.mongos` in the cluster using
    :binary:`~bin.mongosh`.
@@ -29,24 +31,18 @@ To modify the chunk size, use the following procedure:
 
       use config
 
-#. Issue the following command to store the global chunk size
+#. Issue the following command to store the global range size
    configuration value:
 
    .. code-block:: javascript
 
-      db.settings.insertOne( { _id:"chunksize", value: <sizeInMB> } )
+      db.settings.updateOne(
+         { _id: "chunksize" },
+         { $set: { _id: "chunksize", value: <sizeInMB> } },  
+         { upsert: true }
+      )
 
-Modifying the chunk size has several limitations:
+The allowed range size is between 1 and 1024 megabytes, inclusive.
 
-- Automatic splitting only occurs on insert or update.
-
-- If you lower the chunk size, it may take time for all chunks to split to
-  the new size.
-
-- Splits cannot be undone.
-
-- If you increase the chunk size, existing chunks grow only through
-  insertion or updates until they reach the new size.
-
-- The allowed range of the chunk size is between 1 and 1024 megabytes,
-  inclusive.
+To set the chunk size for a specific collection, see
+:dbcommand:`configureCollectionBalancing`.

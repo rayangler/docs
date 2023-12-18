@@ -52,7 +52,7 @@ Removed Commands
 ----------------
 
 Starting in MongoDB 5.0, these database commands and
-:binary:`~bin.mongo` shell helper methods are removed:
+``mongo`` shell helper methods are removed:
 
 .. list-table::
    :header-rows: 1
@@ -106,12 +106,12 @@ Removed Parameters
 Removed Index Types
 -------------------
 
-MongoDB 5.0 removes the deprecated :doc:`geoHaystack
-</core/geohaystack>` index. Use a :doc:`2d index </core/2d>` instead.
+MongoDB 5.0 removes the deprecated ``geoHaystack`` index. Use a :ref:`2d
+index <2d-index>` instead.
 
 Upgrading your MongoDB instance to 5.0 and setting
 :ref:`featureCompatibilityVersion <view-fcv>` to ``5.0`` will delete any
-pre-existing :doc:`geoHaystack </core/geohaystack>` indexes.
+pre-existing :ref:`geoHaystack <index-geohaystack-index>` indexes.
 
 Removed Metrics
 ---------------
@@ -127,6 +127,41 @@ Starting in MongoDB 5.0, the :dbcommand:`serverStatus` command does not
 output the ``cache pressure percentage threshold`` and the
 ``current cache pressure percentage`` under
 ``wiredTiger.snapshot-window-settings``.
+
+``currentOp`` Output Change
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting in MongoDB 5.0, the 
+:data:`$currentOp.remainingOperationTimeEstimated` metric is only 
+present on the :ref:`recipient shard <resharding-process-details>`
+when a :ref:`resharding operation <sharding-resharding>` is taking place.
+
+Removed Raspberry Pi Support
+----------------------------
+
+MongoDB 5.0 removes support for Raspberry Pi. To run MongoDB on 
+Raspberry Pi, install version 4.4.
+
+.. _ttl_expireAfterSeconds_behavior:
+
+TTL ``expireAfterSeconds`` Behavior When Set to ``NaN``
+-------------------------------------------------------
+
+Starting in MongoDB 5.0, :ref:`TTL <ttl-collections>` indexes with
+``expireAfterSeconds`` set to ``NaN`` :ref:`experience a behavior change
+<expireData-warning>` compared to earlier versions.
+
+The behavior change affects: 
+
+- direct upgrades
+- initial sync from earlier versions 
+- :binary:`~bin.mongorestore` from earlier versions
+
+Performing any of those actions causes an ``expireAfterSeconds`` value
+of  ``NaN`` to be treated as an ``expireAfterSeconds`` of ``0``. As a
+result, documents may expire immediately. 
+
+.. include:: /includes/indexes/expireAfterSeconds-versions.rst
 
 Shell Changes
 -------------
@@ -153,6 +188,16 @@ Replica Sets
 Starting in MongoDB 5.0, :rsconf:`~members[n].secondaryDelaySecs`
 replaces ``slaveDelay``. This change is not backwards compatible.
 
+Host Names Required for Split Horizon DNS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/fact-split-horizon-binding.rst
+
+Non-transactional Reads on ``config.transactions``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/fact-5.0-non-transactional-config-reads.rst
+
 Manual Oplog Writes
 ~~~~~~~~~~~~~~~~~~~
 
@@ -167,6 +212,21 @@ Automatic Reconfiguration for New Voting Replica Set Members
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. include:: /includes/extracts/initial-sync-semantics.rst
+
+Removed Customizable Values For getLastErrorDefaults 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/5.0-changes-getLastErrorDefaults-removed.rst
+
+Replica Set Write Acknowledgement
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Starting in MongoDB 5.0, replica set members in the
+:replstate:`STARTUP2` state do not participate in write majorities.
+
+.. seealso::
+
+   :ref:`replica-set-write-concern`
 
 
 Read Concern ``snapshot`` on Capped Collections
@@ -192,7 +252,7 @@ New ``cursor.map()`` Return Type
 --------------------------------
 
 :method:`cursor.map()` returned an ``Array`` in the legacy
-:binary:`~bin.mongo` shell. The return type is ``Cursor`` in
+``mongo`` shell. The return type is ``Cursor`` in
 :binary:`~bin.mongosh`. You can use ``.toArray()`` to convert the
 results. 
 
@@ -221,6 +281,28 @@ operand expression ( ``{ }`` ):
 
 An empty update results in no changes and no :term:`oplog` entry is
 created (meaning that the operation is a no-op).
+
+Update Operator Processing Order
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/fact-update-operator-processing-order.rst
+
+``$setWindowFields`` Stage with Transactions and Snapshot Read Concern
+----------------------------------------------------------------------
+
+.. include:: /includes/fact-setWindowFields-snapshot-restriction.rst
+
+Aggregation Pipeline Operator Parameter Limits
+----------------------------------------------
+
+The following aggregation pipeline operators now have a 64-bit
+integer value maximum limit.  
+
+- :pipeline:`$sort`
+- :pipeline:`$limit`
+
+If you pass a value that exceeds this limit, the pipeline returns an 
+invalid argument error.
 
 ``listDatabases`` Output Changes
 --------------------------------
@@ -282,6 +364,24 @@ When run against :binary:`~bin.mongos`, the ``shards`` field in the
 collection on a particular shard. Size values in the ``shards`` field
 are expressed as integers.
 
+Security
+--------
+
+TLS Connection X509 Certificate Startup Warning
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/fact-5.0-x509-certificate-client-warning.rst
+
+Map-Reduce
+----------
+
+Starting in version 5.0, MongoDB deprecates the
+:doc:`map-reduce</core/map-reduce>` operation.
+
+For examples of aggregation pipeline alternatives to map-reduce
+operations, see :doc:`/reference/map-reduce-to-aggregation-pipeline` and
+:doc:`/tutorial/map-reduce-examples`.
+
 Auditing
 --------
 
@@ -300,89 +400,114 @@ If ``auditLog.runtimeConfiguration`` is set to ``false`` and an audit
 filter config document is present, then a startup warning will be
 issued but the server will not abort.
 
+Reduce Risk of Stale Chunks in Sharded Transactions
+---------------------------------------------------
+
+.. include:: /includes/transactionLifetimeLimitSeconds-parameter.rst
+
 General Changes
 ---------------
 
-- .. include:: /includes/5.0-changes/no-direct-write-system-views.rst
+Starting in MongoDB 5.0:
 
-- Starting in MongoDB 5.0, the :dbcommand:`reIndex` command and the
+- For :ref:`featureCompatibilityVersion <view-fcv>` set to ``"5.0"`` or
+  greater, users can no longer write directly to the
+  :data:`<database>.system.views` collection.
+
+- The :dbcommand:`reIndex` command and the
   :method:`db.collection.reIndex()` shell method may only be run on
   :term:`standalone` instances.
 
-- Starting in MongoDB 5.0, the number of :doc:`aggregation pipeline
-  stages </reference/operator/aggregation-pipeline>` allowed in a single
+- The number of :ref:`aggregation pipeline stages
+  <aggregation-pipeline-operator-reference>` allowed in a single
   pipeline is limited to 1000.
 
-- Starting in MongoDB 5.0, dropping the final collection in a database
-  (or dropping the database itself) when
-  :setting:`~storage.directoryPerDB` or :option:`--directoryperdb` is
-  enabled deletes the newly empty subdirectory for that database.
+- Dropping the final collection in a database (or dropping the database
+  itself) when :setting:`~storage.directoryPerDB` or
+  :option:`--directoryperdb` is enabled deletes the newly empty
+  subdirectory for that database.
 
-- Starting in MongoDB 5.0 (and 4.4.3, 4.2.12, 4.0.22, and 3.6.22), the
-  :expression:`$subtract` aggregation operator will convert the data
+- The :expression:`$subtract` aggregation operator will convert the data
   type of the result if necessary to accurately represent the result
-  value. See :expression:`$subtract` for the specific conversions.
+  value. See :expression:`$subtract` for the specific conversions. This
+  change also applies to MongoDB 4.4.3+, 4.2.12+, 4.0.22+, and 3.6.22+.
 
-- MongoDB 5.0 removes the ``--serviceExecutor`` command-line option and
+- MongoDB removes the ``--serviceExecutor`` command-line option and
   the corresponding ``net.serviceExecutor`` configuration option.
 
-- Starting in MongoDB 5.0, you may not authenticate as multiple
-  simultaneous users on the same client session if the
-  :option:`--apiStrict` option is set. Attempting to
-  authenticate as a new user while currently logged in as an existing
-  user when the :option:`--apiStrict` option is set will generate an
+- You may not authenticate as multiple simultaneous users on the same
+  client session if the ``--apiStrict`` option is set. Attempting
+  to authenticate as a new user while currently logged in as an existing
+  user when the ``--apiStrict`` option is set will generate an
   error message once per authentication attempt. If you are not using
-  the :option:`--apiStrict` option, authenticating as a new user while
+  the ``--apiStrict`` option, authenticating as a new user while
   currently logged in as an existing user will write a warning to the
   log once per authentication attempt.
 
-- Starting in MongoDB 5.0, the 
-  :ref:`weights <specify-weights>` option is only allowed 
-  for ``$text`` indexes. 
+- The :ref:`weights <specify-weights>` option is only allowed  for
+  ``$text`` indexes. 
 
-- .. include:: /includes/fact-set-global-write-concern-before-reconfig.rst
+- You must explicitly set the global default
+  :ref:`write concern <write-concern>` before attempting to reconfigure
+  a :ref:`non-sharded <sharded-vs-non-sharded-collections>`
+  :term:`replica set <replica set>` with a :doc:`configuration
+  </reference/replica-configuration>` that would change the implicit
+  default write concern. To set the global default write concern, use
+  the :dbcommand:`setDefaultRWConcern` command.
+
+- To set the ``replSetOplog`` size in :binary:`~bin.mongosh`, use the
+  ``Double()`` constructor with the :dbcommand:`replSetResizeOplog`
+  command.
 
 Deprecations
 ~~~~~~~~~~~~
 
-- :binary:`~bin.mongo`
+.. list-table::
+   :widths: 20 80
+   :header-rows: 1
 
-  The legacy ``mongo`` shell has been deprecated in MongoDB v5.0. The
-  replacement is :binary:`~bin.mongosh`.
+   * - Deprecated
 
-- :method:`db.printSlaveReplicationInfo()`
+     - Description
 
-  .. include:: /includes/deprecated-db.printSlaveReplicationInfo.rst
+   * - ``mongo``
 
-- :method:`rs.printSlaveReplicationInfo()`
+     - The legacy ``mongo`` shell has been deprecated in MongoDB v5.0. The
+       replacement is :binary:`~bin.mongosh`.
 
-  .. include:: /includes/deprecated-rs.printSlaveReplicationInfo.rst
+   * - :method:`db.printSlaveReplicationInfo()`
 
-- :setting:`security.clusterIpSourceWhitelist`
+     - .. include:: /includes/deprecated-db.printSlaveReplicationInfo.rst
 
-  *Deprecated in version 5.0:* Use 
-  :setting:`security.clusterIpSourceAllowlist` instead.
+   * - :method:`rs.printSlaveReplicationInfo()`
 
-- :option:`--clusterIpSourceWhitelist`
-  
-  *Deprecated in version 5.0:*  Use :option:`--clusterIpSourceAllowlist`
-  instead.
+     - .. include:: /includes/deprecated-rs.printSlaveReplicationInfo.rst
 
-- :dbcommand:`logout`
+   * - :setting:`security.clusterIpSourceWhitelist`
 
-  *Deprecated in version 5.0:* Disconnect from the server to end your
-  session instead.
+     - *Deprecated in version 5.0:* Use 
+       :setting:`security.clusterIpSourceAllowlist` instead.
 
-- :method:`db.logout()`
+   * - :option:`--clusterIpSourceWhitelist`
+       
+     - *Deprecated in version 5.0:*  Use :option:`--clusterIpSourceAllowlist`
+       instead.
 
-  *Deprecated in version 5.0:* Disconnect from the server to end your
-  session instead.
+   * - :dbcommand:`logout`
 
-- :ref:`local <audit-message-local>` audit message field
+     - *Deprecated in version 5.0:* Disconnect from the server to end your
+       session instead.
 
-  *Deprecated in version 5.0:* Use the ``localEndpoint`` field in
-  the :ref:`clientMetadata <audit-message-clientMetadata>` audit message
-  instead.
+   * - :method:`db.logout()`
+
+     - *Deprecated in version 5.0:* Disconnect from the server to end your
+       session instead.
+
+   * - :ref:`local <audit-message-local>` audit message field
+
+     - *Deprecated in version 5.0:* Use the ``localEndpoint`` field in
+       the :ref:`clientMetadata <audit-message-clientMetadata>` audit message
+       instead.
 
 .. _deprecated-wire-protocol-opcodes:
 
@@ -401,23 +526,18 @@ MongoDB 5.0 deprecates the following
 - ``OP_KILL_CURSORS``
 
 Newer driver versions use :ref:`OP_MSG <wire-op-msg>` instead of these
-deprecated op codes. 
+deprecated opcodes. 
 
 The related commands and methods are also deprecated in MongoDB 5.0:
 
-- :dbcommand:`getLastError`
-- :method:`db.getLastError()`
-- :method:`db.getLastErrorObj()`
+- ``getLastError``
+- ``db.getLastError()``
+- ``db.getLastErrorObj()``
 
 To ensure your driver uses the most up-to-date wire
 protocol, upgrade your driver to a 5.0-compatible version.
 
-Any code explicitly using :dbcommand:`getLastError`, 
-:method:`db.getLastError()`, or :method:`db.getLastErrorObj()`  
-should instead use the CRUD API to issue the write with
-the designed :doc:`write concern </reference/write-concern>`. 
-Information about the success or failure of the write operation will be 
-provided directly by the driver as a return value.
+.. include:: /includes/5.0-changes/fact-getLastError-alternatives.rst
 
 .. _5.0-compatibility-enabled:
 
@@ -431,7 +551,8 @@ features include:
 - Creation of :ref:`time series collections
   <manual-timeseries-collection>` requires fCV set to 5.0+.
 
-- Configuring Runtime Audit Filter Management requires fCV set to 5.0+.
+- :ref:`Configuring Runtime Audit Filter Management
+  <configure-audit-filters-at-runtime>` requires fCV set to 5.0+.
 
 - Usage of ``.`` and ``$`` in field names requires fCV set to 5.0+.
 

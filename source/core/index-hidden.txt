@@ -27,12 +27,12 @@ Behavior
 --------
 
 Apart from being hidden from the planner, hidden indexes behave like
-unhidden indexes; i.e.
+unhidden indexes. For example:
 
-- If a hidden index is a :doc:`unique index </core/index-unique>`, the
+- If a hidden index is a :ref:`unique index <index-type-unique>`, the
   index still applies its unique constraint to the documents.
 
-- If a hidden index is a :doc:`TTL index </core/index-ttl>`, the index
+- If a hidden index is a :ref:`TTL index <index-feature-ttl>`, the index
   still expires documents.
 
 - Hidden indexes are included in :dbcommand:`listIndexes` and
@@ -120,6 +120,8 @@ The operation returns the following information:
    ]
    
 The index option ``hidden`` is only returned if the value is ``true``.
+
+.. _hide-existing-index:
 
 Hide an Existing Index
 ~~~~~~~~~~~~~~~~~~~~~~

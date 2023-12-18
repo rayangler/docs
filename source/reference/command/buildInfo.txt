@@ -10,47 +10,59 @@ buildInfo
    :depth: 1
    :class: singlecol
 
+Definition
+----------
+
 .. dbcommand:: buildInfo
 
    The :dbcommand:`buildInfo` command is an administrative command which
    returns a build summary for the current
-   :binary:`~bin.mongod`. :dbcommand:`buildInfo` has the following
-   prototype form:
+   :binary:`~bin.mongod`. 
 
-   .. code-block:: javascript
+Syntax
+------
 
-      { buildInfo: 1 }
+The command has the following syntax:
 
-   In :binary:`~bin.mongosh`, call :dbcommand:`buildInfo` in the
-   following form:
+.. code-block:: javascript
+   
+   db.runCommand(
+      { 
+        buildInfo: 1 
+      }
+   )
 
-   .. code-block:: javascript
+Usage
+-----
 
-      db.runCommand( { buildInfo: 1 } )
+In :binary:`~bin.mongosh`, call :dbcommand:`buildInfo` in the
+following form:
 
-   .. example::
+.. code-block:: javascript
 
-      The output document of :dbcommand:`buildInfo` has the following
-      form:
+   db.runCommand( { buildInfo: 1 } )
 
-      .. code-block:: javascript
+The output document of :dbcommand:`buildInfo` has the following
+form:
 
-         {
-           "version" : "<string>",
-           "gitVersion" : "<string>",
-           "sysInfo" : "<string>",
-           "loaderFlags" : "<string>",
-           "compilerFlags" : "<string>",
-           "allocator" : "<string>",
-           "versionArray" : [ <num>, <num>, <...> ],
-           "openssl" : <document>,
-           "javascriptEngine" : "<string>",
-           "bits" : <num>,
-           "debug" : <boolean>,
-           "maxBsonObjectSize" : <num>,
-           "storageEngines" : [ "<string>", "<string>", "<...>" ],
-           "ok" : <num>
-         }
+.. code-block:: javascript
+
+   {
+     "version" : "<string>",
+     "gitVersion" : "<string>",
+     "sysInfo" : "<string>",
+     "loaderFlags" : "<string>",
+     "compilerFlags" : "<string>",
+     "allocator" : "<string>",
+     "versionArray" : [ <num>, <num>, <...> ],
+     "openssl" : <document>,
+     "javascriptEngine" : "<string>",
+     "bits" : <num>,
+     "debug" : <boolean>,
+     "maxBsonObjectSize" : <num>,
+     "storageEngines" : [ "<string>", "<string>", "<...>" ],
+     "ok" : <num>
+   }
 
 Output
 ------
@@ -86,14 +98,10 @@ These fields are stable and should provide consistent behavior.
 
 .. data:: buildInfo.storageEngines
 
-   .. versionadded:: 3.2
-
-   A list of :doc:`storage engines </faq/storage>` available to the
+   A list of :ref:`storage engines <faq-storage>` available to the
    :binary:`~bin.mongod` server.
 
 .. data:: buildInfo.javascriptEngine
-
-   .. versionchanged:: 3.2
 
    A string that reports the JavaScript engine used in the
    :binary:`~bin.mongod` instance. By default, this is ``mozjs`` after

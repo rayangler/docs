@@ -119,7 +119,7 @@ Deprecated Operations
 ``group``
 ~~~~~~~~~
 
-Mongodb 3.4 deprecates the following commands and :binary:`~bin.mongo`
+Mongodb 3.4 deprecates the following commands and ``mongo``
 shell methods:
 
 - :v3.4:`group </reference/command/group>` command and
@@ -191,10 +191,9 @@ Stricter validation include the following:
      db.collection.createIndex( { z: NaN } );
      db.collection.createIndex( { x: 1, unique: true } )
 
-- Ensuring that the specified :doc:`index options
-  </core/index-properties>` are valid. Previous versions ignored
-  invalid options. For example, the following operations are no longer
-  valid:
+- Ensuring that the specified :ref:`index options <index-properties>`
+  are valid. Previous versions ignored invalid options. For example, the
+  following operations are no longer valid:
 
   .. code-block:: javascript
 
@@ -206,7 +205,7 @@ Stricter validation include the following:
 General Compatibility Changes
 -----------------------------
 
-- Updates to namespace restrictions: in MongodDB 3.4, the ``$``
+- Updates to namespace restrictions: in MongoDB 3.4, the ``$``
   character is no longer supported in database names.
 
   .. important::
@@ -218,7 +217,7 @@ General Compatibility Changes
   version 2.6, MongoDB enables the text search feature by default.
 
 - Removal of ``mongosniff``. In MongoDB 3.4,
-  ``mongosniff`` is replaced by :binary:`~bin.mongoreplay`, which
+  ``mongosniff`` is replaced by ``mongoreplay``, which
   offers a more flexible superset of ``mongosniff``'s
   functionality.
 

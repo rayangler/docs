@@ -6,6 +6,10 @@ $merge (aggregation)
 
 .. default-domain:: mongodb
 
+.. facet::
+   :name: programming_language
+   :values: shell
+
 .. contents:: On this page
    :local:
    :backlinks: none
@@ -28,10 +32,8 @@ Definition
 
 .. pipeline:: $merge
 
-   .. versionadded:: 4.2
-
-   Writes the results of the :doc:`aggregation pipeline
-   </core/aggregation-pipeline>` to a specified collection. The
+   Writes the results of the :ref:`aggregation pipeline
+   <aggregation-pipeline>` to a specified collection. The
    :pipeline:`$merge` operator must be the **last** stage in the
    pipeline.
 
@@ -39,9 +41,27 @@ Definition
 
    - Can output to a collection in the same or different database.
 
-     - Starting in MongoDB 4.4, :pipeline:`$merge` can output to the
+   - Starting in MongoDB 4.4:
+
+     - :pipeline:`$merge` can output to the
        same collection that is being aggregated. For more
        information, see :ref:`merge-behavior-same-collection`.
+
+     - Pipelines with the :pipeline:`$merge` stage can run on 
+       replica set secondary nodes if all the nodes in cluster have 
+       :ref:`featureCompatibilityVersion <view-fcv>` set 
+       to ``4.4`` or higher and the :doc:`/core/read-preference`
+       allows secondary reads. 
+
+       - Read operations of the :pipeline:`$merge` statement are sent to 
+         secondary nodes, while the write operations occur only on the 
+         primary node.
+
+       - Not all driver versions support targeting of :pipeline:`$merge` 
+         operations to replica set secondary nodes. Check your 
+         :driver:`driver </>` documentation to see when your driver added
+         support for :pipeline:`$merge` read operations running on 
+         secondary nodes.
 
    - Creates a new collection if the output collection does not already
      exist.
@@ -72,6 +92,13 @@ Definition
    Materialized views are separate from read-only views. For
    information on creating read-only views, see :doc:`read-only views
    </core/views>`.
+
+Compatibility
+-------------
+
+.. |operator-method| replace:: ``$merge``
+
+.. include:: /includes/fact-compatibility.rst
 
 Syntax
 ------
@@ -178,10 +205,13 @@ The :pipeline:`$merge` takes a document with the following fields:
       specification does not matter, the unique index must only contain
       the ``on`` fields as its keys.
 
-      - The index must also have the same :doc:`collation
-        </reference/collation>` as the aggregation's collation.
+      - The index must also have the same :ref:`collation <collation>` 
+        as the aggregation's collation.
 
       - The unique index can be a :ref:`sparse <index-type-sparse>`
+        index.
+
+      - The unique index cannot be a :ref:`partial <index-type-partial>`
         index.
 
       - For output collections that already exist, the corresponding
@@ -500,14 +530,12 @@ the ``_id`` field and all the :ref:`shard key
       whenNotMatched: <insert|discard|fail>                     // Optional
    } }
 
-For example, in a database that has :method:`sharding enabled
-<sh.enableSharding>`, use the :method:`sh.shardCollection()` method
+For example, use the :method:`sh.shardCollection()` method
 to create a new sharded collection ``newrestaurants`` with the
 ``postcode`` field as the shard key.
 
 .. code-block:: javascript
 
-   sh.enableSharding("exampledb");     // Sharding must be enabled in the database
    sh.shardCollection( 
       "exampledb.newrestaurants",      // Namespace of the collection to shard
       { postcode: 1 },                 // Shard key
@@ -517,10 +545,10 @@ The ``newrestaurants`` collection will contain documents with
 information on new restaurant openings by month (``date`` field) and
 postcode (shard key); specifically, the :ref:`on <merge-on>`
 identifier is ``["date", "postcode"]`` (the ordering of the fields
-does not matter). Because :pipeline:`$merge` requires a unique,
+does not matter). Because :pipeline:`$merge` requires a unique
 index with keys that correspond to the :ref:`on
 <merge-on>` identifier fields, create the unique index
-(the ordering of the fields do not matter): [#uniqueoption]_ 
+(the ordering of the fields do not matter): [#uniqueoption]_
 
 .. code-block:: javascript
 
@@ -669,9 +697,6 @@ results of the aggregation pipeline to a collection:
    * - :pipeline:`$merge`
      - :pipeline:`$out`
 
-   * - - Available starting in MongoDB 4.2
-     - - Available starting in MongoDB 2.6
-
    * - - Can output to a collection in the same or different database.
      - - Can output to a collection in the same or, starting in
          MongoDB 4.4, different database.
@@ -732,24 +757,24 @@ Restrictions
    * - Restrictions
      - Description
 
-   * - :doc:`Transactions </core/transactions>`
+   * - :ref:`transactions <transactions>`
 
      - An aggregation pipeline cannot use :pipeline:`$merge` inside a
        :ref:`transaction <transactions-operations-crud>`.
 
-   * - :doc:`Time Series Collections </core/timeseries-collections>`
+   * - :ref:`Time Series Collections <manual-timeseries-landing>`
 
      - An aggregation pipeline cannot use :pipeline:`$merge` to output to
        a time series collection.
 
-   * - | :doc:`View definition </core/views>`
+   * - | :ref:`view definition <views-landing-page>`
        | *Separate from materialized view*
 
-     - :doc:`View definition </core/views>` cannot include the
-       :pipeline:`$merge` stage. If the view definition includes nested
-       pipeline (for example, the view definition includes
-       :pipeline:`$facet` stage), this :pipeline:`$merge` stage
-       restriction applies to the nested pipelines as well.
+     - A view definition cannot include the :pipeline:`$merge` stage. 
+       If the view definition includes nested pipeline (for example, 
+       the view definition includes :pipeline:`$facet` stage), this 
+       :pipeline:`$merge` stage restriction applies to the nested 
+       pipelines as well.
 
    * - :pipeline:`$lookup` stage
 
@@ -1227,14 +1252,14 @@ tally. Create the collection with the following documents:s
 
 .. code-block:: javascript
 
-   db.votes.insertMany([
+   db.votes.insertMany( [
       { date: new Date("2019-05-01"), "thumbsup" : 1, "thumbsdown" : 1 },
       { date: new Date("2019-05-02"), "thumbsup" : 3, "thumbsdown" : 1 },
       { date: new Date("2019-05-03"), "thumbsup" : 1, "thumbsdown" : 1 },
       { date: new Date("2019-05-04"), "thumbsup" : 2, "thumbsdown" : 2 },
       { date: new Date("2019-05-05"), "thumbsup" : 6, "thumbsdown" : 10 },
       { date: new Date("2019-05-06"), "thumbsup" : 13, "thumbsdown" : 16 }
-   ])
+   ] )
 
 Another example collection ``monthlytotals`` has the up-to-date
 monthly vote totals. Create the collection with the following
@@ -1242,7 +1267,9 @@ document:
 
 .. code-block:: javascript
 
-   db.monthlytotals.insertOne({ "_id" : "2019-05", "thumbsup" : 26, "thumbsdown" : 31 } )
+   db.monthlytotals.insertOne(
+      { "_id" : "2019-05", "thumbsup" : 26, "thumbsdown" : 31 }
+   )
 
 At the end of each day, that day's votes is inserted into the
 ``votes`` collection:
@@ -1363,7 +1390,7 @@ merge stage, the aggregate command, or both.
 
       .. code-block:: javascript
 
-         db.cakeSales.insert( [
+         db.cakeSales.insertOne( [
             { _id: 1, flavor: "chocolate", salesTotal: 1580,
               salesTrend: "up" }
          ] )
@@ -1420,10 +1447,10 @@ merge stage, the aggregate command, or both.
 
       .. code-block:: javascript
 
-         db.cakeSales.insert( [
+         db.cakeSales.insertOne(
             { _id: 1, flavor: "chocolate", salesTotal: 1580,
               salesTrend: "up" }
-         ] )
+         )
 
          db.runCommand( {
             aggregate: db.cakeSales.getName(),
@@ -1481,10 +1508,10 @@ merge stage, the aggregate command, or both.
 
       .. code-block:: javascript
 
-         db.cakeSales.insert( [
+         db.cakeSales.insertOne(
             { _id: 1, flavor: "chocolate", salesTotal: 1580,
               salesTrend: "up" }
-         ] )
+         )
 
          db.runCommand( {
             aggregate: db.cakeSales.getName(),
@@ -1508,5 +1535,11 @@ merge stage, the aggregate command, or both.
       .. code-block:: javascript
          :copyable: false
 
-         { "_id" : 1, "flavor" : "chocolate", "salesTotal" : 1580,
-           "salesTrend" : "up", "salesYear" : "2020" }
+         {
+           _id: 1,
+           flavor: 'chocolate',
+           salesTotal: 1580,
+           salesTrend: 'up',
+           salesYear: '2020'
+         }
+

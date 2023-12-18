@@ -15,19 +15,29 @@ Definition
 
 .. dbcommand:: balancerStatus
 
-   .. versionadded:: 3.4
-
    Returns a document that contains information about the status of the
    balancer.
 
    You can only issue the :dbcommand:`balancerStatus` against the
    ``admin`` database.
 
-   The command takes the following form:
+   .. |method| replace:: :method:`sh.isBalancerRunning` 
+      helper method
+   .. include:: /includes/fact-dbcommand-tip
 
-   .. code-block:: javascript
 
-      db.adminCommand( { balancerStatus: 1 } )
+Syntax
+------
+
+The command has the following syntax:
+
+.. code-block:: javascript
+
+   db.adminCommand( 
+      { 
+        balancerStatus: 1 
+      } 
+   )
 
 Output Document
 ---------------

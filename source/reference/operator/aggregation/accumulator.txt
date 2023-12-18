@@ -37,8 +37,8 @@ Definition
 
       Executing JavaScript inside of an aggregation operator may
       decrease performance. Only use the :group:`$accumulator` operator
-      if the provided :doc:`pipeline operators
-      </reference/operator/aggregation>` cannot fulfill your
+      if the provided :ref:`pipeline operators
+      <aggregation-pipeline-operator-reference>` cannot fulfill your
       application's needs.
 
 Syntax
@@ -88,6 +88,14 @@ The :group:`$accumulator` operator has this syntax:
             ...
             return <initialState>
           }
+
+       .. note::
+       
+          Spilling to disk or running a query on a sharded cluster can
+          cause the accumulator to be computed as a merge of multiple
+          sub-accumulations, each of which begins by calling ``init()``.
+          Ensure that your ``init()``, ``accumulate()``, and ``merge()``
+          functions are compatible with this execution model.
 
    * - :ref:`initArgs <accumulator-initArgs>`
 
@@ -287,6 +295,13 @@ scripting:
     :binary:`~bin.mongos` instances.
 
 See also :ref:`security-checklist-javascript`.
+
+Unsupported Array and String Functions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. include:: /includes/fact-6.0-js-engine-change.rst
+
+.. include:: /includes/fact-mozjs-list-lead-in.rst
 
 Examples
 --------

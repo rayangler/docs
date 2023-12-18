@@ -1,3 +1,5 @@
+.. _mongodb-package-components:
+
 ==========================
 MongoDB Package Components
 ==========================
@@ -36,14 +38,13 @@ The core components in the MongoDB package are:
 
    /reference/program/mongod
    /reference/program/mongos
-   /reference/program/mongo
 
 Windows Services
 ----------------
 
-The :binary:`~bin.mongod.exe` and :binary:`~bin.mongos.exe` describe the
+The :binary:`mongod.exe` and :binary:`mongos.exe` describe the
 options available for configuring MongoDB when running as a Windows
-Service. The :binary:`~bin.mongod.exe` and :binary:`~bin.mongos.exe` binaries
+Service. The :binary:`mongod.exe` and :binary:`mongos.exe` binaries
 provide a superset of the :binary:`~bin.mongod` and :binary:`~bin.mongos`
 options.
 
@@ -75,11 +76,9 @@ succeeds for a given username.
 MongoDB Compass
 ---------------
 
-.. versionadded:: 3.6
-
-   MongoDB is packaged with an ``install_compass`` script, which
-   is a platform-specific installer for
-   :ref:`MongoDB Compass Community Edition <compass-index>`.
+MongoDB is packaged with an ``install_compass`` script, which
+is a platform-specific installer for
+:ref:`MongoDB Compass Community Edition <compass-index>`.
 
 .. toctree::
    :maxdepth: 1
@@ -87,24 +86,8 @@ MongoDB Compass
 
    /reference/program/install_compass
 
-MongoDB Database Tools
-----------------------
-
-Starting in MongoDB 4.4, the documentation for these
-tools have been migrated to `docs.mongodb.com/database-tools 
-<https://docs.mongodb.com/database-tools>`__:
-
-For documentation on previous versions of these tools, use the
-version selector in the top-left corner of the web page to 
-view the documentation for your desired MongoDB version.
-
-*Quick Links to older documentation*
-
-- :v4.2:`MongoDB 4.2 Tools </reference/program/>`
-- :v4.0:`MongoDB 4.0 Tools </reference/program/>`
-
 .. toctree::
    :maxdepth: 1
    :hidden:
 
-   MongoDB Database Tools <https://docs.mongodb.com/database-tools/>
+   MongoDB Database Tools <https://www.mongodb.com/docs/database-tools/>

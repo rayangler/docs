@@ -1,6 +1,3 @@
-
-
-
 .. _config-database:
 
 ===============
@@ -17,14 +14,16 @@ Config Database
 
 The collections in the ``config`` database support:
 
-- :doc:`sharded cluster operations </sharding>`, and
+- :ref:`Sharded cluster operations <sharding-background>`
 
-- starting in MongoDB 3.6, :ref:`causally consistent sessions
-  <sessions>` for standalones, replica sets, and sharded clusters and
-  retryable writes for replica sets and sharded clusters.
+- :ref:`Causally consistent sessions <sessions>` for standalones,
+  replica sets, and sharded clusters and retryable writes for replica
+  sets and sharded clusters.
 
 Restrictions
 ------------
+
+.. include:: /includes/fact-5.0-non-transactional-config-reads.rst
 
 .. important:: The schema of the ``config`` database is
    *internal* and may change between releases of MongoDB. The
@@ -73,7 +72,7 @@ exists):
 
 .. code-block:: javascript
 
-   db.testConfigServerWriteAvail.insert( { a : 1 } )
+   db.testConfigServerWriteAvail.insertOne( { a : 1 } )
 
 If the operation succeeds, the config server is available to process
 writes.
@@ -238,6 +237,19 @@ to support sharding:
          "uuid" :  UUID("f8669e52-5c1b-4ea2-bbdc-a00189b341da")
       }
 
+.. data:: config.csrs.indexes
+
+   .. versionadded:: 7.0
+
+   .. include:: /includes/admonition-config-db-is-internal.rst
+
+   The :data:`~config.csrs.indexes` collection stores a document for each 
+   global index available on a shard.
+
+   Each document in the collection contains the following fields: 
+
+   .. include:: /includes/table-csrs-indexes-fields.rst
+
 .. data:: config.databases
 
    .. include:: /includes/admonition-config-db-is-internal.rst
@@ -246,75 +258,16 @@ to support sharding:
    database in the cluster.
    
    For each database, the corresponding document displays the name, the
-   database's :ref:`primary shard <primary-shard>` , the database's
-   sharding enabled status, and a version.
+   database's :ref:`primary shard <primary-shard>` , and a version.
 
    .. code-block:: javascript
 
-      { "_id" : "test", "primary" : "shardA", "partitioned" : true, "version" : { "uuid" : UUID("516a5f79-5eb9-4844-8ee9-b8e9de91b760"), "timestamp" : Timestamp(1626894204, 1), "lastMod" : 1 } }
-      { "_id" : "hr", "primary" : "shardA", "partitioned" : false, "version" : { "uuid" : UUID("8e39d61d-6259-4c33-a5ed-bcd2ae317b6f"), "timestamp" : Timestamp(1626895015, 1), "lastMod" : 1 } }
-      { "_id" : "reporting", "primary" : "shardB", "partitioned" : false, "version" : { "uuid" : UUID("07c63242-51b3-460c-865f-a67b3372d792"), "timestamp" : Timestamp(1626895826, 1), "lastMod" : 1 } }
+      { "_id" : "test", "primary" : "shardA", "version" : { "uuid" : UUID("516a5f79-5eb9-4844-8ee9-b8e9de91b760"), "timestamp" : Timestamp(1626894204, 1), "lastMod" : 1 } }
+      { "_id" : "hr", "primary" : "shardA", "version" : { "uuid" : UUID("8e39d61d-6259-4c33-a5ed-bcd2ae317b6f"), "timestamp" : Timestamp(1626895015, 1), "lastMod" : 1 } }
+      { "_id" : "reporting", "primary" : "shardB", "version" : { "uuid" : UUID("07c63242-51b3-460c-865f-a67b3372d792"), "timestamp" : Timestamp(1626895826, 1), "lastMod" : 1 } }
 
    The method :method:`sh.status()` returns this information in the
    :ref:`sharding-status-databases-fields` section.
-
-.. data:: config.lockpings
-
-   .. include:: /includes/admonition-config-db-is-internal.rst
-
-   The :data:`~config.lockpings` collection keeps track of the active components
-   in the sharded cluster. Given a cluster with a :binary:`~bin.mongos`
-   running on ``example.com:30000``, the document in the
-   :data:`~config.lockpings` collection would resemble:
-
-   .. code-block:: javascript
-
-      { "_id" : "example.com:30000:1350047994:16807", "ping" : ISODate("2012-10-12T18:32:54.892Z") }
-
-.. data:: config.locks
-
-   .. include:: /includes/admonition-config-db-is-internal.rst
-
-   The :data:`~config.locks` collection stores the distributed locks. The
-   primary of the config server replica set takes a lock by
-   inserting a document into the ``locks``
-   collection.
-
-   .. code-block:: javascript
-
-      {
-         "_id" : "test.myShardedCollection",
-         "state" : 2,
-         "process" : "ConfigServer",
-         "ts" : ObjectId("5be0b9ede46e4f441a60d891"),
-         "when" : ISODate("2018-11-05T21:52:00.846Z"),
-         "who" : "ConfigServer:Balancer",
-         "why" : "Migrating chunk(s) in collection test.myShardedCollection"
-      }
-
-   As of version 3.4, the ``state`` field will always have a value
-   ``2`` to prevent any legacy :binary:`~bin.mongos` instances from
-   performing the balancing operation. The ``when`` field specifies the
-   time when the config server member became the primary.
-
-   In version 3.4, when the balancer is active, the balancer takes a
-   lock, as in the following 3.4 example:
-
-   .. code-block:: javascript
-
-      {
-         "_id" : "balancer",
-         "state" : 2,
-         "ts" : ObjectId("5be0bc6cb20effa83b15baa8"),
-         "who" : "ConfigServer:Balancer",
-         "process" : "ConfigServer",
-         "when" : ISODate("2018-11-05T21:56:13.096Z"),
-         "why" : "CSRS Balancer"
-      }
-
-   Starting in version 3.6, the balancer no longer takes a "lock". If
-   you have upgraded from 3.4 to 3.6, you may choose to delete any
-   residual ``"_id" : "balancer"`` documents.
 
 .. data:: config.migrationCoordinators
 
@@ -334,29 +287,30 @@ to support sharding:
    .. include:: /includes/admonition-config-db-is-internal.rst
 
    The :data:`~config.mongos` collection stores a document for each
-   :binary:`~bin.mongos` instance affiliated with the
-   cluster. :binary:`~bin.mongos` instances send pings to all members of
-   the cluster every 30 seconds so the cluster can verify that the
-   :binary:`~bin.mongos` is active. The ``ping`` field shows the time of
-   the last ping, while the ``up`` field reports the uptime of the
-   :binary:`~bin.mongos` as of the last ping. The cluster maintains this
-   collection for reporting purposes.
+   :binary:`~bin.mongos` instance affiliated with the cluster. The
+   cluster maintains this collection for reporting purposes.
+   
+   Each document in the :data:`~config.mongos` collection contains these
+   fields:
+
+   .. include:: /includes/table-mongos-output-fields.rst
 
    The following document shows the status of the :binary:`~bin.mongos`
    running on ``example.com:27017``.
 
    .. code-block:: javascript
 
-      {
-         "_id" : "example.com:27017",
-         "advisoryHostFQDNs" : [
-            "example.com"
-         ],
-         "mongoVersion" : "4.2.0",
-         "ping" : ISODate("2019-09-25T19:26:52.360Z"),
-         "up" : NumberLong(50),
-         "waiting" : true
-      }
+      [
+         {
+           _id: 'example.com:27017',
+           advisoryHostFQDNs: [ "example.com" ],
+           created: ISODate("2021-11-22T16:32:13.708Z"),
+           mongoVersion: "5.2.0",
+           ping: ISODate("2021-12-15T22:09:23.161Z"),
+           up: Long("2007429"),
+           waiting: true
+         }
+      ]
 
 .. data:: config.rangeDeletions
 
@@ -375,40 +329,37 @@ to support sharding:
    The :data:`~config.settings` collection holds the following
    sharding configuration settings:
 
-   - Chunk size. To change chunk size,
-     see :doc:`/tutorial/modify-chunk-size-in-sharded-cluster`.
-     The specified ``chunksize`` value is in megabytes.
+   - Range size. To change range size,
+     see :ref:`Modify Range Size in a Sharded Cluster 
+     <tutorial-modifying-range-size>`. The specified ``chunksize`` value 
+     is in megabytes.
 
    - Balancer settings. To change the balancer settings, including
      balancer status, see
      :doc:`/tutorial/manage-sharded-cluster-balancer`.
 
-     Starting in MongoDB 4.2:
-
-     - :dbcommand:`balancerStart` also enables auto-splitting for the sharded cluster.
-
-     - :dbcommand:`balancerStop` also disables auto-splitting for the sharded cluster.
-
-   - Autosplit. To enable or disable the autosplit flag, use the
-     corresponding :method:`sh.enableAutoSplit()` method or
-     :method:`sh.disableAutoSplit()` method.
+   - Autosplit:
      
-     Starting in MongoDB 4.2:
+     .. include:: /includes/autosplit-no-operation.rst
+     
+     In MongoDB versions earlier than 6.1:
 
      - :dbcommand:`balancerStart` also enables auto-splitting for the
        sharded cluster.
 
      - :dbcommand:`balancerStop` also disables auto-splitting for the
        sharded cluster.
+      
+     - To enable or disable the autosplit flag, use the corresponding
+       :method:`sh.enableAutoSplit()` method or
+       :method:`sh.disableAutoSplit()` method.
 
-   The following are some example documents in the ``settings``
-   collection:
+   Example documents in the ``settings`` collection:
 
    .. code-block:: javascript
 
       { "_id" : "chunksize", "value" : 64 }
       { "_id" : "balancer", "mode" : "full", "stopped" : false }
-      { "_id" : "autosplit", "enabled" : true }
 
 .. data:: config.shards
 
@@ -479,12 +430,10 @@ to support sharding:
 Collections to Support Sessions
 -------------------------------
 
-.. versionadded:: 3.6
-
 Starting in MongoDB 3.6, the ``config`` database contains the
 *internal* collections to support :ref:`causally consistent sessions
 <sessions>` for standalones, replica sets, and sharded clusters and
-retryable writes and :doc:`transactions </core/transactions>` for
+retryable writes and :ref:`transactions <transactions>` for
 replica sets and sharded clusters.
 
 .. warning::
@@ -515,14 +464,10 @@ instance.
 
    In a sharded cluster, the ``system.sessions`` collection is sharded.
 
-   - When adding a shard to the sharded cluster, if the shard to add
-     already contains its own ``system.sessions`` collection, MongoDB
-     drops the new shard's ``system.sessions`` collection during the
-     add process.
-
-   - Starting in version 4.4 (and 4.2.7), MongoDB automatically splits
-     the ``system.sessions`` collection into at least 1024 chunks and
-     distributes the chunks uniformly across shards in the cluster.
+   When adding a shard to the sharded cluster, if the shard to add
+   already contains its own ``system.sessions`` collection, MongoDB
+   drops the new shard's ``system.sessions`` collection during the
+   add process.
 
 .. data:: config.transactions
 

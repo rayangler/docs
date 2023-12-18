@@ -26,8 +26,8 @@ authorization using the :option:`--auth <mongod --auth>` or the
 authentication </core/security-internal-authentication>` also enables
 client authorization.
 
-Once access control is enabled, users must :doc:`authenticate
-</core/authentication>` themselves.
+Once access control is enabled, users must :ref:`authenticate
+<authentication>` themselves.
 
 .. _roles:
 
@@ -38,6 +38,28 @@ A role grants privileges to perform the specified :ref:`actions
 <security-user-actions>` on :doc:`resource
 </reference/resource-document>`. Each privilege is either specified
 explicitly in the role or inherited from another role or both.
+
+Access
+~~~~~~
+
+Roles never limit privileges.  If a user has two roles, the role with the
+greater access takes precedence.  
+
+For example, if you grant the :authrole:`read` role on a database to 
+a user that already has the :authrole:`readWriteAnyDatabase` role, the
+``read`` grant does **not** revoke write access on the database.
+
+To revoke a role from a user, use the :dbcommand:`revokeRolesFromUser` 
+command.
+
+Authentication Restrictions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Roles can impose authentication restrictions on users, requiring them to
+connect from specified source and destination IP address ranges.
+
+For more information, see :ref:`create-role-auth-restrictions`.
+
 
 .. _privileges:
 
@@ -53,7 +75,7 @@ cluster, the affiliated actions affect the state of the system rather
 than a specific database or collection. For information on the resource
 documents, see :doc:`/reference/resource-document`.
 
-An :doc:`action </reference/privilege-actions>` specifies the operation
+An :ref:`action <security-user-actions>` specifies the operation
 allowed on the resource. For available actions see
 :doc:`/reference/privilege-actions`.
 
@@ -103,6 +125,16 @@ If these built-in-roles cannot provide the desired set of privileges,
 MongoDB provides methods to create and modify :doc:`user-defined roles
 </core/security-user-defined-roles>`.
 
+LDAP Authorization
+------------------
+
+MongoDB Enterprise supports querying an LDAP server for the LDAP groups the
+authenticated user is a member of. MongoDB maps the Distinguished Names (DN)
+of each returned group to :ref:`roles <roles>` on the ``admin`` database.
+MongoDB authorizes the user based on the mapped roles and their associated
+privileges. See :ref:`LDAP Authorization <security-ldap-external>` for more
+information.
+
 .. toctree::
    :titlesonly:
    :hidden:
@@ -112,3 +144,4 @@ MongoDB provides methods to create and modify :doc:`user-defined roles
    /tutorial/manage-users-and-roles
    /tutorial/change-own-password-and-custom-data
    /core/collection-level-access-control
+   /core/security-ldap-external

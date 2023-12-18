@@ -1,3 +1,5 @@
+.. _read-isolation-consistency-recency:
+
 ========================================
 Read Isolation, Consistency, and Recency
 ========================================
@@ -50,6 +52,8 @@ Cursor Snapshot
 
 .. include:: /includes/extracts/isolate-cursor-snapshot.rst
 
+Consider using read isolation. To learn more, see 
+:ref:`read-concern-snapshot`.
 
 Monotonic Writes
 ----------------
@@ -60,8 +64,6 @@ Monotonic Writes
 
 Real Time Order
 ---------------
-
-.. versionadded:: 3.4
 
 For read and write operations on the primary, issuing read operations
 with :readconcern:`"linearizable"` read concern and write operations
@@ -78,8 +80,6 @@ schedule for these reads and writes is considered linearizable.
 
 Causal Consistency
 ------------------
-
-.. versionadded:: 3.6
 
 If an operation logically depends on a preceding operation, there is a
 causal relationship between the operations. For example, a write

@@ -17,6 +17,9 @@ Definition
 
    Removes the specified inherited roles from a role.
 
+   .. |dbcommand| replace:: :dbcommand:`revokeRolesFromRole` command
+   .. include:: /includes/fact-mongosh-shell-method-alt.rst
+
    The :method:`db.revokeRolesFromRole()` method uses the following syntax:
 
    .. code-block:: javascript
@@ -31,44 +34,20 @@ Definition
       :widths: 20 20 80
    
       * - Parameter
-   
         - Type
-   
         - Description
-   
       * - ``rolename``
-   
         - string
-   
         - The name of the role from which to revoke roles.
-          
-          
-   
       * - ``roles``
-   
         - array
-   
         - The inherited roles to remove.
-          
-          
-   
       * - ``writeConcern``
-   
         - document
-   
-        - Optional. The level of :doc:`write concern </reference/write-concern>` to apply
-          to this operation. The ``writeConcern`` document uses the same fields
-          as the :dbcommand:`getLastError` command.
-          
-          
-   
-
+        - .. include:: /includes/fact-write-concern-spec-link.rst
 
    .. |local-cmd-name| replace:: :method:`db.revokeRolesFromRole()`
    .. include:: /includes/fact-roles-array-contents.rst
-
-   The :method:`db.revokeRolesFromRole()` method wraps the
-   :dbcommand:`revokeRolesFromRole` command.
 
 Behavior
 --------
