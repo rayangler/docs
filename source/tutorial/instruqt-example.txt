@@ -1,0 +1,28 @@
+:template: instruqt
+
+================
+Instruqt Example
+================
+
+.. default-domain:: mongodb
+
+To get started and explore MongoDB, try the 5 minute interactive 
+tutorial that connects you to a `MongoDB Atlas <https://www.mongodb.com/atlas/database?tck=docs_server>`__
+cluster and walks you through inserting, querying, and
+deleting data in MongoDB. 
+
+Interactive Tutorial
+--------------------
+
+You do not need to install anything. Click the :guilabel:`Launch` button 
+of the in-browser Integrated Development Environment to start the tutorial. 
+
+.. instruqt:: /mongodb-docs/tracks/getting-started-with-mongodb-v2?token=em_Yadrk-QVCMfR6Zh3
+   :title: Example Lab
+   :drawer:
+
+.. instruqt:: /mongodb-docs/tracks/getting-started-with-mongodb-v2?token=em_Yadrk-QVCMfR6Zh3
+   :title: Example Lab
+
+After completing the tutorial, see :atlas:`Getting Started with Atlas </getting-started/>`
+to deploy a free cluster without any installation overhead.
