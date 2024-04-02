@@ -8,7 +8,7 @@ Causal Consistency and Read and Write Concerns
 
 With MongoDB's :ref:`causally consistent client sessions <sessions>`,
 different combinations of read and write concerns provide different
-:ref:`causal consistency guarantees <causal-consistency-guarantees>`. 
+:ref:`causal consistency guarantees <causal-consistency-guarantees>`!!! 
 
 The following table lists the specific guarantees that various 
 combinations provide:
